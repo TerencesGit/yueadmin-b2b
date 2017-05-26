@@ -11,7 +11,7 @@
 import AsideComp from './Aside'
 import HeaderComp from './Header'
 import MainComp from './Main'
-import { getPermissionList } from '../api'
+import { getCustomerUserInfo } from '../api'
 export default {
   name: 'layout',
   components: {
@@ -22,12 +22,19 @@ export default {
   created () {
     let sessionId = localStorage.getItem('sessionId')
     console.log(sessionId)
-    getPermissionList({sessionId: sessionId}).then(res => {
+    let data = {
+      customerSessionId: sessionId
+    }
+    getCustomerUserInfo(data).then(res => {
       console.log(res)
-      let data = res.data
-      this.$store.dispatch('setUserPermission', data.result)
-      // this.$store.dispatch('setUserName', data.name)
-      // this.$store.dispatch('setPartner', data.partner)
+      if (res.data.code === 0) {
+        let user = JSON.stringify(res.data.result)
+        localStorage.setItem('user', user)
+      } else {
+        this.$message({
+          message: res.data.message
+        })
+      }
     })
     .catch(function (error) {
       console.log(error)

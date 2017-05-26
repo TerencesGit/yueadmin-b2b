@@ -25,7 +25,7 @@ export default {
 	data () {
 		return {
 			home: '/account/home',
-			username: 'Transform'
+			username: ''
 		}
 	},
   methods: {
@@ -38,11 +38,10 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-      	let sessionId = utils.getCookie('sessionId')
-      	requestExit({sessionId: sessionId}).then(res => {
+      	let sessionId = localStorage.getItem('sessionId')
+      	requestExit({customerSessionId: sessionId}).then(res => {
       		console.log(res)
       		if(res.data.code === 0) {
-      			utils.delCookie('isLogin')
       			localStorage.removeItem('sessionId')
       			this.$router.push('/login')
       			this.$message({
@@ -69,6 +68,9 @@ export default {
   		'sidebarStatus',
   	])
   },
+  mounted () {
+  	this.username = JSON.parse(localStorage.getItem('user')).name
+  }
 }
 </script>
 <style scoped lang="scss">

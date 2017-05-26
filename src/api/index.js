@@ -7,22 +7,32 @@ axios.defaults.transformRequest = [(data) => { return Qs.stringify(data) }]
 axios.defaults.timeout = 5000
 
 // 登录
-export const requestLogin = data => { return axios.post('/ysj/auth/login.json', data) }
+export const requestLogin = data => { return axios.post('/user/loginByMobileAndPassword.json', data) }
+// 退出
+export const requestExit = data => { return axios.post('/user/logout.json', data) }
 
-// 获取用户权限
-export const getPermissionList = () => { return axios.get('/ysj/permission/getPermissionList.json')}
+export const getCustomerUserInfo = data => { return axios.post('/user/getCustomerUserInfo.json', data) }
 
-// 注册
-export const requestRegister = data => { return axios.post('/register', data) }
+export const getRandomImage = () => { return axios.get('/user/getRandomImage.json') }
 
-// 登出
-export const requestExit = params => { return axios.get('/ysj/auth/logout.json', {params: params})}
+export const getMobileSmsCode = data => { return axios.post('/sms/getMobileSmsCode.json', data) }
 
-//商户管理页面-获取用户分页
-export const paginationYueShops = params => { return axios.get('/ysj/yueShop/paginationYueShops.json', {params: params})}
+export const requestRegister = data => { return axios.post('/user/registe.json', data) }
 
-//商户管理页面-商户接口-修改商户状态
-export const updateYueShopStatusById = params => { return axios.get('/ysj/yueShop/updateYueShopStatusById.json', {params: params})}
+export const resetPassword = data => { return axios.post('/user/resetPasswordById.json', data) }
 
-//商户管理页面-商户接口 (添加或修改)
-export const operateYueShop = data => { return axios.post('/ysj/yueShop/operateYueShop.json', data)}
+export const loginBySmsCode = data => { return axios.post('/user/loginByMobileAndSmsCode.json', data) }
+
+export const modifyPassword = data => { return axios.post('/user/modifyPassword.json', data) }
+
+export const getShopMechanismInfoList = data => { return axios.post('/appShop/getShopMechanismInfoList.json', data) }
+
+export const getPartList = data => { return axios.post('/order/partList.json', data) }
+
+export const createOrder = data => { return axios.post('/order/createOrder.json', data) }
+
+export const getUserOrderApplyInfo = data => { return axios.post('/order/getUserOrderApplyInfo.json', data) }
+
+export const confirmHarvestOrder = data => { return axios.post('/order/confirmHarvestOrder.json', data) }
+
+export const updateCustomerUserInfo = data => { return axios.post('/user/updateCustomerUserInfo.json', data) }

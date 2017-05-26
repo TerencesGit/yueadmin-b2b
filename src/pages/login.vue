@@ -46,6 +46,7 @@
 <script>
 import { requestLogin } from '../api'
 import utils from '../assets/js/utils'
+import Md5 from '../assets/js/md5'
 export default {
   data() {
     var validateCode = (rule, value, callback) => {
@@ -98,12 +99,17 @@ export default {
         console.log(this.loginForm)
         if (valid && !this.logging) {
           this.logging = true
-          requestLogin(this.loginForm).then(res => {
+           let form = {
+            mobile: this.loginForm.username,
+            pass: Md5.hex_md5(this.loginForm.password)
+          }
+          console.log(form)
+          requestLogin(form).then(res => {
             console.log(res)
             if (res.data.code === 0) {
               let result = res.data.result;
               console.log(result)
-              localStorage.setItem('sessionId', result.session)
+              localStorage.setItem('sessionId', result.customerSessionId)
               localStorage.setItem('user', JSON.stringify(result.user))
               console.log(localStorage.getItem('user'))
               if (this.loginForm.remember) {

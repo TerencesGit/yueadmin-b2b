@@ -45,7 +45,7 @@ const routes = [
   },
   {
     path: '/tools',
-    name: '账户主页',
+    name: '工具演示',
     component: Layout,
     children: [
       {

@@ -29,7 +29,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/baseUrl': {
-        target: 'http://www.yueshijue.com',
+        target: 'http://www.yueshijue.com/ysj',
         changeOrigin: true,
         pathRewrite: {
           '^/baseUrl': ''
