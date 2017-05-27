@@ -62,7 +62,20 @@ export default {
     return {
       criteria: '',
       currentPage: 1,
-      loading: false
+      loading: false,
+      filteredWare: [
+        {
+          ware_code: '001',
+          ware_name: '',
+          provider_id: '',
+          create_time: '',
+          ware_kind: '',
+          suggested_price: '',
+          key_words: '',
+          status: '',
+          verify_status: ''
+        }
+      ]
     }
   },
   methods: {
@@ -110,12 +123,12 @@ export default {
     // this.getWareList()
   },
   computed: {
-    ...mapGetters([
-      'wareList'
-    ]),
-    filteredWare () {
-      return this.wareList.filter(ware => ware.ware_name.indexOf(this.criteria) !== -1)
-    }
+    // ...mapGetters([
+    //   'wareList'
+    // ]),
+    // filteredWare () {
+    //   return this.wareList.filter(ware => ware.ware_name.indexOf(this.criteria) !== -1)
+    // }
   }
 }
 </script>

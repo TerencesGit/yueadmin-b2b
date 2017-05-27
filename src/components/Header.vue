@@ -11,7 +11,7 @@
 				<el-dropdown :hide-on-click="false" trigger="click" class="pull-right">
 				  <span class="el-dropdown-link">
 				  	<img src="../assets/img/logo.png" class="avatar"/>
-				    <span class="username ellipsis">{{ user.mobile }}</span>
+				    <span class="username ellipsis">{{ user.name }}</span>
 				    <i class="el-icon-caret-bottom el-icon--right"></i>
 				  </span>
 				  <el-dropdown-menu slot="dropdown">
@@ -33,7 +33,7 @@ import utils from '@/assets/js/utils'
 export default {
 	data () {
 		return {
-			home: '/account/home',
+			home: '/admin/home',
 		}
 	},
   methods: {
@@ -90,7 +90,7 @@ export default {
 		right: 0;
 		z-index: 999;
 		background: #fff;
-		box-shadow: 0 0 1px rgba(0,0,0,0.25);
+		box-shadow: 0 0 1px rgba(0,0,0,.25);
 		&.spread {
 			left: 0;
 		}

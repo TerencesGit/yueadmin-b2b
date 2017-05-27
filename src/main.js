@@ -16,8 +16,7 @@ import 'element-ui/lib/theme-default/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 import 'nprogress/nprogress.css'
 import '@/assets/css/base.scss'
-NProgress.configure({ ease: 'ease', speed: 500, minimum: 0.5})
-NProgress.configure({ showSpinner: false })
+NProgress.configure({ ease: 'ease', speed: 500, minimum: 0.5, showSpinner: false})
 Vue.use(Router)
 Vue.use(Vuex)
 Vue.use(ElementUI)

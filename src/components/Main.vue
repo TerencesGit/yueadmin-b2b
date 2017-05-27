@@ -2,6 +2,11 @@
 	<div class="main transition" :class="{'spread': sidebarStatus}">
 		<div class="wrapper">
 			<div class="container-fluid">
+				<el-breadcrumb separator="/" class="breadcrumb-inner">
+					<el-breadcrumb-item v-for="item in $route.matched" :key="item.path">
+						{{ item.name }}
+					</el-breadcrumb-item>
+				</el-breadcrumb>
 				<transition name="fade" mode="out-in">
 					<router-view></router-view>
 				</transition>

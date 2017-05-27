@@ -4,11 +4,13 @@ import NotFound from '@/pages/NotFound'
 import NoPermission from '@/pages/NoPermission'
 
 import Layout from '@/components/Layout'
-
 import Home from '@/pages/admin/home'
 import businessManage from '@/pages/admin/businessManage'
 import wareManage from '@/pages/provider/wareManage'
 import addWare from '@/pages/provider/addWare'
+
+const brandManage = resolve => require(['@/pages/provider/brandManage'], resolve)
+const brandDetail = resolve => require(['@/pages/provider/brandDetail'], resolve)
 
 const html5Editor = resolve => require(['@/pages/tools/VueHtml5Editor'], resolve)
 const UEditor = resolve => require(['@/pages/tools/UEditor'], resolve)
@@ -48,9 +50,14 @@ const routes = [
   },
   {
     path: '/provider',
-    name: '供应商主页',
+    name: '供应商',
     component: Layout,
     children: [
+      {
+        path: 'brandManage',
+        name: '品牌管理',
+        component: brandManage
+      },
       {
         path: 'wareManage',
         name: '商品管理',

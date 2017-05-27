@@ -3,7 +3,7 @@
 		<div>
 			<el-button @click="getUEditorContent">保存</el-button>
 		</div>
-		<script id="editor" type="text/plain" style="width:1024px;height:500px;">
+		<script id="editor" type="text/plain" style="position: relative; z-index: 1; height: 500px;">
 	     这里写你的初始化内容
 	  </script>
 	</section>
@@ -32,3 +32,8 @@ export default {
 	}
 }
 </script>
+<style>
+	 .edui-default {
+	 	width: 100%;
+	 }
+</style>

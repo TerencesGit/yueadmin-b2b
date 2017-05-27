@@ -201,7 +201,7 @@ export default {
     }
   },
   mounted () {
-    this.loadBrandList()
+    // this.loadBrandList()
   }
 }
 </script>
