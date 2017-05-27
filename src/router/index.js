@@ -7,14 +7,17 @@ import Layout from '@/components/Layout'
 
 import Home from '@/pages/admin/home'
 import businessManage from '@/pages/admin/businessManage'
-import vueHtml5Editor from '@/pages/tools/vueHtml5Editor'
-import UEditor from '@/pages/tools/UEditor'
+import wareManage from '@/pages/provider/wareManage'
+import addWare from '@/pages/provider/addWare'
+
+const html5Editor = resolve => require(['@/pages/tools/VueHtml5Editor'], resolve)
+const UEditor = resolve => require(['@/pages/tools/UEditor'], resolve)
 
 const routes = [
   {
     path: '/',
     name: 'Hello',
-    component: Layout
+    component: Login
   },
   {
     path: '/login',
@@ -44,6 +47,23 @@ const routes = [
     ]
   },
   {
+    path: '/provider',
+    name: '供应商主页',
+    component: Layout,
+    children: [
+      {
+        path: 'wareManage',
+        name: '商品管理',
+        component: wareManage
+      },
+      {
+        path: 'addWare',
+        name: '商品添加',
+        component: addWare
+      },
+    ]
+  },
+  {
     path: '/tools',
     name: '工具演示',
     component: Layout,
@@ -51,7 +71,7 @@ const routes = [
       {
         path: 'vueHtml5Editor',
         name: 'vueHtml5Editor',
-        component: vueHtml5Editor
+        component: html5Editor
       },
       {
         path: 'UEditor',

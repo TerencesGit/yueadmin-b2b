@@ -14,29 +14,23 @@
 						<span>北京鸿基国际旅行社有限责任公司第一分公司</span>
 					</div>
 					<div class="new-info">
-						<a href="#">帮助</a>
-						<a href="#">咨询及通告</a>
+						<a href="#">咨询及通知</a>
 						<a href="#">公告</a>
 						<a href="#">修改密码</a>
-						<a href="javascript:;" @click="logout">退出</a>
+						<a href="javascript:;" @click="logout">退出</a>|
+						<a href="#">帮助</a>
 					</div>
 				</div>
 			</div>
 		</div>
 		<nav>
 			<el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-			  <el-menu-item index="1">处理中心</el-menu-item>
-			  <el-submenu index="2">
-			    <template slot="title">我的工作台</template>
-			    <el-menu-item index="2-1">选项1</el-menu-item>
-			    <el-menu-item index="2-2">选项2</el-menu-item>
-			    <el-menu-item index="2-3">选项3</el-menu-item>
-			  </el-submenu>
-			  <el-menu-item index="3"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
-			  <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
-			  <el-menu-item index="5"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
-			  <el-menu-item index="6"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
-			  <el-menu-item index="7"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
+				<el-submenu :index="index+''" v-for="(menu, index) in routers" :key="menu.id">
+          <template slot="title">{{ menu.name }}</template>
+            <el-menu-item :index="submenu.index" v-for="submenu in menu.children" :key="submenu.id">
+            	<router-link :to="submenu.link">{{ submenu.name }}</router-link>
+            </el-menu-item>
+        </el-submenu>
 			</el-menu>
 		</nav>
 	</header>
@@ -47,9 +41,108 @@ import utils from '@/assets/js/utils'
 export default {
   data() {
     return {
+    	routers: [
+        {
+        	name: '品牌管理', 
+        	link: '/provider/brandManage', 
+        	index: '/provider/brandManage',
+        	children: [
+        		{
+		        	name: '品牌添加', 
+		          link: '/provider/brandAdd', 
+		          index: '/provider/brandAdd'
+		        },
+		        {
+		        	name: '品牌修改', 
+		          link: '/provider/brandAdd', 
+		          index: '/provider/brandAdd'
+		        },
+        	]
+        },
+        {
+        	name: '商品管理', 
+          link: '/provider/wareManage', 
+          index: '/provider/wareManage',
+          children: [
+        		{
+		        	name: '商品添加', 
+		          link: '/provider/wareAdd', 
+		          index: '/provider/wareAdd'
+		        },
+		        {
+		        	name: '商品修改', 
+		          link: '/provider/wareAdd', 
+		          index: '/provider/wareAdd'
+		        },
+        	]
+        },
+        {
+        	name: '订单管理', 
+          link: '/provider/orderManage', 
+          index: '/provider/orderManage',
+          children: [
+          	{
+		        	name: '订单查看', 
+		          link: '/provider/wareAdd', 
+		          index: '/provider/wareAdd'
+		        },
+		        {
+		        	name: '订单删除', 
+		          link: '/provider/wareAdd', 
+		          index: '/provider/wareAdd'
+		        },
+          ]
+        },
+        {
+        	name: '销售报表', 
+        	link: '/provider/salesReport', 
+        	index: '/provider/salesReport',
+        	children: [
+          	{
+		        	name: '报表查看', 
+		          link: '/provider/wareAdd', 
+		          index: '/provider/wareAdd'
+		        },
+		        {
+		        	name: '报表删除', 
+		          link: '/provider/wareAdd', 
+		          index: '/provider/wareAdd'
+		        },
+          ]
+        },
+        {
+        	name: '发票管理', 
+        	link: '/provider/invoiceManage', 
+        	index: '/provider/invoiceManage',
+        	children: [
+          	{
+		        	name: '发票查看', 
+		          link: '/provider/wareAdd', 
+		          index: '/provider/wareAdd'
+		        },
+		        {
+		        	name: '发票删除', 
+		          link: '/provider/wareAdd', 
+		          index: '/provider/wareAdd'
+		        },
+          ]
+        },
+        {
+        	name: '顾客管理', 
+        	link: '/provider/customerManage', 
+        	index: '/provider/customerManage',
+        	children: [
+          	{
+		        	name: '顾客查看', 
+		          link: '/provider/wareAdd', 
+		          index: '/provider/wareAdd'
+		        },
+          ]
+        }
+      ],
       activeIndex: '1',
       activeIndex2: '1'
-    };
+    }
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -62,9 +155,8 @@ export default {
         type: 'warning'
       }).then(() => {
       	requestExit().then(res => {
+      		this.$router.push('/login')
       		if(res.data.status === 1) {
-      			utils.delCookie('isLogin')
-      			this.$router.push('/login')
       			this.$message({
 		          type: 'success',
 		          message: res.data.message
@@ -78,9 +170,9 @@ export default {
       	})
       }).catch(() => {
         this.$message({
-          type: 'info',
+          duration: 1000,
           message: '已取消操作'
-        });          
+        })
       })
     }
   }
@@ -91,8 +183,12 @@ export default {
 		height: 50px;
 		line-height: 50px;
 		color: #fff;
-		font-size: 12px;
-		background: #394054
+		font-size: 14px;
+		background: #1380E2
+	}
+	.container-fluid {
+		padding-left: 80px;
+		padding-right: 80px
 	}
 	.top-left {
 		float: left;
@@ -109,11 +205,15 @@ export default {
 		.new-info a {
 			color: #fff;
 			padding: 0 10px;
-			border-left: 1px solid #fff;
-			&:first-child {
-				border: 0
-			}
 		}
+	}
+	.brand {
+		font-weight: bold
+	}
+	nav {
+		padding-left: 65px;
+		padding-right: 65px;
+		background: #fff
 	}
 	.el-menu {
 		border-radius: 0;

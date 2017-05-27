@@ -110,15 +110,13 @@ export default {
               let result = res.data.result;
               console.log(result)
               localStorage.setItem('sessionId', result.customerSessionId)
-              localStorage.setItem('user', JSON.stringify(result.user))
-              console.log(localStorage.getItem('user'))
               if (this.loginForm.remember) {
                 let name = btoa(escape(btoa(this.loginForm.username).split('').reverse().join()))
                 let pass = btoa(escape(btoa(this.loginForm.password).split('').reverse().join()))
                 utils.setCookie('uname', name, '7d')
                 utils.setCookie('ukey', pass, '7d')
               } else {
-                utils.delCookie('uname')
+                utils.delCookie('uname ')
                 utils.delCookie('ukey')
               }
               this.$message({

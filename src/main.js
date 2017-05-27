@@ -9,7 +9,6 @@ import App from './App'
 import routes from './router'
 import store from './vuex/store'
 import ElementUI from 'element-ui'
-import { Message, Loading } from 'element-ui'
 import NProgress from 'nprogress'
 import moment from 'moment'
 import utils from '@/assets/js/utils'
@@ -48,11 +47,8 @@ const router = new Router({
   routes  
 })
 router.beforeEach((to, from, next) => {
-	if(to.path === '/logout') {
-		utils.delCookie('isLogin')
-		return next('/login')
-	}
 	if(to.path === '/register' || to.path === '/login') {
+    localStorage.clear()
 		return next()
 	}
 	let sessionId = localStorage.getItem('sessionId')
@@ -67,23 +63,18 @@ router.afterEach((to, from, next) => {
   console.log(to.path)
   NProgress.done()
 })
-/* response interceptors */
-// 添加请求拦截器
-// var globalLoading;
+/* request interceptors */
 axios.interceptors.request.use(function (config) {
-  // globalLoading = Loading.service({fullscreen: true})
   return config
 }, function (error) {
-  // 请求错误
   console.log('request error')
   return Promise.reject(error)
 })
+/* response interceptors */
 axios.interceptors.response.use(function (res) {
-	// globalLoading.close()
   if (res.data.code ===  999) {
-  	// utils.delCookie('isLogin')
   	localStorage.clear()
-    Message.info({
+    ElementUI.Message({
    	  message: '长时间未操作,请重新登录'
     })
     return router.push('/login')
@@ -93,12 +84,12 @@ axios.interceptors.response.use(function (res) {
   return res;
 }, function (error) {
   // response error
-  Message.info({
+  ElementUI.Message({
  	  message: '服务器响应错误，请重试'
   })
   return Promise.reject(error)
 })
-/* eslint-disable no-new */
+
 new Vue({
 	store,
   router,

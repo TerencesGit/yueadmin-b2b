@@ -2,9 +2,9 @@
 	<aside class="sidebar transition" :class="{'hide': sidebarStatus}">
     <div class="sidebar-wrap">
       <div class="sidebar-header">
-        <a href="/" class="brand ellipsis" :title="partner.name">
+        <a href="/" class="brand ellipsis" :title="title">
           <i class="fa fa-flag fa-lg"></i>
-          <strong>悦视觉</strong>
+          <strong>{{title}}</strong>
         </a>
       </div>
       <div class="divide-line"></div>
@@ -14,6 +14,10 @@
             <el-menu-item :index="submenu.index" v-for="submenu in menu.children" :key="submenu.id">
             	<router-link :to="submenu.link">{{ submenu.name }}</router-link>
             </el-menu-item>
+            <!-- <el-submenu :index="submenu.index" v-for="submenu in menu.children" :key="submenu.id">
+              <template slot="title">{{ submenu.name }}</template>
+              <el-menu-item :index="submenu.index" v-for="item in submenu.children" :key="submenu.id">{{item.name}}</el-menu-item>
+            </el-submenu> -->
         </el-submenu>
       </el-menu>
     </div>
@@ -29,7 +33,14 @@ export default {
           name: '平台管理员',
           icon: 'fa-desktop',
           children: [
-            {name: '平台首页', link: '/admin/home', index: '/admin/home'},
+            {
+              name: '平台首页', 
+              link: '/admin/home', 
+              index: '/admin/home',
+              children: [
+                {name: '商家管理', link: '/admin/businessManage', index: '/admin/businessManage'},
+              ]
+            },
             {name: '商家管理', link: '/admin/businessManage', index: '/admin/businessManage'},
             {name: '商品上架审核', link: '/admin/wareAudit', index: '/admin/wareAudit'}
           ]
@@ -61,7 +72,8 @@ export default {
         //     {name: 'UEditor', link: '/tools/UEditor', index: '/tools/UEditor'}
         //   ]
         // }
-      ]
+      ],
+      title: '悦视觉供应商系统'
     }
   },
   computed: {
@@ -71,9 +83,6 @@ export default {
     // ...mapGetters({
     //   routers: 'userPermission'
     // }),
-    ...mapGetters({
-      partner: 'partnerInfo'
-    }),
   },
 }
 </script>

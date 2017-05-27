@@ -20,16 +20,13 @@ export default {
     MainComp
   },
   created () {
-    let sessionId = localStorage.getItem('sessionId')
-    console.log(sessionId)
     let data = {
-      customerSessionId: sessionId
+      customerSessionId: localStorage.getItem('sessionId')
     }
     getCustomerUserInfo(data).then(res => {
       console.log(res)
       if (res.data.code === 0) {
-        let user = JSON.stringify(res.data.result)
-        localStorage.setItem('user', user)
+        this.$store.dispatch('saveUser', res.data.result)
       } else {
         this.$message({
           message: res.data.message

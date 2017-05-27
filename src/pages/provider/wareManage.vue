@@ -55,7 +55,7 @@
   </section>
 </template>
 <script>
-import { getWareList } from '../../api'
+// import { getWareList } from '../../api'
 import { mapGetters } from 'vuex'
 export default {
   data () {
@@ -66,19 +66,19 @@ export default {
     }
   },
   methods: {
-    getWareList () {
-      this.$nprogress.start()
-      this.loading = true
-      getWareList().then(res => {
-        this.$store.dispatch('setWareList', res.data.wareList)
-      }).then(() => {
-        this.$nprogress.done()
-        this.loading = false
-      }).catch((error) => {
-        this.$nprogress.done()
-        this.loading = false
-      })
-    },
+    // getWareList () {
+    //   this.$nprogress.start()
+    //   this.loading = true
+    //   getWareList().then(res => {
+    //     this.$store.dispatch('setWareList', res.data.wareList)
+    //   }).then(() => {
+    //     this.$nprogress.done()
+    //     this.loading = false
+    //   }).catch((error) => {
+    //     this.$nprogress.done()
+    //     this.loading = false
+    //   })
+    // },
     handleIconClick () {
       console.log(this.criteria)
     },
@@ -107,7 +107,7 @@ export default {
     }   
   },
   mounted () {
-    this.getWareList()
+    // this.getWareList()
   },
   computed: {
     ...mapGetters([

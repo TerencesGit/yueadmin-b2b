@@ -38,7 +38,11 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
+  h1 {
+    margin-top: 0;
+    padding: 10px;
+  }
   .el-row {
     margin-bottom: 20px;
     &:last-child {
