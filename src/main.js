@@ -11,6 +11,8 @@ import store from './vuex/store'
 import ElementUI from 'element-ui'
 import NProgress from 'nprogress'
 import moment from 'moment'
+import Mock from './mock'
+Mock.bootstrap()
 import utils from '@/assets/js/utils'
 import 'element-ui/lib/theme-default/index.css'
 import 'font-awesome/css/font-awesome.min.css'

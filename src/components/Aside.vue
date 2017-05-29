@@ -42,6 +42,7 @@ export default {
               ]
             },
             {name: '商家管理', link: '/admin/businessManage', index: '/admin/businessManage'},
+            {name: '用户管理', link: '/admin/userManage', index: '/admin/userManage'},
             {name: '商品上架审核', link: '/admin/wareAudit', index: '/admin/wareAudit'}
           ]
         },

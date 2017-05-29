@@ -60,6 +60,10 @@ export default {
     margin-left: auto;
     padding: 20px;
   }
+  .el-breadcrumb {
+		padding: 0 0 15px;
+		font-size: 14px;
+  }
   .wrap-footer {
 		height: 40px;
 	}

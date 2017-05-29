@@ -9,6 +9,8 @@ import businessManage from '@/pages/admin/businessManage'
 import wareManage from '@/pages/provider/wareManage'
 import addWare from '@/pages/provider/addWare'
 
+const userManage = resolve => require(['@/pages/admin/userManage'], resolve)
+
 const brandManage = resolve => require(['@/pages/provider/brandManage'], resolve)
 const brandDetail = resolve => require(['@/pages/provider/brandDetail'], resolve)
 
@@ -45,6 +47,11 @@ const routes = [
         path: 'businessManage',
         name: '商户管理',
         component: businessManage
+      },
+      {
+        path: 'userManage',
+        name: '用户管理',
+        component: userManage
       }
     ]
   },
