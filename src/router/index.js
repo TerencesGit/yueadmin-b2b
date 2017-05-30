@@ -9,7 +9,9 @@ import Home from '@/pages/admin/home'
 const userManage = resolve => require(['@/pages/admin/userManage'], resolve)
 
 const brandManage = resolve => require(['@/pages/provider/brandManage'], resolve)
-const brandDetail = resolve => require(['@/pages/provider/brandDetail'], resolve)
+
+const addWare = resolve => require(['@/pages/provider/addWare'], resolve)
+const wareManage = resolve => require(['@/pages/provider/wareManage'], resolve)
 
 const html5Editor = resolve => require(['@/pages/tools/VueHtml5Editor'], resolve)
 const UEditor = resolve => require(['@/pages/tools/UEditor'], resolve)
@@ -58,14 +60,14 @@ const routes = [
         component: brandManage
       },
       {
-        path: 'wareManage',
-        name: '商品管理',
-        component: wareManage
+        path: 'add',
+        name: '新建商品',
+        component: addWare
       },
       {
-        path: 'addWare',
-        name: '商品添加',
-        component: addWare
+        path: 'edit',
+        name: '商品编辑',
+        component: wareManage
       },
     ]
   },

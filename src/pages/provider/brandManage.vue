@@ -3,7 +3,7 @@
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true">
         <el-form-item>
-          <el-input placeholder="名称"></el-input>
+          <el-input placeholder="品牌名称" icon="search"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary">查询</el-button>
@@ -20,13 +20,13 @@
       </el-table-column>
       <el-table-column prop="brandName" label="名称" width="120" sortable>
       </el-table-column>
-      <el-table-column prop="content" label="描述" width="250" sortable>
+      <el-table-column prop="content" label="描述" width="250">
       </el-table-column>
-      <el-table-column prop="brandPage" label="专题页" width="220" sortable>
+      <el-table-column prop="brandPage" label="专题页" width="220">
       </el-table-column>
       <el-table-column prop="updateTime" label="更新时间" width="120" sortable>
       </el-table-column>
-      <el-table-column prop="status" label="状态" width="120" :formatter="formatStatus" sortable>
+      <el-table-column prop="status" label="状态" width="120" :formatter="formatStatus">
          <template scope="scope">
               <el-switch
                 v-model="scope.row.status"
