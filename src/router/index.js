@@ -5,9 +5,6 @@ import NoPermission from '@/pages/NoPermission'
 
 import Layout from '@/components/Layout'
 import Home from '@/pages/admin/home'
-import businessManage from '@/pages/admin/businessManage'
-import wareManage from '@/pages/provider/wareManage'
-import addWare from '@/pages/provider/addWare'
 
 const userManage = resolve => require(['@/pages/admin/userManage'], resolve)
 
@@ -44,11 +41,6 @@ const routes = [
     		component: Home
     	},
       {
-        path: 'businessManage',
-        name: '商户管理',
-        component: businessManage
-      },
-      {
         path: 'userManage',
         name: '用户管理',
         component: userManage
@@ -56,8 +48,8 @@ const routes = [
     ]
   },
   {
-    path: '/provider',
-    name: '供应商',
+    path: '/provider/ware',
+    name: '供应商-商品管理',
     component: Layout,
     children: [
       {

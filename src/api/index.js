@@ -5,15 +5,15 @@ axios.defaults.headers.common['Authorization'] = localStorage.getItem('sessionId
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.transformRequest = [(data) => { return Qs.stringify(data) }]
 axios.defaults.timeout = 5000
-const instant = axios.create({
-	baseURL: '/baseUrl'
-})
+const instant = axios.create({ baseURL: '/baseUrl' })
 // 登录
 export const requestLogin = data => { return instant.post('/user/loginByMobileAndPassword.json', data) }
 // 退出
 export const requestExit = data => { return instant.post('/user/logout.json', data) }
-// 获取个人信息
+// 获取用户信息
 export const getCustomerUserInfo = data => { return instant.post('/user/getCustomerUserInfo.json', data) }
+// 获取用户权限
+export const getPermissionList = () => { return axios.get('/user/permissionList.json') }
 // 用户列表
 export const getUserListPage = params => { return axios.get('/user/listpage', {params: params}) }
 // 用户删除
@@ -22,6 +22,8 @@ export const removeUser = params => { return axios.get('/user/remove', {params: 
 export const editUser = params => { return axios.get('/user/edit', {params: params}) }
 // 用户新增
 export const addUser = data => { return axios.post('/user/add', data) }
+// 品牌列表
+export const getBrandList = () => { return axios.get('/provider/ware/getBrandList') }
 
 export const getRandomImage = () => { return axios.get('/user/getRandomImage.json') }
 

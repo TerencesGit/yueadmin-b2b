@@ -17,7 +17,7 @@ const mutations = {
 	SAVE_USER (state, user) {
 		state.user = user
 	},
-	SET_PERMISSION (state, permission) {
+	SAVE_PERMISSION (state, permission) {
 		state.userPermission = permission
 	}
 }

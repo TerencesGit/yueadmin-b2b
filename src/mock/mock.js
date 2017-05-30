@@ -1,7 +1,8 @@
 import axios from 'axios'
 import Qs from 'qs'
 import MockAdapter from 'axios-mock-adapter'
-import { LoginUsers, Users } from './data/user'
+import { Users, UserPerssionList } from './data/user'
+import { Brands } from './data/ware'
 let _Users = Users
 
 export default {
@@ -14,26 +15,14 @@ export default {
 		mock.onGet('/error').reply(500, {
 			msg: 'error'
 		})
-		// 登录
-		mock.onPost('/login').reply(config => {
-			let {username, password} = JSON.parse(config.data)
+		// 用户权限
+		mock.onGet('/user/permissionList.json').reply(config => {
 			return new Promise((resolve, reject) => {
-				let user = null;
 				setTimeout(() => {
-					let hasUser = LoginUsers.some(u => {
-						if (u.username === username && u.passowrd === password) {
-							user = JSON.parse(JSON.stringify(u))
-							user.password = undefined
-							return true
-						}
-					})
-
-					if (hasUser) {
-						resolve([200, { code: 200, msg: '请求成功', user}])
-					} else {
-						resolve([200, { code: 500, msg: '账号密码错误'}])
-					}
-				}, 1000)
+					resolve([200, {
+						permissionList: UserPerssionList
+					}])
+				})
 			})
 		})
 		// 用户列表
@@ -120,6 +109,16 @@ export default {
 						msg: '新增成功'
 					}])
 				}, 500)
+			})
+		})
+		// 
+		mock.onGet('/provider/ware/getBrandList').reply(config => {
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, {
+						brandList: Brands
+					}])
+				})
 			})
 		})
 	}

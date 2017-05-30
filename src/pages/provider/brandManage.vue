@@ -1,28 +1,61 @@
 <template>
   <section>
-    <el-row>
-      <el-col>
-        <el-button type="primary" class="pull-right" @click="beforeBrandAdd">添加品牌</el-button>
-      </el-col>
-    </el-row>
-    <el-row :gutter="20" v-loading="loading">
-      <el-col :xs="12" :sm="8" :md="8" :lg="6" v-for="(item, index) in brandList" :key="item.id">
-        <transition name="el-fade-in-linear">
-          <el-card :body-style="{ padding: '5px' }">
-            <img :src="item.logoUrl" class="image" @click="handleBrandDetail(item._id)">
-            <div style="padding: 14px;">
-              <span>{{ item.brandName }}</span>
-              <div class="bottom clearfix">
-                <time class="time">{{ item.updateTime | DateFormat }}</time>
-                <div style="float: right;">
-                  <el-button :plain="true" type="warning" size="small" @click="handleBrandEdit(item)">编辑</el-button>
-                  <el-button :plain="true" type="danger" size="small" @click="handleBrandDel(item.brandId)">删除</el-button>
-                </div>
-              </div>
-            </div>
-          </el-card>
-        </transition>
-      </el-col>
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+      <el-form :inline="true">
+        <el-form-item>
+          <el-input placeholder="名称"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary">新增</el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+    <el-table :data="brandList" highlight-current-row v-loading="loading" style="width: 100%;">
+      <el-table-column type="selection" width="55">
+      </el-table-column>
+      <el-table-column type="index" width="60">
+      </el-table-column>
+      <el-table-column prop="brandName" label="名称" width="120" sortable>
+      </el-table-column>
+      <el-table-column prop="content" label="描述" width="250" sortable>
+      </el-table-column>
+      <el-table-column prop="brandPage" label="专题页" width="220" sortable>
+      </el-table-column>
+      <el-table-column prop="updateTime" label="更新时间" width="120" sortable>
+      </el-table-column>
+      <el-table-column prop="status" label="状态" width="120" :formatter="formatStatus" sortable>
+         <template scope="scope">
+              <el-switch
+                v-model="scope.row.status"
+                on-color="#13ce66"
+                off-color="#ff4949"
+                on-text="启用"
+                off-text="禁用"
+                >
+              </el-switch>
+          </template>
+      </el-table-column>
+      <el-table-column label="操作" width="150" fixed="right">
+        <template scope="scope">
+          <el-button size="small">编辑</el-button>
+          <el-button type="danger" size="small">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-row class="m-t">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="20"
+        class="pull-right">
+      </el-pagination>
     </el-row>
     <el-dialog :title="formTitle" v-model="dialogFormVisible">
       <el-form :model="brandForm" :rules="brandRules" ref="brandForm" label-width="120px" style="padding: 30px" v-loading="loading">
@@ -62,10 +95,12 @@
   </section>
 </template>
 <script>
-import { brandList, brandSave, brandDel } from '../../api'
+import { getBrandList } from '../../api'
 export default {
   data() {
     return {
+      currentPage: 1,
+      pageSize: 20,
       dialogFormVisible: false,
       loading: false,
       uploading: false,
@@ -95,15 +130,27 @@ export default {
     }
   },
   methods: {
-    loadBrandList () {
+    formatStatus (row, column) {
+      return row.stauts === 1 ? ture : false
+    },
+    getList () {
       this.loading = true
-      brandList().then(res => {
-        this.brandList = res.data.brands
+      getBrandList().then(res => {
+        console.log(res)
+        this.brandList = res.data.brandList
       }).then(() => {
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
+    },
+    handleSizeChange (val) {
+      this.pageSize = val
+      this.getList()
+    },
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.getList()
     },
     beforeBrandAdd () {
       this.formTitle = '添加品牌'
@@ -147,7 +194,7 @@ export default {
                 type: 'success',
                 message: res.data.message
               })
-              this.loadBrandList()
+              this.getList()
             }else {
               this.$message({
                 type: 'error',
@@ -180,7 +227,7 @@ export default {
       }).then(() => {
         brandDel({id: brandId}).then(res => {
           if(res.data.status === 1) {
-            this.loadBrandList()
+            this.getList()
             this.$message({
               type: 'success',
               message: res.data.message
@@ -201,7 +248,7 @@ export default {
     }
   },
   mounted () {
-    // this.loadBrandList()
+    this.getList()
   }
 }
 </script>

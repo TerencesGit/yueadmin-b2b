@@ -28,52 +28,52 @@ import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
-      routers: [
-        {
-          name: '平台管理员',
-          icon: 'fa-desktop',
-          children: [
-            {
-              name: '平台首页', 
-              link: '/admin/home', 
-              index: '/admin/home',
-              children: [
-                {name: '商家管理', link: '/admin/businessManage', index: '/admin/businessManage'},
-              ]
-            },
-            {name: '商家管理', link: '/admin/businessManage', index: '/admin/businessManage'},
-            {name: '用户管理', link: '/admin/userManage', index: '/admin/userManage'},
-            {name: '商品上架审核', link: '/admin/wareAudit', index: '/admin/wareAudit'}
-          ]
-        },
-        {
-          name: '供应商',
-          icon: 'fa-paw',
-          children: [
-            {name: '品牌管理', link: '/provider/brandManage', index: '/provider/brandManage'},
-            {name: '商品管理', link: '/provider/wareManage', index: '/provider/wareManage'},
-            {name: '订单管理', link: '/provider/orderManage', index: '/provider/orderManage'},
-            {name: '销售报表', link: '/provider/salesReport', index: '/provider/salesReport'},
-            {name: '发票管理', link: '/provider/invoiceManage', index: '/provider/invoiceManage'},
-            {name: '顾客管理', link: '/provider/customerManage', index: '/provider/customerManage'},
-          ]
-        },
-        {
-          name: '分销商',
-          icon: 'fa-sitemap',
-          children: [
-            {name: '订单管理', link: '/distributor/orderManage', index: '/distributor/orderManage'}
-          ]
-        },
-        // {
-        //   name: '工具演示',
-        //   icon: 'fa-wrench',
-        //   children: [
-        //     {name: 'Vue-Html5-Editor', link: '/tools/vueHtml5Editor', index: '/tools/vueHtml5Editor'},
-        //     {name: 'UEditor', link: '/tools/UEditor', index: '/tools/UEditor'}
-        //   ]
-        // }
-      ],
+      // routers: [
+      //   {
+      //     name: '平台管理员',
+      //     icon: 'fa-desktop',
+      //     children: [
+      //       {
+      //         name: '平台首页', 
+      //         link: '/admin/home', 
+      //         index: '/admin/home',
+      //         children: [
+      //           {name: '商家管理', link: '/admin/businessManage', index: '/admin/businessManage'},
+      //         ]
+      //       },
+      //       {name: '商家管理', link: '/admin/businessManage', index: '/admin/businessManage'},
+      //       {name: '用户管理', link: '/admin/userManage', index: '/admin/userManage'},
+      //       {name: '商品上架审核', link: '/admin/wareAudit', index: '/admin/wareAudit'}
+      //     ]
+      //   },
+      //   {
+      //     name: '供应商',
+      //     icon: 'fa-paw',
+      //     children: [
+      //       {name: '品牌管理', link: '/provider/brandManage', index: '/provider/brandManage'},
+      //       {name: '商品管理', link: '/provider/wareManage', index: '/provider/wareManage'},
+      //       {name: '订单管理', link: '/provider/orderManage', index: '/provider/orderManage'},
+      //       {name: '销售报表', link: '/provider/salesReport', index: '/provider/salesReport'},
+      //       {name: '发票管理', link: '/provider/invoiceManage', index: '/provider/invoiceManage'},
+      //       {name: '顾客管理', link: '/provider/customerManage', index: '/provider/customerManage'},
+      //     ]
+      //   },
+      //   {
+      //     name: '分销商',
+      //     icon: 'fa-sitemap',
+      //     children: [
+      //       {name: '订单管理', link: '/distributor/orderManage', index: '/distributor/orderManage'}
+      //     ]
+      //   },
+      //   // {
+      //   //   name: '工具演示',
+      //   //   icon: 'fa-wrench',
+      //   //   children: [
+      //   //     {name: 'Vue-Html5-Editor', link: '/tools/vueHtml5Editor', index: '/tools/vueHtml5Editor'},
+      //   //     {name: 'UEditor', link: '/tools/UEditor', index: '/tools/UEditor'}
+      //   //   ]
+      //   // }
+      // ],
       title: '悦视觉供应商系统'
     }
   },
@@ -81,9 +81,9 @@ export default {
     ...mapGetters([
       'sidebarStatus'
     ]),
-    // ...mapGetters({
-    //   routers: 'userPermission'
-    // }),
+    ...mapGetters({
+      routers: 'userPermission'
+    }),
   },
 }
 </script>

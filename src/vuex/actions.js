@@ -4,6 +4,6 @@ export const toggleSidebar = ({ commit }) => {
 export const saveUser = ({ commit }, user) => {
 	commit('SAVE_USER', user)
 }
-export const setUserPermission = ({ commit }, permission) => {
-	commit('SET_PERMISSION', permission)
+export const saveUserPermission = ({ commit }, permission) => {
+	commit('SAVE_PERMISSION', permission)
 }
