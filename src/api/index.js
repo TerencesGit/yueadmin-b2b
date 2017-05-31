@@ -6,6 +6,12 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 axios.defaults.transformRequest = [(data) => { return Qs.stringify(data) }]
 axios.defaults.timeout = 5000
 const instant = axios.create({ baseURL: '/baseUrl' })
+const upload = axios.create({ 
+	headers: {'Content-Type': 'multipart/form-data'},
+  transformRequest: [function (data) {
+    return data
+  }]
+})
 // 登录
 export const requestLogin = data => { return instant.post('/user/loginByMobileAndPassword.json', data) }
 // 退出
@@ -24,6 +30,12 @@ export const editUser = params => { return axios.get('/user/edit', {params: para
 export const addUser = data => { return axios.post('/user/add', data) }
 // 品牌列表
 export const getBrandList = () => { return axios.get('/provider/ware/getBrandList') }
+// 品牌编辑
+export const brandEdit = data => { return axios.post('ware/brand/edit', data) }
+// 品牌创建
+export const brandAdd = data => { return axios.post('ware/brand/add', data) }
+// 品牌删除
+export const brandDel = data => { return axios.post('ware/brand/del', data) }
 
 export const getRandomImage = () => { return axios.get('/user/getRandomImage.json') }
 

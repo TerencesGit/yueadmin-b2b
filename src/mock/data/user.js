@@ -61,7 +61,7 @@ const UserPerssionList = [
     	name: '平台-顾客管理',
     	icon: 'fa-desktop',
       children: [
-      	{name: '顾客查询', link: '/admin/customer/manage', index: '/admin/customer/manage'},
+      	{name: '顾客查询', link: '/admin/customer/query', index: '/admin/customer/query'},
       ]
     },
     {
@@ -77,7 +77,6 @@ const UserPerssionList = [
     }
 ]
 const Users = []
-
 for (let i = 0; i < 20; i++) {
 	Users.push(Mock.mock({
 		id: Mock.Random.guid(),

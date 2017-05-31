@@ -1,5 +1,6 @@
 <template>
   <section>
+    <!-- 工具条 -->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true">
         <el-form-item>
@@ -9,11 +10,12 @@
           <el-button type="primary">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">新增</el-button>
+          <el-button type="primary" @click="handleAdd">新增</el-button>
         </el-form-item>
       </el-form>
     </el-col>
-    <el-table :data="brandList" highlight-current-row v-loading="loading" style="width: 100%;">
+    <!-- 品牌列表 -->
+    <el-table :data="brands" highlight-current-row v-loading="loading" style="width: 100%;">
       <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column type="index" width="60">
@@ -26,7 +28,7 @@
       </el-table-column>
       <el-table-column prop="updateTime" label="更新时间" width="120" sortable>
       </el-table-column>
-      <el-table-column prop="status" label="状态" width="120" :formatter="formatStatus">
+      <!-- <el-table-column prop="status" label="状态" width="120">
          <template scope="scope">
               <el-switch
                 v-model="scope.row.status"
@@ -34,14 +36,16 @@
                 off-color="#ff4949"
                 on-text="启用"
                 off-text="禁用"
+                @change="handleChange(scope.$index, scope.row)"
                 >
               </el-switch>
+              <span>{{scope.row.status}}</span>
           </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="操作" width="150" fixed="right">
         <template scope="scope">
-          <el-button size="small">编辑</el-button>
-          <el-button type="danger" size="small">删除</el-button>
+          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button type="danger" size="small" @click="handleDel(scope.row.brandId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -49,7 +53,7 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
+        :current-page="page"
         :page-sizes="[10, 20, 30, 40]"
         :page-size="10"
         layout="total, sizes, prev, pager, next, jumper"
@@ -57,10 +61,11 @@
         class="pull-right">
       </el-pagination>
     </el-row>
-    <el-dialog :title="formTitle" v-model="dialogFormVisible">
-      <el-form :model="brandForm" :rules="brandRules" ref="brandForm" label-width="120px" style="padding: 30px" v-loading="loading">
+    <!-- 新增品牌 -->
+    <el-dialog title="新增品牌" v-model="addFormVisible">
+      <el-form :model="addForm" :rules="brandRules" ref="addForm" label-width="120px" style="padding: 30px" v-loading="addLoading">
         <el-form-item label="品牌名称" prop="brandName">
-          <el-input v-model="brandForm.brandName" placeholder="品牌名称"></el-input>
+          <el-input v-model="addForm.brandName" placeholder="品牌名称"></el-input>
         </el-form-item>
         <el-form-item label="LOGO" prop="logoUrl">
           <el-upload
@@ -70,49 +75,102 @@
             action="/uploadImgUrl"
             :show-file-list="false"
             :on-success="handleSuccess"
+            :on-error="handleUploadError"
             :on-progress="uploadProgress"
             :before-upload="beforeUpload"
             :auto-upload="true">
-            <img v-if="brandForm.logoUrl" :src="brandForm.logoUrl" class="logo">
+            <img v-if="addForm.logoUrl" :src="addForm.logoUrl" class="logo">
             <i v-else class="el-icon-plus uploader-icon" v-loading="uploading"></i>
           </el-upload>
         </el-form-item>
         <el-form-item label="品牌描述" prop="content">
-          <el-input type="textarea" v-model="brandForm.content" placeholder="品牌描述"></el-input>
+          <el-input type="textarea" v-model="addForm.content" placeholder="品牌描述"></el-input>
         </el-form-item>
         <el-form-item label="品牌专题页" prop="brandPage">
-          <el-input v-model="brandForm.brandPage" placeholder="URL地址"></el-input>
+          <el-input v-model="addForm.brandPage" placeholder="URL地址"></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-switch v-model="brandForm.status" on-text="启用" off-text="禁用" on-value="1" off-value="0"></el-switch>
+          <el-switch v-model="addForm.status" on-text="启用" off-text="禁用"></el-switch>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="handleCancel('brandForm')">取 消</el-button>
-        <el-button type="primary" @click="submitForm('brandForm')">确 定</el-button>
+        <el-button @click.native="addFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click.native="addSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 编辑品牌 -->
+    <el-dialog title="编辑品牌" v-model="editFormVisible">
+      <el-form :model="editForm" ref="editForm" :rules="brandRules" label-width="120px" style="padding: 30px" v-loading="editLoading">
+        <el-form-item label="品牌名称" prop="brandName">
+          <el-input v-model="editForm.brandName" placeholder="品牌名称"></el-input>
+        </el-form-item>
+        <el-form-item label="LOGO" prop="logoUrl">
+          <el-upload
+            class="uploader"
+            name="brandLogo"
+            accept="image/jpeg, image/png"
+            action="/uploadImgUrl"
+            :show-file-list="false"
+            :on-success="handleSuccess"
+            :on-error="handleUploadError"
+            :on-progress="uploadProgress"
+            :before-upload="beforeUpload"
+            :auto-upload="true">
+            <img v-if="editForm.logoUrl" :src="editForm.logoUrl" class="logo">
+            <i v-else class="el-icon-plus uploader-icon" v-loading="uploading"></i>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="品牌描述" prop="content">
+          <el-input type="textarea" v-model="editForm.content" placeholder="品牌描述"></el-input>
+        </el-form-item>
+        <el-form-item label="品牌专题页" prop="brandPage">
+          <el-input v-model="editForm.brandPage" placeholder="URL地址"></el-input>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-switch v-model="editForm.status" on-text="启用" off-text="禁用"></el-switch>
+          <span>{{editForm.status}}</span>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click.native="editFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click.native="editSubmit" v-loading="editLoading">确 定</el-button>
       </div>
     </el-dialog>
   </section>
 </template>
 <script>
-import { getBrandList } from '../../api'
+import { getBrandList, brandEdit, brandAdd, brandDel } from '../../api'
 export default {
   data() {
     return {
-      currentPage: 1,
-      pageSize: 20,
-      dialogFormVisible: false,
-      loading: false,
+      brands: [],
+      page: 1,
+      total: 0,
+      listLoading: false,
       uploading: false,
-      brandList: [],
-      formTitle: '',
-      brandForm: {
+      loading: false,
+
+      editFormVisible: false,
+      editLoading: false,
+      editForm: {
         brandId: '',
         brandName: '',
         content: '',
         logoUrl: '',
         brandPage: '',
         status: '1'
+      },
+
+      addFormVisible: false,
+      addLoading: false,
+      addUploading: false,
+      addForm: {
+        brandId: '',
+        brandName: '',
+        content: '',
+        logoUrl: '',
+        brandPage: '',
+        status: true
       },
       brandRules: {
         brandName: [
@@ -133,37 +191,38 @@ export default {
     formatStatus (row, column) {
       return row.stauts === 1 ? ture : false
     },
-    getList () {
+    // 品牌列表
+    getBrands () {
       this.loading = true
-      getBrandList().then(res => {
+      getBrandList().then((res) => {
         console.log(res)
-        this.brandList = res.data.brandList
+        if (res.data.code === '0001') {
+          // let brandList = res.data.brandList
+          // for (let i = 0; i < brandList.length; i++) {
+          //   brandList.status = brandList.status === 1 ? true : false
+          // }
+          this.brands = res.data.brandList
+        } else {
+          this.$message.error('获取失败')
+        }
       }).then(() => {
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
     },
+    handleChange (index, row) {
+      console.log(index, row)
+    },
     handleSizeChange (val) {
       this.pageSize = val
-      this.getList()
+      this.getBrands()
     },
     handleCurrentChange (val) {
-      this.currentPage = val
-      this.getList()
+      this.page = val
+      this.getBrands()
     },
-    beforeBrandAdd () {
-      this.formTitle = '添加品牌'
-      this.brandForm = {
-        brandId: '',
-        brandName: '',
-        content: '',
-        logoUrl: '',
-        brandPage: '',
-        status: '1'
-      }
-      this.dialogFormVisible = true
-    },
+    // 上传校验
     beforeUpload (file) {
       const isJPG = file.type === 'image/jpeg' || 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 2;
@@ -178,67 +237,86 @@ export default {
     uploadProgress () {
       this.uploading = true
     },
+    // 上传成功
     handleSuccess (res, file) {
       this.uploading = false
-      this.brandForm.logoUrl = res.logoUrl
+      this.addForm.logoUrl = res.logoUrl
       // this.imageUrl = URL.createObjectURL(file.raw)
     },
-    submitForm (formName) {
-      this.$refs[formName].validate((valid) => {
-        if(valid) {
-          this.loading = true
-          brandSave(this.brandForm).then(res => {
-            console.log(res.data)
-            if(res.data.status === 1) {
-              this.$message({
-                type: 'success',
-                message: res.data.message
-              })
-              this.getList()
-            }else {
-              this.$message({
-                type: 'error',
-                message: res.data.message
-              })
+    // 上传失败
+    handleUploadError (err, file) {
+      this.uploading = false
+      console.log(err)
+      this.addForm.logoUrl = URL.createObjectURL(file.raw)
+    },
+    // 显示编辑
+    handleEdit (index, row) {
+      this.editFormVisible = true
+      console.log(row)
+      this.editForm = Object.assign( {}, row);
+      this.editForm.status = row.status === 1 ? true : false
+    },
+    // 编辑提交
+    editSubmit () {
+      this.$refs.editForm.validate((valid) => {
+        if (valid) {
+          let data = Object.assign({}, this.editForm)
+          data.status = data.status ? 1 : 0
+          console.log(data.status)
+          brandEdit(data).then((res) => {
+            console.log(res)
+            if (res.data.code === '0001') {
+              this.$message.success('编辑成功')
+            } else {
+              this.$message.error('编辑失败')
             }
           })
-          this.loading = false
-          this.dialogFormVisible = false
+          this.editFormVisible = false
         }
       })
     },
-    handleCancel () {
-      this.dialogFormVisible = false
-      this.$message({
-        type: 'info',
-        message: '已取消操作'
+    // 显示创建
+    handleAdd () {
+      this.addFormVisible = true
+    },
+    // 创建提交
+    addSubmit () {
+      this.$refs.addForm.validate((valid) => {
+        if(valid) {
+          this.addLoading = true
+          this.addForm = Object.assign( {}, this.addForm)
+          this.addForm.status = this.addForm.status ? 1 : 0
+          console.log(this.addForm)
+          brandAdd(this.addForm).then(res => {
+            if(res.data.code === '0001') {
+              this.$message.success(res.data.message)
+              this.getBrands()
+            }else {
+              this.$message.error(res.data.message)
+            }
+          })
+          this.addLoading = false
+          this.addFormVisible = false
+        }
       })
     },
-    handleBrandEdit (brand) {
-      this.formTitle = '品牌编辑'
-      this.brandForm = brand
-      this.dialogFormVisible = true
-    },
-    handleBrandDel (brandId) {
+    handleDel (brandId) {
+      console.log(brandId)
       this.$confirm('此操作将删除该品牌, 是否继续?', '提示', {
+          type: 'warning',
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
       }).then(() => {
-        brandDel({id: brandId}).then(res => {
-          if(res.data.status === 1) {
-            this.getList()
-            this.$message({
-              type: 'success',
-              message: res.data.message
-            })
+        brandDel({id: brandId}).then((res) => {
+          if(res.data.code === '0001') {
+            this.$message.success(res.data.message)
+            this.getBrands()
+          } else {
+            this.$message.error(res.data.message)
           }
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消操作'
-        })
+        this.$message.info('取消操作')
       })
     },
     handleBrandDetail (brandId) {
@@ -248,7 +326,7 @@ export default {
     }
   },
   mounted () {
-    this.getList()
+    this.getBrands()
   }
 }
 </script>

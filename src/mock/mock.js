@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter'
 import { Users, UserPerssionList } from './data/user'
 import { Brands } from './data/ware'
 let _Users = Users
+let _Brands = Brands
 
 export default {
 	bootstrap () {
@@ -111,14 +112,71 @@ export default {
 				}, 500)
 			})
 		})
-		// 
+		// 品牌管理
 		mock.onGet('/provider/ware/getBrandList').reply(config => {
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
 					resolve([200, {
-						brandList: Brands
+						code: '0001',
+						message: '操作成功',
+						brandList: _Brands
 					}])
 				})
+			})
+		})
+		// 品牌编辑
+		mock.onPost('/ware/brand/edit').reply(config => {
+			let { brandId, brandName, logoUrl, content, brandPage, status } = Qs.parse(config.data)
+			Brands.some(b => {
+				if (b.brandId === brandId) {
+					b.brandName = brandName;
+					b.logoUrl = logoUrl;
+					b.content = content;
+					b.brandPage = brandPage;
+					b.status = parseInt(status);
+					return true;
+				}
+			})
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, {
+						code: '0001',
+						message: '操作成功',
+						brandList: Brands
+					}])
+				}, 500)
+			})
+		})
+		// 品牌创建
+		mock.onPost('ware/brand/add').reply(config => {
+			let { brandName, logoUrl, content, brandPage, status } = Qs.parse(config.data)
+			Brands.push({
+				brandName: brandName,
+				logoUrl: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
+				content: content,
+				brandPage: brandPage,
+				status: parseInt(status)
+			})
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, {
+						code: '0001',
+						message: '创建成功'
+					}])
+				}, 1000)
+			})
+		})
+		// 品牌删除
+		mock.onPost('ware/brand/del').reply(config => {
+			let { id } = Qs.parse(config.data)
+			_Brands = _Brands.filter(b => b.brandId !== id)
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, {
+						code: '0001',
+						message: '删除成功'
+					}])
+				}, 1000)
 			})
 		})
 	}

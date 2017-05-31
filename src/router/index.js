@@ -19,8 +19,7 @@ const UEditor = resolve => require(['@/pages/tools/UEditor'], resolve)
 const routes = [
   {
     path: '/',
-    name: 'Hello',
-    component: Login
+    redirect: '/login'
   },
   {
     path: '/login',
@@ -33,42 +32,30 @@ const routes = [
     component: Register
   },
   {
-    path: '/admin',
-    name: '账户主页',
-    component: Layout,
-    children: [
-    	{
-    		path: 'home',
-        name: '账户首页',
-    		component: Home
-    	},
-      {
-        path: 'userManage',
-        name: '用户管理',
-        component: userManage
-      }
-    ]
-  },
-  {
     path: '/provider/ware',
     name: '供应商-商品管理',
     component: Layout,
     children: [
-      {
-        path: 'brandManage',
-        name: '品牌管理',
-        component: brandManage
-      },
-      {
-        path: 'add',
-        name: '新建商品',
-        component: addWare
-      },
-      {
-        path: 'edit',
-        name: '商品编辑',
-        component: wareManage
-      },
+      { path: 'brandManage', name: '品牌管理', component: brandManage },
+      { path: 'add', name: '新建商品', component: addWare },
+      { path: 'edit', name: '商品编辑', component: wareManage },
+    ]
+  },
+  {
+    path: '/admin/system',
+    name: '平台-系统管理',
+    component: Layout,
+    children: [
+      { path: 'home', name: '账户首页',component: Home },
+      { path: 'userManage', name: '用户管理', component: userManage }
+    ]
+  },
+  {
+    path: '/admin/customer',
+    name: '平台-顾客管理',
+    component: Layout,
+    children: [
+      { path: 'query', name: '顾客查询', component: userManage }
     ]
   },
   {

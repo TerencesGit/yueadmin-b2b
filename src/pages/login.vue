@@ -116,14 +116,14 @@ export default {
                 utils.setCookie('uname', name, '7d')
                 utils.setCookie('ukey', pass, '7d')
               } else {
-                utils.delCookie('uname ')
+                utils.delCookie('uname')
                 utils.delCookie('ukey')
               }
               this.$message({
                 type: 'success',
                 message: '登录成功'
               })
-              this.$router.push({ path: '/admin/home' })
+              this.$router.push({ path: '/admin/system/home' })
             } else {
               this.$message({
                 type: 'error',
