@@ -9,7 +9,6 @@ let _Brands = Brands
 export default {
 	bootstrap () {
 		let mock = new MockAdapter(axios);
-
 		mock.onGet('/success').reply(200, {
 			msg: 'success'
 		})
@@ -114,14 +113,22 @@ export default {
 		})
 		// 品牌管理
 		mock.onGet('/provider/ware/getBrandList').reply(config => {
+			let { name, page, pageSize } = config.params;
+			let _BrandList = _Brands.filter(brand => {
+				if (brand && brand.brandName.indexOf(name) == -1) return false;
+			  return true;
+			})
+			let total = _BrandList.length;
+			_BrandList = _BrandList.filter((b, index) => index < pageSize * page && index >= pageSize * (page - 1))
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
 					resolve([200, {
 						code: '0001',
 						message: '操作成功',
-						brandList: _Brands
+						brandList: _BrandList,
+						total: total
 					}])
-				})
+				}, 1000)
 			})
 		})
 		// 品牌编辑
@@ -178,6 +185,21 @@ export default {
 					}])
 				}, 1000)
 			})
+		})
+		// 批量删除
+		mock.onPost('ware/brand/batchDel').reply(config => {
+			let { ids } = Qs.parse(config.data)
+			ids = ids.split(',');
+			console.log(ids)
+      _Brands = _Brands.filter(b => !ids.includes(b.brandId));
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve([200, {
+            code: 200,
+            msg: '删除成功'
+          }]);
+        }, 500);
+      });
 		})
 	}
 }

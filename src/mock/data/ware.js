@@ -2,7 +2,7 @@ import Mock from 'mockjs'
 
 // 商品品牌
 const Brands = []
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 50; i++) {
 	Brands.push(Mock.mock({
 		brandId: Mock.Random.guid(),
 		brandName: Mock.mock('@ctitle()'),

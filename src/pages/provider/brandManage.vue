@@ -2,12 +2,12 @@
   <section>
     <!-- 工具条 -->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-      <el-form :inline="true">
+      <el-form :inline="true" :model="filters" @submit.prevent="getBrands">
         <el-form-item>
-          <el-input placeholder="品牌名称" icon="search"></el-input>
+          <el-input v-model="filters.name" placeholder="品牌名称" icon="search" @click.enter="null"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">查询</el-button>
+          <el-button type="primary" @click="getBrands">查询</el-button>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleAdd">新增</el-button>
@@ -15,16 +15,16 @@
       </el-form>
     </el-col>
     <!-- 品牌列表 -->
-    <el-table :data="brands" highlight-current-row v-loading="loading" style="width: 100%;">
+    <el-table :data="brands" highlight-current-row v-loading="loading" style="width: 100%;" @selection-change="selsChange">
       <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column type="index" width="60">
       </el-table-column>
-      <el-table-column prop="brandName" label="名称" width="120" sortable>
+      <el-table-column prop="brandName" label="名称" width="200" sortable>
       </el-table-column>
-      <el-table-column prop="content" label="描述" width="250">
+      <el-table-column prop="content" label="描述">
       </el-table-column>
-      <el-table-column prop="brandPage" label="专题页" width="220">
+      <el-table-column prop="brandPage" label="专题页" width="250">
       </el-table-column>
       <el-table-column prop="updateTime" label="更新时间" width="120" sortable>
       </el-table-column>
@@ -50,14 +50,15 @@
       </el-table-column>
     </el-table>
     <el-row class="m-t">
+      <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="page"
         :page-sizes="[10, 20, 30, 40]"
-        :page-size="10"
+        :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="20"
+        :total="total"
         class="pull-right">
       </el-pagination>
     </el-row>
@@ -139,17 +140,21 @@
   </section>
 </template>
 <script>
-import { getBrandList, brandEdit, brandAdd, brandDel } from '../../api'
+import { getBrandList, brandEdit, brandAdd, brandDel, brandBatchDel } from '../../api'
 export default {
   data() {
     return {
       brands: [],
       page: 1,
+      pageSize: 10,
       total: 0,
       listLoading: false,
       uploading: false,
       loading: false,
-
+      sels: [],
+      filters: {
+        name: ''
+      },
       editFormVisible: false,
       editLoading: false,
       editForm: {
@@ -158,7 +163,7 @@ export default {
         content: '',
         logoUrl: '',
         brandPage: '',
-        status: '1'
+        status: false
       },
 
       addFormVisible: false,
@@ -194,14 +199,16 @@ export default {
     // 品牌列表
     getBrands () {
       this.loading = true
-      getBrandList().then((res) => {
+      let data = {
+        name: this.filters.name,
+        page: this.page,
+        pageSize: this.pageSize,
+      }
+      getBrandList(data).then((res) => {
         console.log(res)
         if (res.data.code === '0001') {
-          // let brandList = res.data.brandList
-          // for (let i = 0; i < brandList.length; i++) {
-          //   brandList.status = brandList.status === 1 ? true : false
-          // }
           this.brands = res.data.brandList
+          this.total = res.data.total
         } else {
           this.$message.error('获取失败')
         }
@@ -210,9 +217,6 @@ export default {
       }).catch(() => {
         this.loading = false
       })
-    },
-    handleChange (index, row) {
-      console.log(index, row)
     },
     handleSizeChange (val) {
       this.pageSize = val
@@ -300,6 +304,7 @@ export default {
         }
       })
     },
+    // 删除操作
     handleDel (brandId) {
       console.log(brandId)
       this.$confirm('此操作将删除该品牌, 是否继续?', '提示', {
@@ -318,6 +323,29 @@ export default {
       }).catch(() => {
         this.$message.info('取消操作')
       })
+    },
+    selsChange (sels) {
+      this.sels = sels
+    },
+    // 批量删除
+    batchRemove () {
+      let ids = this.sels.map(item => item.brandId).toString();
+      this.$confirm('确认删除选中记录吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.listLoading = true;
+          let para = { ids: ids }
+          brandBatchDel(para).then((res) => {
+            this.listLoading = false;
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            });
+            this.getBrands()
+          });
+        }).catch(() => {
+          this.$message.info('取消操作')
+        })
     },
     handleBrandDetail (brandId) {
       this.$router.push({

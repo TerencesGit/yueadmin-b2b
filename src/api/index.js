@@ -29,13 +29,15 @@ export const editUser = params => { return axios.get('/user/edit', {params: para
 // 用户新增
 export const addUser = data => { return axios.post('/user/add', data) }
 // 品牌列表
-export const getBrandList = () => { return axios.get('/provider/ware/getBrandList') }
+export const getBrandList = params => { return axios.get('/provider/ware/getBrandList', {params: params}) }
 // 品牌编辑
 export const brandEdit = data => { return axios.post('ware/brand/edit', data) }
 // 品牌创建
 export const brandAdd = data => { return axios.post('ware/brand/add', data) }
 // 品牌删除
 export const brandDel = data => { return axios.post('ware/brand/del', data) }
+// 批量删除
+export const brandBatchDel = data => { return axios.post('ware/brand/batchDel', data) }
 
 export const getRandomImage = () => { return axios.get('/user/getRandomImage.json') }
 
