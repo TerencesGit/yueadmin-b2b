@@ -7,3 +7,6 @@ export const saveUser = ({ commit }, user) => {
 export const saveUserPermission = ({ commit }, permission) => {
 	commit('SAVE_PERMISSION', permission)
 }
+export const setStepActive = ({ commit }, active) => {
+	commit('SET_STEPACTIVE', active)
+}

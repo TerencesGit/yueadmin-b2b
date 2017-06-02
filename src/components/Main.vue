@@ -49,7 +49,7 @@ export default {
 	    height: auto !important;
 	    height: 100%;
 	    margin-bottom: -40px;
-	    background: #f0f3f4;
+	    background: #f5f5f5;
 	  }
 	}
 	.main.spread {
@@ -61,7 +61,7 @@ export default {
     padding: 20px;
   }
   .el-breadcrumb {
-		padding: 0 0 15px;
+		padding: 0 0 10px;
 		font-size: 14px;
   }
   .wrap-footer {

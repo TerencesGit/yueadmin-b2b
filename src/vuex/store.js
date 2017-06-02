@@ -8,6 +8,7 @@ const state = {
 	sidebarStatus: false,
 	user: {},
 	userPermission: [],
+	stepActive: 0
 }
 
 const mutations = {
@@ -19,6 +20,9 @@ const mutations = {
 	},
 	SAVE_PERMISSION (state, permission) {
 		state.userPermission = permission
+	},
+	SET_STEPACTIVE (state, active) {
+		state.stepActive = active
 	}
 }
 export default new Vuex.Store({

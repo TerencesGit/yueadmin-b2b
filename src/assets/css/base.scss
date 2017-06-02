@@ -31,35 +31,6 @@ input[type="password"] {
 input:focus {
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
 }
-button {
-    display: inline-block;
-    padding: 4px 12px;
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857143;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: bottom;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    background-image: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-}
-.button-text {
-  padding: 0 3px;
-  color: #fff;
-  font-size: 16px;
-  background-color: transparent;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
 .is-error input:focus {
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px #c76161;
 }
@@ -101,6 +72,9 @@ button {
 .m-r {
   margin-right: 15px;
 }
+.m-l-xs {
+  margin-left: 5px
+}
 .m-l {
   margin-left: 15px;
 }
@@ -116,7 +90,8 @@ button {
   transition: all .3s
 }
 .el-button--block,
-.el-select--block {
+.el-select--block,
+.el-input--block {
   width: 100%
 }
 /** bootstrap style **/
@@ -170,9 +145,6 @@ dl {
   margin: 0 0 20px;
   border-bottom: 1px solid #eee;
 }
-.form-control {
-  width: 100% !important;
-}
 
 /* element-ui style */
 .uploader .el-upload {
@@ -193,14 +165,26 @@ dl {
   line-height: 178px;
   text-align: center;
 }
+.steps-row {
+  margin-bottom: 15px;
+  background: #f9f9f9
+}
+.el-step__icon {
+  line-height: 25px
+}
+.el-card {
+  padding: 10px
+}
 .card-title {
   line-height: 36px; 
   font-size: 20px; 
   font-weight: bold
 }
-
+.el-input-number {
+  width: 100%
+}
 .toolbar {
-  background: #f2f2f2;
+  // background: #f2f2f2;
   // padding: 10px;
   margin: 10px 0px;
   .el-form-item {

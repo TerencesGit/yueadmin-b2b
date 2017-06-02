@@ -7,3 +7,6 @@ export const user = state => {
 export const userPermission = state => {
 	return state.userPermission
 }
+export const stepActive = state => {
+	return state.stepActive
+}

@@ -5,7 +5,7 @@ const UserPerssionList = [
       icon: 'fa-paw',
       children: [
         {name: '品牌管理', link: '/provider/ware/brandManage', index: '/provider/ware/brandManage'},
-        {name: '新建商品', link: '/provider/ware/add', index: '/provider/ware/add'},
+        {name: '新建商品', link: '/provider/ware/new/chooseType', index: '/provider/ware/new/chooseType'},
         {name: '编辑商品', link: '/provider/ware/edit', index: '/provider/ware/edit'},
         {name: '商品上下架', link: '/provider/ware/shelfManage', index: '/provider/ware/shelfManage'},
         {name: '商品出入库', link: '/provider/ware/houseManage', index: '/provider/ware/houseManage'},

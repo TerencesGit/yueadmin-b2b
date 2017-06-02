@@ -11,6 +11,10 @@ const userManage = resolve => require(['@/pages/admin/userManage'], resolve)
 const brandManage = resolve => require(['@/pages/provider/brandManage'], resolve)
 
 const addWare = resolve => require(['@/pages/provider/addWare'], resolve)
+const createWare = resolve => require(['@/pages/provider/ware/add/home'], resolve)
+const chooseType = resolve => require(['@/pages/provider/ware/add/chooseType'], resolve)
+const basicInfo = resolve => require(['@/pages/provider/ware/add/basicInfo'], resolve)
+
 const wareManage = resolve => require(['@/pages/provider/wareManage'], resolve)
 
 const html5Editor = resolve => require(['@/pages/tools/VueHtml5Editor'], resolve)
@@ -37,7 +41,14 @@ const routes = [
     component: Layout,
     children: [
       { path: 'brandManage', name: '品牌管理', component: brandManage },
-      { path: 'add', name: '新建商品', component: addWare },
+      { 
+        path: 'new', name: '新建商品', component: createWare,
+        children: [
+          { path: 'chooseType', name: '选择类别', component: chooseType },
+          { path: 'basicInfo_traval', name: '基本信息', component: wareManage },
+          { path: 'basicInfo_photography', name: '基本信息', component: basicInfo }
+        ] 
+      },
       { path: 'edit', name: '商品编辑', component: wareManage },
     ]
   },
