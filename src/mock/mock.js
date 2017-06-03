@@ -2,9 +2,10 @@ import axios from 'axios'
 import Qs from 'qs'
 import MockAdapter from 'axios-mock-adapter'
 import { Users, UserPerssionList } from './data/user'
-import { Brands } from './data/ware'
+import { Brands, WareKind } from './data/ware'
 let _Users = Users
 let _Brands = Brands
+let _KindList = WareKind
 
 export default {
 	bootstrap () {
@@ -195,11 +196,37 @@ export default {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve([200, {
-            code: 200,
+            code: '0001',
             msg: '删除成功'
           }]);
         }, 500);
       });
+		})
+		// 商品品类列表
+		mock.onGet('/ware/getKindList').reply(config => {
+			console.log(_KindList)
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, {
+						code: '0001',
+						message: '操作成功',
+						KindList: _KindList,
+					}])
+				}, 1000)
+			})
+		})
+		// 新增商品品类
+		mock.onPost('/ware/addKind').reply(config => {
+			let kind = Qs.parse(config.data)
+			console.log(kind)
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, {
+						code: '0001',
+						message: '添加成功'
+					}])
+				}, 1000)
+			})
 		})
 	}
 }

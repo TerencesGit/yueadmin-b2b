@@ -38,6 +38,10 @@ export const brandAdd = data => { return axios.post('ware/brand/add', data) }
 export const brandDel = data => { return axios.post('ware/brand/del', data) }
 // 批量删除
 export const brandBatchDel = data => { return axios.post('ware/brand/batchDel', data) }
+// 获取品类列表
+export const getKindList = () => { return axios.get('/ware/getKindList') }
+// 新增品类
+export const addKind = data => { return axios.post('/ware/addKind', data) }
 
 export const getRandomImage = () => { return axios.get('/user/getRandomImage.json') }
 

@@ -13,4 +13,23 @@ for (let i = 0; i < 50; i++) {
 		status: Mock.Random.integer(0, 1)
 	}))
 }
-export { Brands }
+const WareKind = [{
+	  kindId: 10001,
+	  kindName: '旅拍',
+	  kindDesc: '旅拍旅拍旅拍',
+	  parentId: 0,
+	  children: [{
+	    kindId: 10007,
+	    kindName: '婚纱',
+	    parentId: '10001',
+	    sortId: '2',
+	    templateId: '2001'
+	  }, {
+	    kindId: 10008,
+	    kindName: '旅游',
+	    parentId: '10001',
+	    sortId: '3',
+	    templateId: '2002'
+	  }]
+	}]
+export { Brands, WareKind }
