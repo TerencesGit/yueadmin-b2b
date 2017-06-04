@@ -1,7 +1,7 @@
 <template>
 	<section>
     <el-row class="m-b">
-      <el-button type="primary" @click="addFormVisible = true">新建品类</el-button>
+      <el-button type="primary" @click="newKind">新建品类</el-button>
     </el-row>
     <el-row>
       <el-col :span="12">
@@ -69,7 +69,7 @@
 	</section>
 </template>
 <script>
-import { getKindList, addKind } from '../../../api'
+import { getKindList, addKind, delKind } from '../../../api'
   let id = 1000;
   export default {
     data() {
@@ -83,7 +83,13 @@ import { getKindList, addKind } from '../../../api'
         editFormVisible: false,
         editLoading: false,
 
-        addForm: {},
+        addForm: {
+          kindId: '',
+          kindName: '',
+          kindDesc: '',
+          sortId: '',
+          templateId: ''
+        },
         addFormVisible: false,
         addLoading: false,
       }
@@ -104,6 +110,11 @@ import { getKindList, addKind } from '../../../api'
         this.editForm = data
         console.log(data)
       },
+      // 显示新建
+      newKind () {
+        this.addFormVisible = true
+        this.addForm.kindId = ''
+      },
       // 添加品类
       addSubmit () {
         console.log(this.addForm)
@@ -122,8 +133,11 @@ import { getKindList, addKind } from '../../../api'
 
       remove(store, data) {
         store.remove(data)
-      },
+        console.log(data.kindId)
+        delKind({kindId: data.kindId}).then(res => {
 
+        })
+      },
       renderContent(h, { node, data, store }) {
         return (
           <span>

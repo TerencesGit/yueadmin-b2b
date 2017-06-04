@@ -2,10 +2,11 @@ import axios from 'axios'
 import Qs from 'qs'
 import MockAdapter from 'axios-mock-adapter'
 import { Users, UserPerssionList } from './data/user'
-import { Brands, WareKind } from './data/ware'
+import { Brands, WareKind, Wares } from './data/ware'
 let _Users = Users
 let _Brands = Brands
 let _KindList = WareKind
+let _Wares = Wares
 
 export default {
 	bootstrap () {
@@ -227,6 +228,23 @@ export default {
 					}])
 				}, 1000)
 			})
+		})
+		// 商品列表
+		mock.onGet('/ware/getWareList').reply(config => {
+			let { page, pageSize } = config.params;
+			let total = _Wares.length;
+			_Wares = _Wares.filter((b, index) => index < pageSize * page && index >= pageSize * (page - 1))
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, {
+						code: '0001',
+						message: '操作成功',
+						wareList: _Wares,
+						total: total
+					}])
+				}, 1000)
+			})
+
 		})
 	}
 }

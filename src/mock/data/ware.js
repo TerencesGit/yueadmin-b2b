@@ -4,7 +4,7 @@ import Mock from 'mockjs'
 const Brands = []
 for (let i = 0; i < 50; i++) {
 	Brands.push(Mock.mock({
-		brandId: Mock.Random.guid(),
+		brandId: Mock.Random.id(),
 		brandName: Mock.mock('@ctitle()'),
 		logoUrl: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
 		content: Mock.mock('@csentence()'),
@@ -32,4 +32,15 @@ const WareKind = [{
 	    templateId: '2002'
 	  }]
 	}]
-export { Brands, WareKind }
+const Wares = []
+for (let i = 0; i < 50; i++) {
+	Wares.push(Mock.mock({
+		wareId: Mock.Random.id(),
+		wareCode: Mock.Random.id(),
+		wareName: Mock.mock('@ctitle(5, 8)'),
+		wareKind: Mock.mock('@ctitle(3, 5)'),
+		verifyStatus: Mock.Random.integer(0, 3),
+		createTime: Mock.Random.date()
+	}))
+}
+export { Brands, WareKind, Wares }

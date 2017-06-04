@@ -42,7 +42,11 @@ export const brandBatchDel = data => { return axios.post('ware/brand/batchDel', 
 export const getKindList = () => { return axios.get('/ware/getKindList') }
 // 新增品类
 export const addKind = data => { return axios.post('/ware/addKind', data) }
-
+// 删除品类
+export const delKind = data => { return axios.post('/ware/delKind', data) }
+// 商品列表
+export const getWareList = params => { return axios.get('/ware/getWareList', {params: params}) }
+// 
 export const getRandomImage = () => { return axios.get('/user/getRandomImage.json') }
 
 export const getMobileSmsCode = data => { return axios.post('/sms/getMobileSmsCode.json', data) }

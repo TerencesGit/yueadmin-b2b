@@ -246,7 +246,7 @@
 									message: '提交成功',
 									type: 'success'
 								});
-								this.$refs['addForm'].resetFields();
+								this.$refs['addForm'].resetFields()
 								this.addFormVisible = false;
 								this.getUsers();
 							});
