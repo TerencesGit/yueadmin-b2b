@@ -55,9 +55,9 @@ const routes = [
       { 
         path: 'edit', name: '编辑商品', component: createWare, redirect: '/provider/ware/edit/basicInfo_photography',
         children: [
-          { path: 'chooseType', name: '选择类别', component: chooseType },
-          { path: 'basicInfo_traval', name: '基本信息1', component: wareManage },
-          { path: 'basicInfo_photography', name: '基本信息2', component: basicInfo }
+          { path: 'chooseType', name: '选择类别1', component: chooseType },
+          { path: 'basicInfo_traval', name: '基本信息12', component: wareManage },
+          { path: 'basicInfo_photography', name: '基本信息22', component: basicInfo }
         ] 
       },
     ]

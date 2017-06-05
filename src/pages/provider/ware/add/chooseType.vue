@@ -67,7 +67,7 @@ import { mapActions } from 'vuex'
 				})
 			},
 			resetForm() {
-				 this.$refs.wareForm.resetFields()
+				this.$refs.wareForm.resetFields()
 			}
 		},
 		mounted () {

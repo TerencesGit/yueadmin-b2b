@@ -20,14 +20,14 @@
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" sortable width="150"></el-table-column>
       <el-table-column label="操作" width="120">
-      <template scope="scope">
-        <el-button
-          :plain="true"
-          size="small"
-          type="primary"
-          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-      </template>
-    </el-table-column>
+        <template scope="scope">
+          <el-button
+            :plain="true"
+            size="small"
+            type="primary"
+            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <el-row class="m-t">
       <el-pagination

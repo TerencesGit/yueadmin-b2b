@@ -78,6 +78,18 @@ input:focus {
 .m-l {
   margin-left: 15px;
 }
+.border-top {
+  border-top: 1px solid #ccc
+}
+.border-left {
+  border-left: 1px solid #ccc
+}
+.border-right {
+  border-right: 1px solid #ccc
+}
+.border-bottom {
+  border-bottom: 1px solid #ccc
+}
 .text-center {
   text-align: center
 }
@@ -188,4 +200,7 @@ dl {
   .el-form-item {
     margin-bottom: 10px;
   }
+}
+.select-width {
+  width: 217px;
 }
