@@ -14,6 +14,7 @@ const addWare = resolve => require(['@/pages/provider/addWare'], resolve)
 const createWare = resolve => require(['@/pages/provider/ware/add/home'], resolve)
 const chooseType = resolve => require(['@/pages/provider/ware/add/chooseType'], resolve)
 const basicInfo = resolve => require(['@/pages/provider/ware/add/basicInfo'], resolve)
+const bookLimit = resolve => require(['@/pages/provider/ware/add/bookLimit'], resolve)
 
 const wareManage = resolve => require(['@/pages/provider/wareManage'], resolve)
 const wareList = resolve => require(['@/pages/provider/ware/edit/wareList'], resolve)
@@ -48,7 +49,7 @@ const routes = [
         path: 'new', name: '新建商品', component: createWare,
         children: [
           { path: 'chooseType', name: '选择类别', component: chooseType },
-          { path: 'basicInfo_traval', name: '基本信息1', component: wareManage },
+          { path: 'basicInfo_travel', name: '基本信息1', component: bookLimit },
           { path: 'basicInfo_photography', name: '基本信息2', component: basicInfo }
         ] 
       },

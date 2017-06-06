@@ -1,8 +1,8 @@
 <template>
 	<section>
 		<el-row>
-			<el-col :span="18" :offset="3">
-				<el-form :model="baseForm" :rules="rules" ref="baseForm" label-width="100px">
+			<el-col :span="20" :offset="2">
+				<el-form :model="baseForm" :rules="rules" ref="baseForm" label-width="120px">
 					<el-card>
 					  <el-form-item label="天数" prop="tripDays">
 					    <el-col :span="5">
@@ -20,10 +20,10 @@
 					      <el-option label="经济游" value="shanghai"></el-option>
 					      <el-option label="高端游" value="beijing"></el-option>
 					    </el-select>
-				    	<el-input class="pull-left m-l" style="width: 300px"></el-input>
+				    	<el-input class="pull-left" style="width: 300px; margin-left: 30px"></el-input>
 					  </el-form-item>
 					  <el-row>
-						  <el-col :span="10">
+						  <el-col :span="12">
 							  <el-form-item label="线路品牌" prop="brand">
 							    <el-select v-model="baseForm.brand" class="el-se">
 							      <el-option label="线路品牌1" value="1"></el-option>
@@ -31,7 +31,7 @@
 							    </el-select>
 							  </el-form-item>
 						  </el-col>
-						  <el-col :span="10" :offset="2">
+						  <el-col :span="12">
 							  <el-form-item label="结算类型" prop="settlement">
 							    <el-select v-model="baseForm.settlement">
 							      <el-option label="结算类型1" value="1"></el-option>
@@ -55,7 +55,7 @@
 						  </el-col>
 					  </el-row>
 					  <el-row>
-						  <el-col :span="10">
+						  <el-col :span="12">
 							  <el-form-item label="产品线路" prop="line">
 							    <el-select v-model="baseForm.line">
 							      <el-option label="产品线路1" value="1"></el-option>
@@ -63,7 +63,7 @@
 							    </el-select>
 							  </el-form-item>
 						  </el-col>
-						  <el-col :span="10" :offset="2">
+						  <el-col :span="12">
 							  <el-form-item label="交通工具" prop="traffic">
 							    <el-select v-model="baseForm.traffic">
 							      <el-option label="飞机" value="1"></el-option>
@@ -90,13 +90,100 @@
 						<p>推荐概述 最多8000字</p>
 						<vue-html5-editor :content="content" :height="400"></vue-html5-editor>
 					</el-card>
-					<el-button>预定控制</el-button>
-					<el-card>
-						<el-form-item>
-					    <el-button type="primary" @click="submitForm('baseForm')">立即创建</el-button>
-					    <el-button @click="resetForm('baseForm')">重置</el-button>
-					  </el-form-item>
+					<el-button class="m-l" @click="booking = !booking">预定控制</el-button>
+					<el-card class="control" v-show="booking">
+						<el-row>
+							<el-button type="primary" class="pull-right">保存</el-button>
+							<h3>预订控制</h3>
+						</el-row>
+						<el-row>
+							<el-col :span="8">
+								<el-form-item label="投诉联系人" prop="title">
+						    	<el-input placeholder="投诉联系人"></el-input>
+							  </el-form-item>
+							  <el-form-item label="预定联系人" prop="title">
+						    	<el-input placeholder="预定联系人"></el-input>
+							  </el-form-item>
+							  <el-form-item label="紧急联系人" prop="title">
+						    	<el-input placeholder="紧急联系人"></el-input>
+							  </el-form-item>
+							  <el-form-item label="提前预定" prop="title">
+						    	<el-input placeholder="提前预定"></el-input>
+							  </el-form-item>
+							  <el-form-item label="确认方式" prop="title">
+						    	<el-input placeholder="确认方式"></el-input>
+							  </el-form-item>
+						  	<el-form-item label="儿童是否可预订" prop="line">
+							    <el-select v-model="baseForm.line">
+							      <el-option label="是" value="1"></el-option>
+							      <el-option label="否" value="2"></el-option>
+							    </el-select>
+							  </el-form-item>
+							</el-col>
+							<el-col :span="8">
+								<el-form-item label="投诉联系人电话" prop="title">
+						    	<el-input placeholder="投诉联系人电话"></el-input>
+							  </el-form-item>
+							  <el-form-item label="预定联系人电话" prop="title">
+						    	<el-input placeholder="预定联系人电话"></el-input>
+							  </el-form-item>
+							  <el-form-item label="紧急联系人电话" prop="title">
+						    	<el-input placeholder="紧急联系人电话"></el-input>
+							  </el-form-item>
+							  <el-form-item label="周末工作" prop="line">
+							    <el-select v-model="baseForm.line">
+							      <el-option label="是" value="1"></el-option>
+							      <el-option label="否" value="2"></el-option>
+							    </el-select>
+							  </el-form-item>
+						  	<el-form-item label="货币单位" prop="line">
+							    <el-select v-model="baseForm.line">
+							      <el-option label="人民币" value="1"></el-option>
+							      <el-option label="美元" value="2"></el-option>
+							    </el-select>
+							  </el-form-item>
+							   <el-form-item label="预定人数" prop="title">
+						    	<el-input placeholder="预定人数"></el-input>
+							  </el-form-item>
+							</el-col>
+							<el-col :span="8">
+								<el-form-item label="投诉联系人邮箱" prop="title">
+						    	<el-input placeholder="投诉联系人邮箱"></el-input>
+							  </el-form-item>
+							  <el-form-item label="新订单短信通知" prop="title">
+						    	<el-select v-model="baseForm.line">
+							      <el-option label="是" value="1"></el-option>
+							      <el-option label="否" value="2"></el-option>
+							    </el-select>
+							  </el-form-item>
+							  <el-form-item label="公布紧急联系人" prop="title">
+						    	<el-select v-model="baseForm.line">
+							      <el-option label="是" value="1"></el-option>
+							      <el-option label="否" value="2"></el-option>
+							    </el-select>
+							  </el-form-item>
+							  <el-form-item label="节假日工作" prop="line">
+							    <el-select v-model="baseForm.line">
+							      <el-option label="是" value="1"></el-option>
+							      <el-option label="否" value="2"></el-option>
+							    </el-select>
+							  </el-form-item>
+						  	<el-form-item label="酒店是否可拼房" prop="line">
+							    <el-select v-model="baseForm.line">
+							     <el-option label="是" value="1"></el-option>
+							      <el-option label="否" value="2"></el-option>
+							    </el-select>
+							  </el-form-item>
+							  <el-form-item label="400电话" prop="title">
+						    	<el-input placeholder="400电话"></el-input>
+							  </el-form-item>
+							</el-col>
+						</el-row>
 					</el-card>
+					<el-form-item class="text-center">
+				    <el-button type="primary" @click="submitForm('baseForm')">下一步</el-button>
+				    <el-button @click="resetForm('baseForm')">重置</el-button>
+				  </el-form-item>
 				</el-form>
 			</el-col>
 		</el-row>
@@ -104,13 +191,14 @@
 </template>
 <script>
 	 export default {
-    data() {
+    data () {
       return {
       	form: {
       		tripDays: '',
       		date1: '',
       		date2: ''
       	},
+      	booking: false,
         baseForm: {
           name: '',
           region: '',

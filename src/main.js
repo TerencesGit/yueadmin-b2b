@@ -78,7 +78,7 @@ Vue.component('back-button', {
 		back () {
 			this.$router.back()
 		}
-	}
+	},
 })
 const router = new Router({
   routes  
