@@ -19,6 +19,7 @@ import 'element-ui/lib/theme-default/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 import 'nprogress/nprogress.css'
 import '@/assets/css/base.scss'
+import fullCalendar from '@/components/fullcalendar'
 NProgress.configure({ ease: 'ease', speed: 500, minimum: 0.5, showSpinner: false})
 Vue.use(Router)
 Vue.use(Vuex)
@@ -72,13 +73,14 @@ Vue.directive('title', {
     document.title = el.dataset.title
   }
 })
+Vue.component('full-calendar', fullCalendar)
 Vue.component('back-button', {
-	template: '<button class="back-button" @click="back">返回</button>',
+	template: '<button class="back-button" @click="back"><slot>返回</slot></button>',
 	methods: {
 		back () {
 			this.$router.back()
 		}
-	},
+	}
 })
 const router = new Router({
   routes  
@@ -97,7 +99,7 @@ router.beforeEach((to, from, next) => {
 	}
 })
 router.afterEach((to, from, next) => {
-  console.log(to.path)
+  console.log(to.path) 
   NProgress.done()
 })
 /* request interceptors */

@@ -78,6 +78,7 @@
     methods: {
     	save () {
     		console.log(this.content)
+    		this.$router.push('/provider/ware/new/price_stock')
     	},
     	back () {
 
@@ -85,6 +86,9 @@
     	updateData (content) {
     		this.content = content
     	}
+    },
+    mounted () {
+    	this.$store.dispatch('setStepActive', 4)
     }
   }
 </script>

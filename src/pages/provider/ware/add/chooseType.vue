@@ -25,7 +25,6 @@
 				</el-card>
 			</el-col>
 		</el-row>
-		<router-view></router-view>
 	</section>
 </template>
 <script>
@@ -48,7 +47,7 @@ import { mapActions } from 'vuex'
 					kind: [
 						{required: true, message: '请选择商品类别', trigger: 'change'}
 					]
-				}
+				},
 			}
 		},
 		methods: {
