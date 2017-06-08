@@ -84,6 +84,7 @@
   import EventCard from './components/eventCard.vue'
   import FcHeader from './components/header.vue'
   export default {
+    name: 'FullCalendar',
     props : {
       events : { // events will be displayed on calendar
         type : Array,
@@ -223,7 +224,6 @@
       },
       eventClick(event, jsEvent) {
         if (!event.isShow) return;
-
         jsEvent.stopPropagation();
         let pos = this.computePos(jsEvent.target);
         this.$emit('eventClick', event, jsEvent, pos);
@@ -239,7 +239,7 @@
   }
   
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .comp-full-calendar{
     padding: 20px;
     background: #fff;

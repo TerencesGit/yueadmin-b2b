@@ -14,11 +14,15 @@ const addWare = resolve => require(['@/pages/provider/addWare'], resolve)
 const createWare = resolve => require(['@/pages/provider/ware/add/home'], resolve)
 const chooseType = resolve => require(['@/pages/provider/ware/add/chooseType'], resolve)
 const basicInfo = resolve => require(['@/pages/provider/ware/add/basicInfo'], resolve)
+const tourItinerary = resolve => require(['@/pages/provider/ware/add/tourItinerary'], resolve)
 const bookLimit = resolve => require(['@/pages/provider/ware/add/bookLimit'], resolve)
 const priceStock = resolve => require(['@/pages/provider/ware/add/priceStock'], resolve)
 
 const wareManage = resolve => require(['@/pages/provider/wareManage'], resolve)
 const wareList = resolve => require(['@/pages/provider/ware/edit/wareList'], resolve)
+const editWare = resolve => require(['@/pages/provider/ware/edit/home'], resolve)
+
+
 const categoryManage = resolve => require(['@/pages/admin/system/categoryManage'], resolve)
 
 const html5Editor = resolve => require(['@/pages/tools/VueHtml5Editor'], resolve)
@@ -49,18 +53,22 @@ const routes = [
       { 
         path: 'new', name: '新建商品', component: createWare,
         children: [
-          { path: 'chooseType', name: '选择类别', component: chooseType },
-          { path: 'basicInfo_travel', name: '基本信息1', component: bookLimit },
-          { path: 'basicInfo_photography', name: '基本信息2', component: basicInfo },
-          { path: 'price_stock', name: '价格库存', component: priceStock },
+          { path: 'chooseType', name: '新建商品-选择类别', component: chooseType },
+          { path: 'basicInfo_travel', name: '新建商品-基本信息-旅游', component: bookLimit },
+          { path: 'basicInfo_photography', name: '新建商品-基本信息-拍摄', component: basicInfo },
+          { path: 'book_limit', name: '新建商品-费用/预定限制', component: bookLimit },
+          { path: 'price_stock', name: '新建商品-价格库存', component: priceStock },
         ] 
       },
       { 
-        path: 'edit', name: '编辑商品', component: createWare, redirect: '/provider/ware/edit/basicInfo_photography',
+        path: 'edit', name: '编辑商品', component: editWare,
         children: [
-          { path: 'chooseType', name: '选择类别1', component: chooseType },
-          { path: 'basicInfo_traval', name: '基本信息12', component: wareManage },
-          { path: 'basicInfo_photography', name: '基本信息22', component: basicInfo }
+          { path: 'chooseType', name: '编辑商品-选择类别', component: chooseType },
+          { path: 'basicInfo_traval', name: '编辑商品-基本信息-旅游', component: wareManage },
+          { path: 'basicInfo_photography', name: '编辑商品-基本信息-拍摄', component: basicInfo },
+          { path: 'tour_itinerary', name: '编辑商品-行程介绍', component: tourItinerary },
+          { path: 'book_limit', name: '编辑商品-费用/预定限制', component: bookLimit },
+          { path: 'price_stock', name: '编辑商品-价格库存', component: priceStock },
         ] 
       },
     ]

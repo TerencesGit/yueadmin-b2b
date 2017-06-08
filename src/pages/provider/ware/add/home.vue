@@ -1,7 +1,8 @@
 <template>
 	<section>
+		<div v-title :data-title="this.$route.name"></div>
 		<el-row class="steps-row">
-			<el-steps space="12%" :active="stepActive" align-center center>
+			<el-steps space="12%" :active="stepActive" finish-status="success" align-center center>
 			  <el-step v-for="(item, index) in stepList" :title="item" :key="index"></el-step>
 			</el-steps>
 		</el-row>

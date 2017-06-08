@@ -137,7 +137,7 @@ import { getKindList, addKind, delKind } from '../../../api'
         delKind({kindId: data.kindId}).then(res => {
 
         })
-      },
+      }, 
       renderContent(h, { node, data, store }) {
         return (
           <span>

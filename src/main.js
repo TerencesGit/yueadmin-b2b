@@ -8,24 +8,30 @@ import axios from 'axios'
 import App from './App'
 import routes from './router'
 import store from './vuex/store'
+import moment from 'moment'
 import ElementUI from 'element-ui'
 import NProgress from 'nprogress'
-import moment from 'moment'
-import Mock from './mock'
-import VueHtml5Editor from 'vue-html5-editor'
-Mock.bootstrap()
-import utils from '@/assets/js/utils'
+import 'nprogress/nprogress.css'
 import 'element-ui/lib/theme-default/index.css'
 import 'font-awesome/css/font-awesome.min.css'
-import 'nprogress/nprogress.css'
 import '@/assets/css/base.scss'
-import fullCalendar from '@/components/fullcalendar'
+import Mock from './mock'
+import utils from '@/assets/js/utils'
+import VueHtml5Editor from 'vue-html5-editor'
+import FullCalendar from '@/components/fullcalendar'
+import BackButton from '@/components/back-button'
+import LinkStep from '@/components/step'
+import LinkSteps from '@/components/steps'
 NProgress.configure({ ease: 'ease', speed: 500, minimum: 0.5, showSpinner: false})
+Mock.bootstrap()
+Vue.prototype.$moment = moment
 Vue.use(Router)
 Vue.use(Vuex)
 Vue.use(ElementUI)
-Vue.prototype.$moment = moment
-Vue.prototype.$nprogress = NProgress
+Vue.use(FullCalendar)
+Vue.use(BackButton)
+Vue.use(LinkStep)
+Vue.use(LinkSteps)
 const editorOptions = {
     image: {
         // 文件最大体积，单位字节  max file size 
@@ -72,15 +78,6 @@ Vue.directive('title', {
   inserted (el, binding) {
     document.title = el.dataset.title
   }
-})
-Vue.component('full-calendar', fullCalendar)
-Vue.component('back-button', {
-	template: '<button class="back-button" @click="back"><slot>返回</slot></button>',
-	methods: {
-		back () {
-			this.$router.back()
-		}
-	}
 })
 const router = new Router({
   routes  

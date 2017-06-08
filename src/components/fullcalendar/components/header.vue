@@ -53,7 +53,7 @@
     }
   }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .full-calendar-header{
   display: flex;
   align-items: center;

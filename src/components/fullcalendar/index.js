@@ -1,5 +1,7 @@
-import vueFullcalendar from './fullCalendar'
+import FullCalendar from './fullCalendar'
 
-const fc = vueFullcalendar;
+FullCalendar.install = function (Vue) {
+	Vue.component(FullCalendar.name, FullCalendar)
+}
 
-module.exports = fc;
+export default FullCalendar

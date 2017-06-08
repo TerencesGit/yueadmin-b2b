@@ -105,8 +105,6 @@ export default {
 		padding: 0 15px;
 		line-height: 60px;
 		font-size: 16px;
-		font-weight: bold;
-		color: #1380E2
 	}
 	.avatar {
 		width: 20px;
