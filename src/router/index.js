@@ -15,8 +15,10 @@ const createWare = resolve => require(['@/pages/provider/ware/add/home'], resolv
 const chooseType = resolve => require(['@/pages/provider/ware/add/chooseType'], resolve)
 const basicInfo = resolve => require(['@/pages/provider/ware/add/basicInfo'], resolve)
 const tourItinerary = resolve => require(['@/pages/provider/ware/add/tourItinerary'], resolve)
+const multiMedia = resolve => require(['@/pages/provider/ware/add/multimedia'], resolve)
 const bookLimit = resolve => require(['@/pages/provider/ware/add/bookLimit'], resolve)
 const priceStock = resolve => require(['@/pages/provider/ware/add/priceStock'], resolve)
+const multiPassMaintain = resolve => require(['@/pages/provider/ware/add/multiPassMaintain'], resolve)
 
 const wareManage = resolve => require(['@/pages/provider/wareManage'], resolve)
 const wareList = resolve => require(['@/pages/provider/ware/edit/wareList'], resolve)
@@ -56,17 +58,19 @@ const routes = [
           { path: 'chooseType', name: '新建商品-选择类别', component: chooseType },
           { path: 'basicInfo_travel', name: '新建商品-基本信息-旅游', component: bookLimit },
           { path: 'basicInfo_photography', name: '新建商品-基本信息-拍摄', component: basicInfo },
+          { path: 'multiMedia', name: '新建商品-多媒体', component: multiMedia },
           { path: 'book_limit', name: '新建商品-费用/预定限制', component: bookLimit },
           { path: 'price_stock', name: '新建商品-价格库存', component: priceStock },
+          { path: 'multiPassMaintain', name: '新建商品-价格库存', component: multiPassMaintain },
         ] 
       },
       { 
         path: 'edit', name: '编辑商品', component: editWare,
         children: [
-          { path: 'chooseType', name: '编辑商品-选择类别', component: chooseType },
           { path: 'basicInfo_traval', name: '编辑商品-基本信息-旅游', component: wareManage },
           { path: 'basicInfo_photography', name: '编辑商品-基本信息-拍摄', component: basicInfo },
           { path: 'tour_itinerary', name: '编辑商品-行程介绍', component: tourItinerary },
+          { path: 'multiMedia', name: '编辑商品-多媒体', component: multiMedia },
           { path: 'book_limit', name: '编辑商品-费用/预定限制', component: bookLimit },
           { path: 'price_stock', name: '编辑商品-价格库存', component: priceStock },
         ] 

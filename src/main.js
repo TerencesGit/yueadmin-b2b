@@ -111,7 +111,7 @@ axios.interceptors.response.use(function (res) {
   if (res.data.code ===  999) {
   	localStorage.clear()
     ElementUI.Message({
-   	  message: '长时间未操作,请重新登录'
+   	  message: '长时间未操作，请重新登录'
     })
     return router.push('/login')
   } else if (res.data.code === 403) {

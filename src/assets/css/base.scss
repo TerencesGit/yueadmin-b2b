@@ -213,9 +213,13 @@ table {
   line-height: 178px;
   text-align: center;
 }
-.steps-row {
+.steps-bar {
   margin-bottom: 15px;
+  padding-top: 3px;
   background: #f9f9f9
+}
+.el-step__title {
+  line-height: 26px
 }
 .el-step__icon {
   line-height: 25px
@@ -245,4 +249,47 @@ table {
 .el-select--block,
 .el-input--block {
   width: 100%
+}
+
+/*供应商商品管理-新建商品-多媒体*/
+.mediaUpload .el-upload--picture-card{
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+}
+.mediaDialog .el-dialog--small{
+    width: 70%;
+}
+.mediaDialog .el-dialog--small .el-dialog__header{
+    border-bottom:2px solid #cccccc;
+    padding-bottom:12px;
+}
+.mediaDialog .el-dialog__body{
+  padding-top:2px;  
+}
+.mediaDialog .mediaUpload{
+  border-bottom: 1px solid #ccc;
+  padding: 0 20px 15px;
+}
+.mediaDialog .el-form{
+  padding: 20px 10px;
+}
+.ipts .el-form-item:last-child{
+  margin-right: 0;
+}
+.ipts .el-form-item__content{
+  width: 62%;
+}
+.mediaUpload .el-upload-list--picture-card .el-upload-list__item{
+  width: 80px;
+  height: 80px;
+}
+.upbtn .el-upload--picture-card{
+  background: #c0ccda;
+}
+.upbtn .el-upload--picture-card:hover{
+  border-color: #c0ccda;
+}
+.upbtn .el-upload--picture-card i{
+  color:#fff;
 }

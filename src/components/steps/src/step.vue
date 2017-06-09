@@ -19,7 +19,7 @@
           v-if="currentStatus !== 'success' && currentStatus !== 'error'"
           name="icon">
           <i v-if="icon" :class="['el-icon-' + icon]"></i>
-          <div v-else>{{ index + 1 }}</div>
+          <span v-else>{{ index + 1 }}</span>
         </slot>
         <i
           v-else
@@ -149,13 +149,16 @@ export default {
   }
 };
 </script>
-<style scoped lang="scss">
+<style scoped>
   .el-step__head.is-text.is-success a,
   .el-step__head.is-text.is-finish a,
   .el-step__head.is-text.is-process a {
     color: #fff;
   }
-  // .el-step__head.is-text.is-process{
+  .el-step__head.is-text.is-wait a {
+    color: #bfcbd9
+  }
+ /* // .el-step__head.is-text.is-process{
   //   background-color: #20a0ff;
   //   border-color: #20a0ff;
   //   a {
@@ -174,5 +177,5 @@ export default {
   // }
   // .el-step__head.is-text.is-wait a {
   //   color: #bfcbd9;
-  // }
+  // }*/
 </style>
