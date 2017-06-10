@@ -244,7 +244,30 @@ export default {
 					}])
 				}, 1000)
 			})
-
+		})
+		//多媒体表单
+		mock.onPost('/upload/list').reply(config => {
+			let { country, view, tag, desc, copyright, url, les} = Qs.parse(config.data) ;
+			let upload={
+					country: country,
+					view: view,
+					tag: tag,
+					desc: desc,
+					copyright: copyright,
+					url: url,
+					les: les
+			}
+			let uploads=[];
+			for(let i=0;i<upload.les;i++){
+				uploads.push(upload);
+			}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, {
+						uploads: uploads
+					}])
+				}, 500)
+			})
 		})
 	}
 }

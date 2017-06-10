@@ -46,7 +46,10 @@ export const addKind = data => { return axios.post('/ware/addKind', data) }
 export const delKind = data => { return axios.post('/ware/delKind', data) }
 // 商品列表
 export const getWareList = params => { return axios.get('/ware/getWareList', {params: params}) }
-// 
+
+//多媒体
+export const uploadlist = data => { return axios.post('/upload/list', data) }
+
 export const getRandomImage = () => { return axios.get('/user/getRandomImage.json') }
 
 export const getMobileSmsCode = data => { return axios.post('/sms/getMobileSmsCode.json', data) }

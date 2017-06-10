@@ -43,7 +43,7 @@
   </section>
 </template>
 <script>
-import { getWareList } from '../../../../api'
+import { getWareList } from '@/api'
 export default {
   data () {
     return {

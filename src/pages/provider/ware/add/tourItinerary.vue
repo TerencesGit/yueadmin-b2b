@@ -5,15 +5,12 @@
 				<li v-for="day in days" v-text="day"></li>
 			</ul>
 		</div>
-
 		<div class="itinerary-content">
 			<div class="itinerary-content-title">
 				<span v-text="commodity.title"></span>
 				<span v-text="'产品ID:' + commodity.id"></span>
 			</div>
-
 			<div class="itinerary-content-content">
-
 				<ul>
 					<li style="display:flex; align-items:center;">
 						<div>
@@ -81,10 +78,8 @@
 					  </div>
 					</el-dialog>
 				</ul>
-
 			</div>
 		</div>
-
 		<div class="itinerary-cut">
 			<h4>剪切板</h4>
 			<el-input :autosize="true" type="textarea" placeholder="您可以将您即将录入的行程介绍复制黏贴到这里奥，方便您后续参考录入"></el-input>
@@ -281,9 +276,6 @@
 		text-align: center;
 		padding-bottom: 20px;
 		border-bottom: 1px solid #eee;
-	}
-	li{
-		list-style: none;
 	}
 	.itinerary-days-ul > li{
 		margin-top: 100px;

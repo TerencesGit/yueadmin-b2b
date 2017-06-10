@@ -2,33 +2,32 @@
 <section>
 	<el-row :span="24" class="btns">
 		<el-button type="primary" @click="upload">本地上传</el-button>
-		<el-button type="primary"  @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
+		<el-button type="primary" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
 	</el-row>
 	<el-table :data="media" border style="width: 100%" @selection-change="selsChange"> 
-	    <el-table-column type="selection" width="50" align="center"></el-table-column>
-	    <el-table-column label="图片缩略图" width="150" align="center" height="100px">
-	    	<template scope="scope">
-	    		<img :src="scope.row.url" alt="" class="images">
-	    	</template>
-	    </el-table-column>
-	    <el-table-column prop="country" label="图片国家" width="120" align="center"></el-table-column>
-	    <el-table-column prop="city" label="图片城市" width="120" align="center"></el-table-column>
-	    <el-table-column prop="view" label="图片景点名称" align="center"></el-table-column>
-	    <el-table-column prop="desc" label="图片描述" width="120" align="center"></el-table-column>
-	    <el-table-column prop="copyright" label="版权信息" align="center">
-	    	<template scope="scope">
-	    		<div class="copy">有版权</div>
-	        </template>
-	    </el-table-column>
-		<el-table-column label="操作">
-	        <template scope="scope">
-	        	<!-- <div v-if="scope.row.img"> -->
-	        	<el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-	        	<el-button size="small" @click="handleDefault(scope.$index, scope.row)">设为默认</el-button>
-
-	        	<!-- </div> -->	        	
-	        </template>
-    	</el-table-column>
+    <el-table-column type="selection" width="50" align="center"></el-table-column>
+    <el-table-column label="图片缩略图" width="150" align="center" height="100px">
+    	<template scope="scope">
+    		<img :src="scope.row.url" alt="" class="images">
+    	</template>
+    </el-table-column>
+    <el-table-column prop="country" label="图片国家" width="120" align="center"></el-table-column>
+    <el-table-column prop="city" label="图片城市" width="120" align="center"></el-table-column>
+    <el-table-column prop="view" label="图片景点名称" align="center"></el-table-column>
+    <el-table-column prop="desc" label="图片描述" width="120" align="center"></el-table-column>
+    <el-table-column prop="copyright" label="版权信息" align="center">
+    	<template scope="scope">
+    		<div class="copy">有版权</div>
+      </template>
+    </el-table-column>
+	  <el-table-column label="操作">
+        <template scope="scope">
+        	<!-- <div v-if="scope.row.img"> -->
+        	<el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+        	<el-button size="small" @click="handleDefault(scope.$index, scope.row)">设为默认</el-button>
+        	<!-- </div> -->	        	
+        </template>
+  	</el-table-column>
 	</el-table>
 	<el-row :span="24" class="next">
 		<el-button size="large" type="primary">下一步</el-button>
@@ -83,7 +82,7 @@
 </section>
 </template>
 <script>
-	// import { uploadlist } from '../../api'
+	import { uploadlist } from '@/api'
 	export default{
 		data () {
 			return {
@@ -130,9 +129,9 @@
 						this.media.splice(arr[i],1);
 					}
 					this.$message({
-							message: '删除成功',
-							type: 'success'
-						});
+						message: '删除成功',
+						type: 'success'
+					});
 
 				}).catch(() => {
 
@@ -158,30 +157,34 @@
 				});
 			},
 			upload(){
-				this.dialogFormVisible=true;
+				this.dialogFormVisible = true;
 				this.form={
 					country:'',
-			    	view:'',
-			    	tag:'',
-			    	desc:'',
-			    	copyright:'',
-			    	url:'',
-			    	les:''
+		    	view:'',
+		    	tag:'',
+		    	desc:'',
+		    	copyright:'',
+		    	url:'',
+		    	les:''
 				}
-				this.data=[],
-				this.url=[];
-				if(this.media.length==10){
-					this.isupload=true;
+				this.data = [],
+				this.url = [];
+				if (this.media.length == 10) {
+					this.isupload = true;
 				}
 			},
 			handlePictureCardPreview(file, fileList) {
-        this.dialogVisible = true;			        
+				this.dialogImageUrl = file.url;
+        this.dialogVisible = true;		        
     	},
     	handleChange(file, fileList){
     		this.list=fileList;
     	},
-    	handleSuccess(response,file,fileList){
-    		this.form.les=fileList.length;	
+    	handleSuccess (response, file, fileList) {
+    		console.log(response)
+    		console.log(file)
+    		console.log(fileList)
+    		this.form.les = fileList.length;	
     		this.url.push(file.url);			      		
     	},
 			handleRemove(file, fileList) {
@@ -213,20 +216,21 @@
 	    	}else{
 	    		this.dialogFormVisible=false;
 		    	let para = this.form;
-		  //   	uploadlist(para).then((res) => {
-			 //    	 var data=res.data.uploads;
-			 //    	 data.forEach((v,i,a)=>{
-			 //    	 	v.url=this.url[i];
-			 //    	 	 //JSON.parse(JSON.stringify(v))
-			 //    	 	 this.media.push(Object.assign({},v));
-			 //    	 });	    		
-				// });
+		    	console.log(para)
+		    	uploadlist(para).then((res) => {
+			    	 var data = res.data.uploads;
+			    	 data.forEach((v,i,a)=>{
+			    	 	v.url=this.url[i];
+			    	 	 //JSON.parse(JSON.stringify(v))
+			    	 	 this.media.push(Object.assign({}, v));
+			    	 });	    		
+				});
 				this.list.length=0;
 	    	}		    	
 	    },
 	    handleCancel(){
 	    	this.dialogFormVisible = false;
-	    	this.list.length=0;
+	    	this.list.length = 0;
 	    }
 		},
 		computed:{

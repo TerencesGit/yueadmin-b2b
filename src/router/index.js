@@ -18,6 +18,8 @@ const tourItinerary = resolve => require(['@/pages/provider/ware/add/tourItinera
 const multiMedia = resolve => require(['@/pages/provider/ware/add/multimedia'], resolve)
 const bookLimit = resolve => require(['@/pages/provider/ware/add/bookLimit'], resolve)
 const priceStock = resolve => require(['@/pages/provider/ware/add/priceStock'], resolve)
+const additionalService = resolve => require(['@/pages/provider/ware/add/additionalService'], resolve)
+const newAdditionalService = resolve => require(['@/pages/provider/ware/add/newAdditionalService'], resolve)
 const multiPassMaintain = resolve => require(['@/pages/provider/ware/add/multiPassMaintain'], resolve)
 
 const wareManage = resolve => require(['@/pages/provider/wareManage'], resolve)
@@ -58,10 +60,13 @@ const routes = [
           { path: 'chooseType', name: '新建商品-选择类别', component: chooseType },
           { path: 'basicInfo_travel', name: '新建商品-基本信息-旅游', component: bookLimit },
           { path: 'basicInfo_photography', name: '新建商品-基本信息-拍摄', component: basicInfo },
+          { path: 'tour_itinerary', name: '新建商品-行程介绍', component: tourItinerary },
           { path: 'multiMedia', name: '新建商品-多媒体', component: multiMedia },
           { path: 'book_limit', name: '新建商品-费用/预定限制', component: bookLimit },
           { path: 'price_stock', name: '新建商品-价格库存', component: priceStock },
-          { path: 'multiPassMaintain', name: '新建商品-价格库存', component: multiPassMaintain },
+          { path: 'multiPassMaintain', name: '新建商品-多行程维护', component: multiPassMaintain },
+          { path: 'additionalService', name: '新建商品-附加服务', component: additionalService },
+          { path: 'newAdditionalService', name: '新建商品-新增附加服务', component: newAdditionalService },
         ] 
       },
       { 
