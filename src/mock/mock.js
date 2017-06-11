@@ -247,7 +247,7 @@ export default {
 		})
 		//多媒体表单
 		mock.onPost('/upload/list').reply(config => {
-			let { country, view, tag, desc, copyright, url, les} = Qs.parse(config.data) ;
+			let { country, view, tag, desc, copyright, url, les } = Qs.parse(config.data);
 			let upload={
 					country: country,
 					view: view,
@@ -269,5 +269,17 @@ export default {
 				}, 500)
 			})
 		})
+		mock.onPost('/ware/shelfManage').reply(config => {
+			let { wareId, status } = Qs.parse(config.data)
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, {
+						code: '0001',
+						message: '操作成功',
+						result: null
+					}])
+				})
+			})
+ 		})
 	}
 }

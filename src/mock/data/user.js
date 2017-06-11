@@ -8,7 +8,7 @@ const UserPerssionList = [
         {name: '新建商品', link: '/provider/ware/new/chooseType', index: '/provider/ware/new/chooseType'},
         {name: '编辑商品', link: '/provider/ware/list', index: '/provider/ware/list'},
         {name: '商品上下架', link: '/provider/ware/shelfManage', index: '/provider/ware/shelfManage'},
-        {name: '商品出入库', link: '/provider/ware/houseManage', index: '/provider/ware/houseManage'},
+        {name: '商品出入库', link: '/provider/ware/stockManage', index: '/provider/ware/stockManage'},
       ]
     },
     {

@@ -14,7 +14,7 @@
       return {
         menu: [
           { name: '待确认订单', link: '/provider/order/confirmed' },
-          { name: '待支付订单', link: '#/pendingPayment' },
+          { name: '待支付订单', link: '/pendingPayment' },
           { name: '服务中订单', link: '/provider/order/inService' },
           { name: '订单结算', link: '/provider/order/settlement' },
           { name: '历史订单', link: '/provider/order/history' }

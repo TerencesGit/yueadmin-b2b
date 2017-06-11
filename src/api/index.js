@@ -38,7 +38,8 @@ export const addKind = data => { return axios.post('/ware/addKind', data) }
 export const delKind = data => { return axios.post('/ware/delKind', data) }
 // 商品列表
 export const getWareList = params => { return axios.get('/ware/getWareList', {params: params}) }
-
+// 商品上下架
+export const setShelfStatus = data => { return axios.post('/ware/shelfManage', data) }
 //多媒体
 export const uploadlist = data => { return axios.post('/upload/list', data) }
 

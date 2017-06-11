@@ -8,12 +8,11 @@ import Home from '@/pages/admin/home'
 
 const userManage = resolve => require(['@/pages/admin/userManage'], resolve)
 
-/********************  供应商管理   **************/
+/********************  供应商管理   ******************/
 // 品牌管理
 const brandManage = resolve => require(['@/pages/provider/brandManage'], resolve)
 
 // 商品管理-添加
-const addWare = resolve => require(['@/pages/provider/addWare'], resolve)
 const createWare = resolve => require(['@/pages/provider/ware/add/home'], resolve)
 const chooseType = resolve => require(['@/pages/provider/ware/add/chooseType'], resolve)
 const basicInfo = resolve => require(['@/pages/provider/ware/add/basicInfo'], resolve)
@@ -24,10 +23,14 @@ const priceStock = resolve => require(['@/pages/provider/ware/add/priceStock'], 
 const additionalService = resolve => require(['@/pages/provider/ware/add/additionalService'], resolve)
 const newAdditionalService = resolve => require(['@/pages/provider/ware/add/newAdditionalService'], resolve)
 const multiPassMaintain = resolve => require(['@/pages/provider/ware/add/multiPassMaintain'], resolve)
-// 商品管理
+
+// 商品管理-编辑
 const wareManage = resolve => require(['@/pages/provider/wareManage'], resolve)
 const wareList = resolve => require(['@/pages/provider/ware/edit/wareList'], resolve)
 const editWare = resolve => require(['@/pages/provider/ware/edit/home'], resolve)
+
+// 商品上下架
+const shelfManage = resolve => require(['@/pages/provider/ware/shelfManage'], resolve)
 
 // 订单管理
 const orderManage = resolve => require(['@/pages/provider/order/main'], resolve)
@@ -89,6 +92,9 @@ const routes = [
           { path: 'price_stock', name: '编辑商品-价格库存', component: priceStock },
         ] 
       },
+      {
+        path: 'shelfManage', name: '商品上下架', component: shelfManage
+      }
     ]
   },
   {
