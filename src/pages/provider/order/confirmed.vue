@@ -50,12 +50,11 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="1"
+        :current-page.sync="currentPage"
         :page-sizes="[10, 20, 30, 40]"
         :page-size="10"
-        layout="total, sizes, prev, next, jumper"
-        :total="100"
-      >
+        layout="total, sizes, prev, next, pager, jumper"
+        :total="50">
       </el-pagination>
     </el-row>
   </section>
@@ -68,6 +67,7 @@
           user: '',
           region: ''
         },
+        currentPage: 1,
         pickerOptions1: {
           shortcuts: [{
             text: '今天',

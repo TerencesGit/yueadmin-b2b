@@ -20,6 +20,17 @@
 				</template>
 			</el-table-column>
 		</el-table>
+		<el-row class="toolbar">
+			<el-pagination 
+				@size-change="handleSizeChange"
+	      @current-change="handleCurrentChange"
+	      :current-page.sync="currentPage"
+	      :page-sizes="[10, 20, 30, 40]"
+	      :page-size="10"
+	      layout="total, sizes, prev, pager, next, jumper"
+	      :total="50">
+			</el-pagination>
+		</el-row>
 	</section>
 </template>
 <script>
@@ -30,12 +41,16 @@
 				form: {
 					name: ''
 				},
+				currentPage: 1,
 				wareList: [{
 					wareId: '0001',
 					status: 0
 				},
 				{
 					wareId: '0002',
+					status: 1
+				},{
+					wareId: '0003',
 					status: 1
 				}]
 			}
@@ -61,8 +76,14 @@
 						}
 					})
 				}).catch(() => {
-					this.$message.info('取消操作')
+					this.$message.info('已取消操作')
 				})
+			},
+			handleSizeChange () {
+
+			},
+			handleCurrentChange () {
+
 			}
 		},
 	}

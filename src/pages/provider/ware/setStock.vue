@@ -5,20 +5,20 @@
       @dayClick="dayClick">
     </full-calendar>
     <el-dialog title="库存设置" v-model="setFormVisible">
-      <el-form :model="setForm" label-width="220px">
+      <el-form :model="setForm" label-width="220px" :rule="rules">
         <el-form-item label="日期：">
           <span>{{ setForm.date }}</span>
         </el-form-item>
         <el-form-item label="当前库存：">
         <span>{{ setForm.stock }}</span>
         </el-form-item>
-        <el-form-item label="操作类型：">
+        <el-form-item label="操作类型：" prop="type">
           <el-radio-group v-model="setForm.type">
             <el-radio class="radio" :label="0">出库</el-radio>
             <el-radio class="radio" :label="1">入库</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="出库/入库数量：">
+        <el-form-item label="出库/入库数量：" prop="stockNum">
           <el-input v-model.number="setForm.stockNum" placeholder="输入数量" class="select-width"></el-input>
         </el-form-item>
         <el-form-item>
@@ -42,6 +42,15 @@
           stock: '',
           type: '',
           stockNum: ''
+        },
+        rules: {
+          type: [
+            {required: true, message: '操作类型不能为空'}
+          ],
+          stockNum: [
+            { required: true, message: '数量不能为空'},
+            { type: 'number', message: '数量必须为数字值'}
+          ]
         }
   		}
   	},
@@ -59,8 +68,6 @@
 	      console.log('changeMonth', start.format(), end.format(), current.format())
 	    },
 	    dayClick (day, event) {
-        console.log(this.formatDate(day))
-        console.log(event)
         this.setFormVisible = true
         this.setForm.date = this.formatDate(day)
         this.setForm.stock = event && event.stock || 0
