@@ -5,31 +5,23 @@ axios.defaults.headers.common['Authorization'] = localStorage.getItem('sessionId
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.transformRequest = [(data) => { return Qs.stringify(data) }]
 axios.defaults.timeout = 5000
-const instant = axios.create({ baseURL: '/baseUrl' })
-const upload = axios.create({ 
+const loginUrl = axios.create({ baseURL: '/loginUrl' })
+const baseUrl = axios.create({ baseURL: '/baseUrl' })
+const uploadUrl = axios.create({ 
 	headers: {'Content-Type': 'multipart/form-data'},
   transformRequest: [function (data) {
     return data
   }]
 })
 // 登录
-export const requestLogin = data => { return instant.post('/user/loginByMobileAndPassword.json', data) }
+export const requestLogin = data => { return loginUrl.post('/user/loginByMobileAndPassword.json', data) }
 // 退出
-export const requestExit = data => { return instant.post('/user/logout.json', data) }
+export const requestExit = data => { return loginUrl.post('/user/logout.json', data) }
 // 获取用户信息
-export const getCustomerUserInfo = data => { return instant.post('/user/getCustomerUserInfo.json', data) }
-// 获取用户权限
-export const getPermissionList = () => { return axios.get('/user/permissionList.json') }
-// 用户列表
-export const getUserListPage = params => { return axios.get('/user/listpage', {params: params}) }
-// 用户删除
-export const removeUser = params => { return axios.get('/user/remove', {params: params}) }
-// 用户编辑
-export const editUser = params => { return axios.get('/user/edit', {params: params}) }
-// 用户新增
-export const addUser = data => { return axios.post('/user/add', data) }
+export const getCustomerUserInfo = data => { return loginUrl.post('/user/getCustomerUserInfo.json', data) }
+
 // 品牌列表
-export const getBrandList = params => { return axios.get('/provider/ware/getBrandList', {params: params}) }
+export const getBrandList = params => { return baseUrl.get('/brand/readBrandInfoList', {params: params}) }
 // 品牌编辑
 export const brandEdit = data => { return axios.post('ware/brand/edit', data) }
 // 品牌创建
@@ -49,6 +41,17 @@ export const getWareList = params => { return axios.get('/ware/getWareList', {pa
 
 //多媒体
 export const uploadlist = data => { return axios.post('/upload/list', data) }
+
+// 获取用户权限
+export const getPermissionList = () => { return axios.get('/user/permissionList.json') }
+// 用户列表
+export const getUserListPage = params => { return axios.get('/user/listpage', {params: params}) }
+// 用户删除
+export const removeUser = params => { return axios.get('/user/remove', {params: params}) }
+// 用户编辑
+export const editUser = params => { return axios.get('/user/edit', {params: params}) }
+// 用户新增
+export const addUser = data => { return axios.post('/user/add', data) }
 
 export const getRandomImage = () => { return axios.get('/user/getRandomImage.json') }
 

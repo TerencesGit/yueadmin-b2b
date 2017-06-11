@@ -8,8 +8,11 @@ import Home from '@/pages/admin/home'
 
 const userManage = resolve => require(['@/pages/admin/userManage'], resolve)
 
+/********************  供应商管理   **************/
+// 品牌管理
 const brandManage = resolve => require(['@/pages/provider/brandManage'], resolve)
 
+// 商品管理-添加
 const addWare = resolve => require(['@/pages/provider/addWare'], resolve)
 const createWare = resolve => require(['@/pages/provider/ware/add/home'], resolve)
 const chooseType = resolve => require(['@/pages/provider/ware/add/chooseType'], resolve)
@@ -21,17 +24,23 @@ const priceStock = resolve => require(['@/pages/provider/ware/add/priceStock'], 
 const additionalService = resolve => require(['@/pages/provider/ware/add/additionalService'], resolve)
 const newAdditionalService = resolve => require(['@/pages/provider/ware/add/newAdditionalService'], resolve)
 const multiPassMaintain = resolve => require(['@/pages/provider/ware/add/multiPassMaintain'], resolve)
-
+// 商品管理
 const wareManage = resolve => require(['@/pages/provider/wareManage'], resolve)
 const wareList = resolve => require(['@/pages/provider/ware/edit/wareList'], resolve)
 const editWare = resolve => require(['@/pages/provider/ware/edit/home'], resolve)
 
+// 订单管理
+const orderManage = resolve => require(['@/pages/provider/order/main'], resolve)
+const confirmed = resolve => require(['@/pages/provider/order/confirmed'], resolve)
 
 const categoryManage = resolve => require(['@/pages/admin/system/categoryManage'], resolve)
 
 const html5Editor = resolve => require(['@/pages/tools/VueHtml5Editor'], resolve)
 const UEditor = resolve => require(['@/pages/tools/UEditor'], resolve)
 
+/********************  分销商管理   **************/
+
+/********************  平台管理   ***************/
 const routes = [
   {
     path: '/',
@@ -79,6 +88,18 @@ const routes = [
           { path: 'book_limit', name: '编辑商品-费用/预定限制', component: bookLimit },
           { path: 'price_stock', name: '编辑商品-价格库存', component: priceStock },
         ] 
+      },
+    ]
+  },
+  {
+    path: '/provider',
+    name: '供应商',
+    component: Layout,
+    children: [
+      { path: 'order', name: '订单管理', component: orderManage,
+        children: [
+          { path: 'confirmed', name: '待确认订单', component: confirmed }
+        ]
       },
     ]
   },

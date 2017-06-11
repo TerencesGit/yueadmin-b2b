@@ -129,7 +129,6 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-switch v-model="editForm.status" on-text="启用" off-text="禁用"></el-switch>
-          <span>{{editForm.status}}</span>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

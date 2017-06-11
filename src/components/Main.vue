@@ -4,7 +4,7 @@
 			<div class="container-fluid">
 				<el-breadcrumb separator="/" class="breadcrumb-inner">
 					<el-breadcrumb-item v-for="item in $route.matched" :key="item.path">
-						{{ item.name }}
+						<router-link :to="item.path">{{ item.name }}</router-link>
 					</el-breadcrumb-item>
 				</el-breadcrumb>
 				<transition name="fade" mode="out-in">

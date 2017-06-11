@@ -118,6 +118,9 @@ input:focus {
   .el-form-item {
     margin-bottom: 10px;
   }
+  .el-pagination {
+    float: right
+  }
 }
 .bg-white {
   background: #fff
@@ -253,11 +256,15 @@ table {
 .el-input--block {
   width: 100%
 }
+.min-height.el-menu--horizontal .el-menu-item {
+  height: 40px;
+  line-height: 40px
+}
 
 /*供应商商品管理-新建商品-多媒体*/
 .mediaUpload .el-upload--picture-card{
     width: 80px;
-    height: 80px;
+    height: 80px; 
     line-height: 80px;
 }
 .mediaDialog .el-dialog--small{
