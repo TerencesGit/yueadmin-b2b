@@ -8,7 +8,7 @@ import Home from '@/pages/admin/home'
 
 const userManage = resolve => require(['@/pages/admin/userManage'], resolve)
 
-/********************  供应商管理   ******************/
+/********************  供应商管理 start  ******************/
 // 品牌管理
 const brandManage = resolve => require(['@/pages/provider/brandManage'], resolve)
 
@@ -32,18 +32,28 @@ const editWare = resolve => require(['@/pages/provider/ware/edit/home'], resolve
 // 商品上下架
 const shelfManage = resolve => require(['@/pages/provider/ware/shelfManage'], resolve)
 
+// 商品出入库
+const stockManage = resolve => require(['@/pages/provider/ware/stockManage'], resolve)
+const stockSet = resolve => require(['@/pages/provider/ware/setStock'], resolve)
+
 // 订单管理
 const orderManage = resolve => require(['@/pages/provider/order/main'], resolve)
 const confirmed = resolve => require(['@/pages/provider/order/confirmed'], resolve)
 
-const categoryManage = resolve => require(['@/pages/admin/system/categoryManage'], resolve)
-
+// 其他
 const html5Editor = resolve => require(['@/pages/tools/VueHtml5Editor'], resolve)
 const UEditor = resolve => require(['@/pages/tools/UEditor'], resolve)
 
-/********************  分销商管理   **************/
+/********************  供应商管理 end  ******************/
 
-/********************  平台管理   ***************/
+/********************  分销商管理 start  ******************/
+
+/********************  分销商管理 end ******************/
+
+/********************  平台管理 start  *******************/
+const categoryManage = resolve => require(['@/pages/admin/system/categoryManage'], resolve)
+
+/********************  平台管理 end  *******************/
 const routes = [
   {
     path: '/',
@@ -94,7 +104,13 @@ const routes = [
       },
       {
         path: 'shelfManage', name: '商品上下架', component: shelfManage
-      }
+      },
+      {
+        path: 'stockManage', name: '商品出入库', component: stockManage
+      },
+      {
+        path: 'stockSet', name: '商品库存设置', component: stockSet
+      },
     ]
   },
   {

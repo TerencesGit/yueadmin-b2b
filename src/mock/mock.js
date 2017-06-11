@@ -269,6 +269,7 @@ export default {
 				}, 500)
 			})
 		})
+		// 商品上下架
 		mock.onPost('/ware/shelfManage').reply(config => {
 			let { wareId, status } = Qs.parse(config.data)
 			return new Promise((resolve, reject) => {
@@ -278,8 +279,48 @@ export default {
 						message: '操作成功',
 						result: null
 					}])
-				})
+				}, 500)
 			})
+ 		})
+ 		// 商品库存
+ 		mock.onGet('/ware/getStockByWareId').reply(config => {
+ 			let { id } = config.params
+ 			console.log(id)
+ 			let stockList = [
+		    {
+		      start: '2017-06-06',
+		      stock: '100'
+		    },
+		    {
+		      start: '2017-06-07',
+		      stock: '100'
+		    },
+		    {
+		      start: '2017-06-08',
+		      stock: '100'
+		    },
+		    {
+		      start: '2017-06-09',
+		      stock: '100'
+		    },
+		    {
+		      start: '2017-06-10',
+		      stock: '100'
+		    },
+		    {
+		      start: '2017-05-30',
+		      stock: '100'
+		    },
+		  ]
+ 			return new Promise((resolve, reject) => {
+ 				setTimeout(() => {
+ 					resolve([200, {
+ 						code: '0001',
+ 						message: '操作成功',
+ 						result: stockList
+ 					}])
+ 				}, 500)
+ 			})
  		})
 	}
 }
