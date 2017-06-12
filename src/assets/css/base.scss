@@ -262,44 +262,31 @@ table {
 }
 
 /*供应商商品管理-新建商品-多媒体*/
-.mediaUpload .el-upload--picture-card{
-    width: 80px;
-    height: 80px; 
-    line-height: 80px;
+.media-upload .el-upload--picture-card {
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
 }
-.mediaDialog .el-dialog--small{
-    width: 70%;
+.media-dialog .el-dialog--small .el-dialog__header {
+  border-bottom: 2px solid #cccccc;
+  padding-bottom: 12px;
 }
-.mediaDialog .el-dialog--small .el-dialog__header{
-    border-bottom:2px solid #cccccc;
-    padding-bottom:12px;
+.media-dialog .el-dialog__body {
+  padding-top: 2px;  
 }
-.mediaDialog .el-dialog__body{
-  padding-top:2px;  
+.media-dialog .media-upload {
+  padding-bottom: 15px;
 }
-.mediaDialog .mediaUpload{
-  border-bottom: 1px solid #ccc;
-  padding: 0 20px 15px;
-}
-.mediaDialog .el-form{
-  padding: 20px 10px;
-}
-.ipts .el-form-item:last-child{
-  margin-right: 0;
-}
-.ipts .el-form-item__content{
-  width: 62%;
-}
-.mediaUpload .el-upload-list--picture-card .el-upload-list__item{
+.media-upload .el-upload-list--picture-card .el-upload-list__item {
   width: 80px;
   height: 80px;
 }
-.upbtn .el-upload--picture-card{
+.upload-button .el-upload--picture-card {
   background: #c0ccda;
 }
-.upbtn .el-upload--picture-card:hover{
+.upload-button .el-upload--picture-card:hover {
   border-color: #c0ccda;
 }
-.upbtn .el-upload--picture-card i{
-  color:#fff;
-}
+.upload-button .el-upload--picture-card i {
+  color: #fff;
+} 

@@ -87,7 +87,7 @@
 					  </el-form-item>
 					</el-card>
 					<el-card>
-						<p>推荐概述 最多8000字</p>
+						<p><strong>推荐概述</strong><span style="margin-left: 15px; font-size: 14px">最多输入8000个字符</span></p>
 						<vue-html5-editor :content="content" :height="400"></vue-html5-editor>
 					</el-card>
 					<el-button class="m-l" @click="booking = !booking">预定控制</el-button>

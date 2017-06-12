@@ -240,17 +240,15 @@
   
 </script>
 <style lang="scss" scoped>
-  .comp-full-calendar{
+  .comp-full-calendar {
+    margin: 0 auto;
     padding: 20px;
     background: #fff;
-    // max-width: 960px;
-    margin: 0 auto;
-    ul,p{
+    ul, p {
       margin: 0;
       padding: 0;
     }
   }
-
   .full-calendar-body{
     margin-top: 20px;
   .weeks{
@@ -297,56 +295,51 @@
     left:0;
     z-index:1;
     width: 100%;
-  .events-week{
-    display: flex;
-  .events-day{
-    cursor: pointer;
-    flex:1;
-    min-height: 112px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  .day-number{
-    text-align: right;
-    padding:4px 5px 4px 4px;
-    opacity: 0;
-  }
-  &.not-cur-month{
-  .day-number{
-    color:rgba(0,0,0,.24);
-  }
-  }
-  .event-box{
-  .event-item{
-    cursor: pointer;
-    font-size:12px;
-    // background-color:#C7E6FD;
-    margin-bottom:2px;
-    color: rgba(0,0,0,.87);
-    padding:0 0 0 4px;
-     p {
-      margin: 10px 0
-     }
-  &.is-start{
-     margin-left: 4px;
-   }
-  &.is-end{
-     margin-right: 4px;
-   }
-  &.is-opacity{
-     opacity: 0;
-   }
-  }
-  .more-link{
-    cursor: pointer;
-  // text-align: right;
-    padding-left: 8px;
-    padding-right: 2px;
-    color: rgba(0,0,0,.38);
-    font-size: 14px;
-  }
-  }
-  }
-  }
+    .events-week{
+      display: flex;
+      .events-day{
+        cursor: pointer;
+        flex:1;
+        min-height: 112px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        .day-number{
+          text-align: right;
+          padding:4px 5px 4px 4px;
+          opacity: 0;
+        }
+        &.not-cur-month{
+          .day-number{
+            color:rgba(0,0,0,.24);
+          }
+        }
+        .event-box {
+          .event-item {
+            cursor: pointer;
+            font-size:12px;
+            margin-bottom:2px;
+            color: rgba(0,0,0,.87);
+            padding:0 0 0 4px;
+            &.is-start{
+              margin-left: 4px;
+            }
+            &.is-end{
+               margin-right: 4px;
+            }
+            &.is-opacity{
+               opacity: 0;
+            }
+          }
+          .more-link{
+            cursor: pointer;
+            padding-left: 8px;
+            padding-right: 2px;
+            color: rgba(0,0,0,.38);
+            font-size: 14px;
+          }
+        }
+      }
+    }
   }
   .more-events{
     position:absolute;

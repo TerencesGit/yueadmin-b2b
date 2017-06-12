@@ -1,7 +1,9 @@
 <template>
     <div class="event-item" :class="cssClasses"
        @click="$emit('click', event, $event)">
-        <p class="price" v-if="event.price">价格：￥{{ event.price }}</p>
+        <p class="adultPrice" v-if="event.adultPrice">成人价格：￥{{ event.adultPrice }}</p>
+        <p class="childPrice" v-if="event.childPrice">儿童价格：￥{{ event.childPrice }}</p>
+        <p class="singlePrice" v-if="event.singlePrice">单人数补差：￥{{ event.price }}</p>
         <p class="stock" v-if="event.stock">库存： {{ event.stock }}</p>
        <!--  <slot :event="event" v-if="showTitle">
             Default: {{ event }}
@@ -50,3 +52,8 @@
         }
     }
 </script>
+<style scoped>
+    .event-item p {
+        margin: 5px 0;
+    }
+</style>

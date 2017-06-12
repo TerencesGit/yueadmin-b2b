@@ -26,7 +26,7 @@
       </el-table-column>
       <el-table-column prop="brandPage" label="专题页" width="250">
       </el-table-column>
-      <el-table-column prop="updateTime" label="更新时间" width="120" sortable>
+      <el-table-column prop="updateTime" label="更新时间" width="200" sortable>
       </el-table-column>
       <!-- <el-table-column prop="status" label="状态" width="120">
          <template scope="scope">
@@ -81,7 +81,7 @@
             :before-upload="beforeUpload"
             :auto-upload="true">
             <img v-if="addForm.logoUrl" :src="addForm.logoUrl" class="logo">
-            <i v-else class="el-icon-plus uploader-icon" v-loading="uploading"></i>
+            <i v-else class="el-icon-pl us uploader-icon" v-loading="uploading"></i>
           </el-upload>
         </el-form-item>
         <el-form-item label="品牌描述" prop="content">
@@ -199,15 +199,16 @@ export default {
     getBrands () {
       this.loading = true
       let data = {
-        name: this.filters.name,
-        page: this.page,
+        brandName: this.filters.name,
+        currPage: this.page,
         pageSize: this.pageSize,
       }
       getBrandList(data).then((res) => {
         console.log(res)
         if (res.data.code === '0001') {
-          this.brands = res.data.brandList
-          this.total = res.data.total
+          let result = res.data.result
+          this.brands = result.brandInfo
+          this.total = result.pageInfo.count
         } else {
           this.$message.error('获取失败')
         }
