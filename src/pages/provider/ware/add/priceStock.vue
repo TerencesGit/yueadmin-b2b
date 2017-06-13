@@ -1,14 +1,14 @@
 <template>
 	<section>
     <el-row class="toolbar">
-      <el-button type="primary" @click="setFormVisible = true">批量设置</el-button>
+      <el-button type="primary" @click="skuFormVisible = true">批量设置</el-button>
     </el-row>
 		<full-calendar :events="fcEvents" first-day='0' 
       @changeMonth="changeMonth" 
       @dayClick="dayClick">
     </full-calendar>
-    <el-dialog title="库存设置" v-model="setFormVisible">
-      <el-form :model="setForm" label-width="220px" :rule="rules">
+    <el-dialog title="库存设置" v-model="skuFormVisible">
+      <el-form :model="skuForm" label-width="160px" :rule="rules">
         <el-form-item label="起止日期：">
           <el-date-picker
             v-model="value7"
@@ -18,27 +18,27 @@
             :picker-options="pickerOptions2">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="" label-width="140px">
+        <el-form-item label="" label-width="80px">
           <el-checkbox v-model="checkAll" @change="handleCheckAllChange">每天</el-checkbox>
           <el-checkbox-group v-model="checkedWeeks" @change="handleCheckedCitiesChange" style="display: inline-block">
-            <el-checkbox v-for="week in weeks" :label="week" :key="week">{{week}}</el-checkbox>
+            <el-checkbox v-for="(item, index) in weeks" :label="item" :key="index">{{item}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item label="当前库存：">
         <span>{{ value7[0] }}</span>
         </el-form-item>
         <el-form-item label="操作类型：" prop="type">
-          <el-radio-group v-model="setForm.type">
+          <el-radio-group v-model="skuForm.type">
             <el-radio class="radio" :label="0">出库</el-radio>
             <el-radio class="radio" :label="1">入库</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="出库/入库数量：" prop="stockNum">
-          <el-input v-model.number="setForm.stockNum" placeholder="输入数量" class="select-width"></el-input>
+        <el-form-item label="库存：" prop="stockNum">
+          <el-input v-model.number="skuForm.stockNum" placeholder="输入数量" class="select-width"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit">提交</el-button>
-          <el-button @click="setFormVisible = false">取消</el-button>
+          <el-button @click="skuFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -83,13 +83,13 @@
       stock: '100'
     },
   ];
-  const weekOptions = ['周一', '周二', '周三', '周四', '周五', '周六', '周天'];
+  const weekOptions = ['每周日', '每周一', '每周二', '每周三', '每周四', '每周五', '每周六'];
   export default {
   	data () {
   		return {
   			fcEvents : demoEvents,
-        setFormVisible: false,
-        setForm: {
+        skuFormVisible: false,
+        skuForm: {
           wareId: '',
           date: '',
           stock: '',
@@ -145,6 +145,7 @@
         // this.isIndeterminate = false;
       },
       handleCheckedCitiesChange(value) {
+        console.log(value)
         let checkedCount = value.length;
         this.checkAll = checkedCount === this.weeks.length;
         this.isIndeterminate = checkedCount > 0 && checkedCount < this.weeks.length;

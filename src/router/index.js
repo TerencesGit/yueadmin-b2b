@@ -10,24 +10,25 @@ const userManage = resolve => require(['@/pages/admin/userManage'], resolve)
 
 /********************  供应商管理 start  ******************/
 // 品牌管理
-const brandManage = resolve => require(['@/pages/provider/brandManage'], resolve)
+const ProBrandManage = resolve => require(['@/pages/provider/brandManage'], resolve)
+// 商品管理
+const ProWareManage = resolve => require(['@/pages/provider/wareManage'], resolve)
+// 商品信息-添加
+const ProWareNew = resolve => require(['@/pages/provider/ware/add/main'], resolve)
+const ProWareChooseType = resolve => require(['@/pages/provider/ware/add/chooseType'], resolve)
+const ProWareBaseInfo = resolve => require(['@/pages/provider/ware/add/basicInfo'], resolve)
+const ProWareCreate = resolve => require(['@/pages/provider/ware/add/create'], resolve)
+const ProWareTourItinerary = resolve => require(['@/pages/provider/ware/add/tourItinerary'], resolve)
+const ProWareMultiMedia = resolve => require(['@/pages/provider/ware/add/multimedia'], resolve)
+const ProWareBookLimit = resolve => require(['@/pages/provider/ware/add/bookLimit'], resolve)
+const ProWareSkuSet = resolve => require(['@/pages/provider/ware/add/priceStock'], resolve)
+const ProWareAddiService = resolve => require(['@/pages/provider/ware/add/additionalService'], resolve)
+const ProWareAddiServiceNew = resolve => require(['@/pages/provider/ware/add/newAdditionalService'], resolve)
+const ProWareMultiPassMaintain = resolve => require(['@/pages/provider/ware/add/multiPassMaintain'], resolve)
 
-// 商品管理-添加
-const createWare = resolve => require(['@/pages/provider/ware/add/home'], resolve)
-const chooseType = resolve => require(['@/pages/provider/ware/add/chooseType'], resolve)
-const basicInfo = resolve => require(['@/pages/provider/ware/add/basicInfo'], resolve)
-const tourItinerary = resolve => require(['@/pages/provider/ware/add/tourItinerary'], resolve)
-const multiMedia = resolve => require(['@/pages/provider/ware/add/multimedia'], resolve)
-const bookLimit = resolve => require(['@/pages/provider/ware/add/bookLimit'], resolve)
-const priceStock = resolve => require(['@/pages/provider/ware/add/priceStock'], resolve)
-const additionalService = resolve => require(['@/pages/provider/ware/add/additionalService'], resolve)
-const newAdditionalService = resolve => require(['@/pages/provider/ware/add/newAdditionalService'], resolve)
-const multiPassMaintain = resolve => require(['@/pages/provider/ware/add/multiPassMaintain'], resolve)
-
-// 商品管理-编辑
-const wareManage = resolve => require(['@/pages/provider/wareManage'], resolve)
-const wareList = resolve => require(['@/pages/provider/ware/edit/wareList'], resolve)
-const editWare = resolve => require(['@/pages/provider/ware/edit/home'], resolve)
+// 商品信息-编辑
+const ProWareList = resolve => require(['@/pages/provider/ware/edit/wareList'], resolve)
+const ProWareEdit = resolve => require(['@/pages/provider/ware/edit/home'], resolve)
 
 // 商品上下架
 const shelfManage = resolve => require(['@/pages/provider/ware/shelfManage'], resolve)
@@ -74,32 +75,32 @@ const routes = [
     name: '供应商-商品管理',
     component: Layout,
     children: [
-      { path: 'brandManage', name: '品牌管理', component: brandManage },
-      { path: 'list', name: '商品列表', component: wareList },
+      { path: 'brandManage', name: '品牌管理', component: ProBrandManage },
+      { path: 'list', name: '商品列表', component: ProWareList },
       { 
-        path: 'new', name: '新建商品', component: createWare,
+        path: 'new', name: '新建商品', component: ProWareNew,
         children: [
-          { path: 'chooseType', name: '新建商品-选择类别', component: chooseType },
-          { path: 'basicInfo_travel', name: '新建商品-基本信息-旅游', component: bookLimit },
-          { path: 'basicInfo_photography', name: '新建商品-基本信息-拍摄', component: basicInfo },
-          { path: 'tour_itinerary', name: '新建商品-行程介绍', component: tourItinerary },
-          { path: 'multiMedia', name: '新建商品-多媒体', component: multiMedia },
-          { path: 'book_limit', name: '新建商品-费用/预定限制', component: bookLimit },
-          { path: 'price_stock', name: '新建商品-价格库存', component: priceStock },
-          { path: 'multiPassMaintain', name: '新建商品-多行程维护', component: multiPassMaintain },
-          { path: 'additionalService', name: '新建商品-附加服务', component: additionalService },
-          { path: 'newAdditionalService', name: '新建商品-新增附加服务', component: newAdditionalService },
+          { path: 'chooseType', name: '新建商品-选择类别', component: ProWareChooseType },
+          { path: 'basicInfo_travel', name: '新建商品-基本信息-旅游', component: ProWareBaseInfo },
+          { path: 'basicInfo_photography', name: '新建商品-基本信息-拍摄', component: ProWareCreate },
+          { path: 'tour_itinerary', name: '新建商品-行程介绍', component: ProWareTourItinerary },
+          { path: 'multiMedia', name: '新建商品-多媒体', component: ProWareMultiMedia },
+          { path: 'book_limit', name: '新建商品-费用/预定限制', component: ProWareBookLimit },
+          { path: 'price_stock', name: '新建商品-价格库存', component: ProWareSkuSet },
+          { path: 'additionalService', name: '新建商品-附加服务', component: ProWareAddiService },
+          { path: 'newAdditionalService', name: '新建商品-新增附加服务', component: ProWareAddiServiceNew },
+          { path: 'multiPassMaintain', name: '新建商品-多行程维护', component: ProWareMultiPassMaintain },
         ] 
       },
       { 
-        path: 'edit', name: '编辑商品', component: editWare,
+        path: 'edit', name: '编辑商品', component: ProWareEdit,
         children: [
-          { path: 'basicInfo_traval', name: '编辑商品-基本信息-旅游', component: wareManage },
-          { path: 'basicInfo_photography', name: '编辑商品-基本信息-拍摄', component: basicInfo },
-          { path: 'tour_itinerary', name: '编辑商品-行程介绍', component: tourItinerary },
-          { path: 'multiMedia', name: '编辑商品-多媒体', component: multiMedia },
-          { path: 'book_limit', name: '编辑商品-费用/预定限制', component: bookLimit },
-          { path: 'price_stock', name: '编辑商品-价格库存', component: priceStock },
+          { path: 'basicInfo_traval', name: '编辑商品-基本信息-旅游', component: ProWareManage },
+          { path: 'basicInfo_photography', name: '编辑商品-基本信息-拍摄', component: ProWareBaseInfo },
+          { path: 'tour_itinerary', name: '编辑商品-行程介绍', component: ProWareTourItinerary },
+          { path: 'multiMedia', name: '编辑商品-多媒体', component: ProWareMultiMedia },
+          { path: 'book_limit', name: '编辑商品-费用/预定限制', component: ProWareBookLimit },
+          { path: 'price_stock', name: '编辑商品-价格库存', component: ProWareSkuSet },
         ] 
       },
       {
