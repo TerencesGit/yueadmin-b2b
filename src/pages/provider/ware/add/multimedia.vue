@@ -42,14 +42,16 @@
 		</el-row>
 		<el-row type="flex" justify="center">
 			<el-col :span="20">	
-				<el-upload class="media-upload"
-			  		action="https://jsonplaceholder.typicode.com/posts/"
+				<el-upload 
+						class="media-upload"
+			  		action="/imgUploadUrl"
 			  		list-type="picture-card"
 			  		:on-preview="handlePictureCardPreview"
 			  		:on-remove="handleRemove"
 			  		:before-upload="beforeAvatarUpload"
 			  		:on-change="handleChange"
 			  		:on-success="handleSuccess"
+			  		:on-error="handleError"
 			  		:multiple="true"
 			  		:disabled="isUpload"
 			  		:class="{'upload-button':isUpload}"
@@ -226,15 +228,19 @@
 			},
 			handlePictureCardPreview (file, fileList) {
 				this.dialogImageUrl = file.url;
-		        this.dialogVisible = true;			        
-	      	},
-	      	handleChange (file, fileList) {
-	      		this.list = fileList;
-	      	},
-	      	handleSuccess (response,file,fileList) {
-	      		this.form.les = fileList.length;	
-	      		this.url.push(file.url);			      		
-	      	},
+        this.dialogVisible = true;			        
+    	},
+    	handleChange (file, fileList) {
+    		this.list = fileList;
+    	},
+    	handleSuccess (response,file,fileList) {
+    		console.log(response)
+    		this.form.les = fileList.length;	
+    		this.url.push(file.url);			      		
+    	},
+    	handleError (err, file) {
+    		console.log(err)
+    	},
 			handleRemove (file, fileList) {
                 this.form.les = fileList.length;
         		this.url.forEach((v,i,a) => {

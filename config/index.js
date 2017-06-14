@@ -41,6 +41,13 @@ module.exports = {
         pathRewrite: {
           '^/baseUrl': ''
         }
+      },
+      '/imgUploadUrl': {
+        target: 'http://192.168.199.115:8080/yue_yb2b/ware/file/upload',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/imgUploadUrl': ''
+        }
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

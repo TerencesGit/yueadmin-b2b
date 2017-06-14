@@ -22,6 +22,7 @@ import FullCalendar from '@/components/fullcalendar'
 import BackButton from '@/components/back-button'
 import LinkStep from '@/components/step'
 import LinkSteps from '@/components/steps'
+import RegionPicker from '@/components/region-picker'
 NProgress.configure({ ease: 'ease', speed: 500, minimum: 0.5, showSpinner: false})
 Mock.bootstrap()
 Vue.prototype.$moment = moment
@@ -32,6 +33,7 @@ Vue.use(FullCalendar)
 Vue.use(BackButton)
 Vue.use(LinkStep)
 Vue.use(LinkSteps)
+Vue.use(RegionPicker)
 const editorOptions = {
     image: {
         // 文件最大体积，单位字节  max file size 

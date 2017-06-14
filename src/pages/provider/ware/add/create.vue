@@ -71,14 +71,12 @@
 					  <el-row>
 						  <el-col :span="12">
 							  <el-form-item label="出发城市" prop="srcCityCode">
-							    <el-input v-model="wareForm.srcCityCode" placeholder="出发城市"></el-input>
+							  	<region-picker v-model="wareForm.srcCityCode" @change="srcCityChange"></region-picker>
 							  </el-form-item>
 						  </el-col>
 						  <el-col :span="12">
 							  <el-form-item label="目的城市" prop="dstCityCode">
-							  	<el-col :span="20">
-							    	<el-input v-model="wareForm.dstCityCode" placeholder="目的城市"></el-input>
-							    </el-col>
+							  	<region-picker v-model="wareForm.srcCityCode" @change="dstCityChange"></region-picker>
 							  </el-form-item>
 						  </el-col>
 					  </el-row>
@@ -140,7 +138,6 @@
 </template>
 <script>
   import { getBrandList } from '@/api'
-  // import city from '@/assets/js/city'
 	export default {
     data () {
       return {
@@ -194,9 +191,6 @@
             }
           }]
         },
-        openDate: '',
-        closeDate: '',
-        content: 'html5Editor'
         // rules: {
         //   name: [
         //     { required: true, message: '请输入活动名称', trigger: 'blur' },
@@ -250,6 +244,12 @@
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
+      },
+      srcCityChange (code) {
+      	this.wareForm.srcCityCode = code
+      },
+      dstCityChange (code) {
+      	this.wareForm.dstCityCode = code
       }
     },
     mounted () {
