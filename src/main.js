@@ -35,16 +35,31 @@ Vue.use(LinkStep)
 Vue.use(LinkSteps)
 Vue.use(RegionPicker)
 const editorOptions = {
+    visibleModules: [
+      "text",
+      "color",
+      "font",
+      "align",
+      "list",
+      "link",
+      "unlink",
+      "tabulation",
+      "image",
+      "hr",
+      "eraser",
+      "undo",
+      "full-screen",
+    ],
     image: {
         // 文件最大体积，单位字节  max file size 
         sizeLimit: 512 * 1024,
         // 上传参数,默认把图片转为base64而不上传 
         // upload config,default null and convert image to base64 
         upload: {
-            url: 'http://localhost:3000/brand/provider/brandUpload',
+            url: '/imgUploadUrl',
             headers: {},
             params: {},
-            fieldName: 'image'
+            fieldName: 'fileName'
         },
         // 压缩参数,默认使用localResizeIMG进行压缩,设置为null禁止压缩 
         // compression config,default resize image by localResizeIMG (https://github.com/think2011/localResizeIMG) 
@@ -56,13 +71,15 @@ const editorOptions = {
         },
         // 响应数据处理,最终返回图片链接 
         // handle response data，return image url 
-        uploadHandler(responseText){
+        uploadHandler (responseText) {
             //default accept json data like  {ok:false,msg:"unexpected"} or {ok:true,data:"image url"} 
-            var json = JSON.parse(responseText)
-            if (!json.ok) {
-                alert(json.msg)
+            let data = JSON.parse(responseText)
+            console.log(json)
+            if (data.code === '0001') {
+                console.log(data.result)
+                return data.result
             } else {
-                return json.data
+               alert(data.message)
             }
         }
     },

@@ -1,26 +1,26 @@
 <template>
-	<section class="region-picker">
+	<section class="region-picker" v-bind:style="{width: width + 'px'}">
 		<el-input v-model="areaName" :placeholder="placeholder" @focus="pickerVisible = true"></el-input>
 		<el-dialog v-model="pickerVisible" title="选择城市">
 			<el-form :model="pickerForm" :inline="true" ref="pickerForm" :rules="pickerRules" label-width="50px">
 				<el-form-item label="国家" prop="country">
           <el-select v-model="pickerForm.country" @change="countryChange">
-			      <el-option v-for="item in countries" :label="item.name" :value="item.id"></el-option>
+			      <el-option v-for="item in countries" :label="item.name" :value="item.id" :key="item.id"></el-option>
 			    </el-select>
         </el-form-item>
         <el-form-item label="省" prop="province">
           <el-select v-model="pickerForm.province" @change="provinceChange">
-			      <el-option v-for="item in provinces" :label="item.name" :value="item.id"></el-option>
+			      <el-option v-for="item in provinces" :label="item.name" :value="item.id" :key="item.id"></el-option>
 			    </el-select>
         </el-form-item>
         <el-form-item label="市" prop="city">
           <el-select v-model="pickerForm.city" @change="cityChange">
-			      <el-option v-for="item in city" :label="item.name" :value="item.id"></el-option>
+			      <el-option v-for="item in city" :label="item.name" :value="item.id" :key="item.id"></el-option>
 			    </el-select>
         </el-form-item>
         <el-form-item label="区/县" prop="district">
           <el-select v-model="pickerForm.district" @change="districtChange">
-			      <el-option v-for="item in district" :label="item.name" :value="item.id"></el-option>
+			      <el-option v-for="item in district" :label="item.name" :value="item.id" :key="item.id"></el-option>
 			    </el-select>
         </el-form-item>
       </el-form>
@@ -40,6 +40,7 @@
 				type: String,
 				default: '选择城市'
 			},
+			width: String
 		},
 		data () {
 			return {

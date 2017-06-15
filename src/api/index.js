@@ -3,14 +3,17 @@ import Qs from 'qs'
 axios.defaults.baseURL = ''
 axios.defaults.headers.common['Authorization'] = localStorage.getItem('sessionId')
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-axios.defaults.transformRequest = [(data) => { return Qs.stringify(data) }]
+axios.defaults.transformRequest = [(data) => { 
+	return Qs.stringify(data)
+}]
 axios.defaults.timeout = 5000
 const loginUrl = axios.create({ baseURL: '/loginUrl' })
 const baseUrl = axios.create({ baseURL: '/baseUrl' })
 const uploadUrl = axios.create({ 
+	baseURL: '/baseUrl',
 	headers: {'Content-Type': 'multipart/form-data'},
   transformRequest: [function (data) {
-    return data
+    return data  
   }]
 })
 // 登录
@@ -22,6 +25,9 @@ export const getCustomerUserInfo = data => { return loginUrl.post('/user/getCust
 
 // 品牌列表
 export const getBrandList = params => { return baseUrl.get('/brand/readBrandInfoList', {params: params}) }
+
+// 多媒体上传
+export const createWareFile = data => { return baseUrl.post('/ware/file/createWareFile', data) }
 // 品牌编辑
 export const brandEdit = data => { return axios.post('ware/brand/edit', data) }
 // 品牌创建

@@ -1,7 +1,7 @@
 <template>
   <section>
   	<el-menu :default-active="$route.path" class="min-height" mode="horizontal" @select="handleSelect">
-  	  <el-menu-item v-for="item in menu" :index="item.link">
+  	  <el-menu-item v-for="(item, index) in menu" :index="item.link" :key="index">
         <router-link :to="item.link">{{ item.name }}</router-link>
       </el-menu-item>
   	</el-menu>

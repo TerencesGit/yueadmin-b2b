@@ -6,23 +6,11 @@
 					<el-card class="input-width">
 						<el-row>
 					  	<el-col :span="12">
-					  		<el-form-item label="商品编码" prop="wareCode">
-						    	<el-input v-model="wareForm.wareCode" placeholder="商品编码"></el-input>
-							  </el-form-item>
-					  	</el-col>
-					  	<el-col :span="12">
 					  		<el-form-item label="商品名称" prop="wareName">
 						    	<el-input v-model="wareForm.wareName" placeholder="商品名称"></el-input>
 							  </el-form-item>
 					  	</el-col>
-					  </el-row>
-						<el-row>
-							<el-col :span="12">
-								<el-form-item label="行程天数" prop="tripDays" style="height: 36px">
-							    <el-input-number v-model="wareForm.tripDays" :min="1" :max="30" style="width: 140px"></el-input-number>
-							  </el-form-item>
-							</el-col>
-							<el-col :span="12">
+					  	<el-col :span="12">
 								<el-form-item label="可售渠道" prop="channel">
 							    <el-select v-model="wareForm.channel">
 							      <el-option label="Web渠道" value="0001"></el-option>
@@ -31,7 +19,7 @@
 							    </el-select>
 							  </el-form-item>
 							</el-col>
-						</el-row>
+					  </el-row>
 					  <el-row>
 					  	<el-col :span="12">
 					  		<el-form-item label="商品缩略名" prop="briefName">
@@ -71,12 +59,12 @@
 					  <el-row>
 						  <el-col :span="12">
 							  <el-form-item label="出发城市" prop="srcCityCode">
-							  	<region-picker v-model="wareForm.srcCityCode" @change="srcCityChange"></region-picker>
+							  	<region-picker v-model="wareForm.srcCityCode" width="217" @change="srcCityChange"></region-picker>
 							  </el-form-item>
 						  </el-col>
 						  <el-col :span="12">
 							  <el-form-item label="目的城市" prop="dstCityCode">
-							  	<region-picker v-model="wareForm.srcCityCode" @change="dstCityChange"></region-picker>
+							  	<region-picker v-model="wareForm.srcCityCode" width="217" @change="dstCityChange"></region-picker>
 							  </el-form-item>
 						  </el-col>
 					  </el-row>
@@ -86,20 +74,66 @@
 					  	<el-col :span="12">
 					  		<el-form-item label="商品品牌">
 						    	<el-select v-model="wareForm.brandId">
-							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.brandId"></el-option>
+							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.brandId" :key="item.brandId"></el-option>
 							    </el-select> 
 							  </el-form-item>
 					  	</el-col>
 					  	<el-col :span="12">
-					  		<el-form-item label="商品关键字" prop="keyWords">
-						    	<el-input v-model="wareForm.keyWords" placeholder="关键字以英文逗号分隔"></el-input>
+					  		<el-form-item label="商品品牌">
+						    	<el-select v-model="wareForm.brandId">
+							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.brandId" :key="item.brandId"></el-option>
+							    </el-select> 
+							  </el-form-item>
+					  	</el-col>
+					  </el-row>
+					  <el-row>
+					  	<el-col :span="12">
+					  		<el-form-item label="商品类别">
+						    	<el-select v-model="wareForm.brandId">
+							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.brandId" :key="item.brandId"></el-option>
+							    </el-select> 
+							  </el-form-item>
+					  	</el-col>
+					  	<el-col :span="12">
+					  		<el-form-item label="商品类型">
+						    	<el-select v-model="wareForm.brandId">
+							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.brandId" :key="item.brandId"></el-option>
+							    </el-select> 
+							  </el-form-item>
+					  	</el-col>
+					  </el-row>
+					  <el-row>
+					  	<el-col :span="12">
+					  		<el-form-item label="父商品">
+						    	<el-select v-model="wareForm.brandId">
+							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.brandId" :key="item.brandId"></el-option>
+							    </el-select> 
+							  </el-form-item>
+					  	</el-col>
+					  	<el-col :span="12">
+					  		<el-form-item label="建议售价">
+						      <el-input placeholder="建议售价"></el-input>
+							  </el-form-item>
+					  	</el-col>
+					  </el-row>
+					</el-card>
+					<el-card class="input-width">
+						<el-row>
+							<el-col :span="12">
+								<el-form-item label="行程天数" prop="tripDays" style="height: 36px">
+							    <el-input-number v-model="wareForm.tripDays" :min="1" :max="30" style="width: 140px"></el-input-number>
+							  </el-form-item>
+							</el-col>
+							<el-col :span="12">
+					  		<el-form-item label="至少提前多少天购买">
+							     <el-input-number v-model="wareForm.sellPreDays" :min="7" :max="90" style="width: 140px"></el-input-number>
 							  </el-form-item>
 					  	</el-col>
 					  </el-row>
 					  <el-row>
 					  	<el-col :span="12">
 					  		<el-form-item label="订金占位时长">
-							    <el-input-number v-model="wareForm.cashReserveMinute" :min="1" :max="24" :step="0.5" style="width: 140px"></el-input-number>
+							    <el-input-number v-model="wareForm.cashReserveMinute" :min="1" :max="24" style="width: 140px"></el-input-number>
 							    <span class="input-unit">小时</span>
 							  </el-form-item>
 					  	</el-col>
@@ -109,18 +143,6 @@
 							    <span class="input-unit">小时</span>
 							  </el-form-item>
 					  	</el-col>  
-					  </el-row>
-					  <el-row>
-					  	<el-col :span="12">
-					  		<el-form-item label="至少提前多少天购买">
-							     <el-input-number v-model="wareForm.sellPreDays" :min="7" :max="90" style="width: 140px"></el-input-number>
-							  </el-form-item>
-					  	</el-col>
-					  	<el-col :span="12">
-					  		<el-form-item label="无订金订单占位时长">
-							    <el-input></el-input>
-							  </el-form-item>
-					  	</el-col>
 					  </el-row>
 					</el-card>
 					<el-card>
@@ -144,7 +166,6 @@
       	booking: false,
       	wareBrands: [],
         wareForm: {
-        	wareCode: '',
         	wareName: '',
           channel: '0001',
           keyWords: '',
@@ -176,17 +197,24 @@
               picker.$emit('pick', new Date());
             }
           }, {
-            text: '昨天',
+            text: '明天',
             onClick(picker) {
               const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              date.setTime(date.getTime() + 3600 * 1000 * 24);
               picker.$emit('pick', date);
             }
           }, {
-            text: '一周前',
+            text: '一周后',
             onClick(picker) {
               const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              date.setTime(date.getTime() + 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', date);
+            }
+          }, {
+            text: '一月后',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() + 3600 * 1000 * 24 * 30);
               picker.$emit('pick', date);
             }
           }]

@@ -36,14 +36,14 @@ module.exports = {
         }
       },
       '/baseUrl': {
-        target: 'http://192.168.199.115:8080/yue_yb2b',
+        target: 'http://192.168.199.211:8080/yue_yb2b',
         changeOrigin: true,
         pathRewrite: {
           '^/baseUrl': ''
         }
       },
       '/imgUploadUrl': {
-        target: 'http://192.168.199.115:8080/yue_yb2b/ware/file/upload',
+        target: 'http://192.168.199.211:8080/yue_yb2b/ware/file/upload',
         changeOrigin: true,
         pathRewrite: {
           '^/imgUploadUrl': ''
