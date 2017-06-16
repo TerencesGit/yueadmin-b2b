@@ -72,12 +72,13 @@ const editorOptions = {
         // 响应数据处理,最终返回图片链接 
         // handle response data，return image url 
         uploadHandler (responseText) {
+          console.log(responseText)
             //default accept json data like  {ok:false,msg:"unexpected"} or {ok:true,data:"image url"} 
             let data = JSON.parse(responseText)
-            console.log(json)
+            console.log(data)
             if (data.code === '0001') {
-                console.log(data.result)
-                return data.result
+                let filePath = 'http://192.168.199.211:8080/yue_yb2b/' + data.result.file.filePath;
+                return filePath;
             } else {
                alert(data.message)
             }
