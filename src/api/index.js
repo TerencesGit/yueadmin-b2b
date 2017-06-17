@@ -16,22 +16,14 @@ const uploadUrl = axios.create({
     return data  
   }]
 })
-const jsonUrl = axios.create({ 
+const jsonUrl = axios.create({
 	baseURL: '/baseUrl',
 	headers: {'Content-Type': 'application/json'},
   transformRequest: [function (data) {
     return data  
   }]
 })
-const jsonUrl2 = axios.create({ 
-	baseURL: '/baseUrl',
-	headers: {'Content-Type': 'application/json'},
-  transformRequest: [function (data) {
-  	console.log(Qs.stringify(data))
-    return Qs.stringify(data)  
-  }]
-})
-// 登录
+// 登录  
 export const requestLogin = data => { return loginUrl.post('/user/loginByMobileAndPassword.json', data) }
 // 退出
 export const requestExit = data => { return loginUrl.post('/user/logout.json', data) }
@@ -39,7 +31,10 @@ export const requestExit = data => { return loginUrl.post('/user/logout.json', d
 export const getCustomerUserInfo = data => { return loginUrl.post('/user/getCustomerUserInfo.json', data) }
 
 // 品牌列表
-export const getBrandList = params => { return baseUrl.get('/brand/readBrandInfoList', {params: params}) }
+export const readBrandInfoList = params => { return baseUrl.get('/brand/readBrandInfoList', {params: params}) }
+// 品牌新增
+export const createOrUpdateBrandInfo = data => { return jsonUrl.post('/brand/createOrUpdateBrandInfo', data) }
+
 // 多媒体列表
 export const getMediaList = params => { return baseUrl.get('/ware/file/readWareFileInfo', {params: params}) }
 // 多媒体上传
@@ -48,6 +43,8 @@ export const createWareFile = data => { return jsonUrl.post('/ware/file/createWa
 export const fileUpdateState = data => { return baseUrl.post('/ware/file/updateState', data) }
 
 export const updateIsMainPic = data => { return baseUrl.post('/ware/file/updateIsMainPic', data) }
+// 多媒体删除
+export const mediaFileDel = data => { return baseUrl.post('/ware/file/updateImgIsEnable', data) }
 
 // 品牌编辑
 export const brandEdit = data => { return axios.post('ware/brand/edit', data) }

@@ -211,13 +211,18 @@ table {
 .uploader .el-upload:hover {
   border-color: #20a0ff;
 }
-.uploader-icon {
+.uploader .el-icon-plus {
+  width: 150px;
+  height: 150px;
+  line-height: 150px;
+  text-align: center;
   font-size: 28px;
   color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
+}
+.uploader .upload-image {
+  display: block;
+  width: 150px;
+  height: 150px;
 }
 .steps-bar {
   margin-bottom: 15px;

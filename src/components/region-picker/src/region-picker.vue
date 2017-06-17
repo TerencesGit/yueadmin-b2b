@@ -2,7 +2,7 @@
 	<section class="region-picker" v-bind:style="{width: width + 'px'}">
 		<el-input v-model="areaName" :placeholder="placeholder" @focus="pickerVisible = true"></el-input>
 		<el-dialog v-model="pickerVisible" title="选择城市">
-			<el-form :model="pickerForm" :inline="true" ref="pickerForm" :rules="pickerRules" label-width="50px">
+			<el-form :model="pickerForm" :inline="true" ref="pickerForm" :rules="pickerRules" label-width="60px">
 				<el-form-item label="国家" prop="country">
           <el-select v-model="pickerForm.country" @change="countryChange">
 			      <el-option v-for="item in countries" :label="item.name" :value="item.id" :key="item.id"></el-option>

@@ -159,7 +159,7 @@
 	</section>
 </template>
 <script>
-  import { getBrandList } from '@/api'
+  import { readBrandInfoList, createOrUpdateWareInfo } from '@/api'
 	export default {
     data () {
       return {
@@ -188,7 +188,24 @@
           suggestedPrice: '',
         },
         rules: {
-
+        	wareName: [
+        		{required: true, message: '请输入商品名称', trigger: 'blur'}
+        	],
+        	briefName: [
+        		{required: true, message: '请输入商品缩略名', trigger: 'blur'}
+        	],
+        	openDate: [
+            { type: 'date', required: true, message: '请选择开售日期', trigger: 'change' }
+          ],
+          closeDate: [
+            { type: 'date', required: true, message: '请选择停售时间', trigger: 'change' }
+          ],
+        	srcCityCode: [
+        		{required: true, message: '请选择出发城市', trigger: 'blur'}
+        	],
+        	dstCityCode: [
+        		{required: true, message: '请选择目的城市', trigger: 'blur'}
+        	],
         },
         pickerOptions: {
           shortcuts: [{
@@ -265,6 +282,7 @@
           	let data = Object.assign({}, this.wareForm)
             console.log(data)
           } else {
+          	this.$message.error('表单输入有误')
             console.log('error submit!!');
             return false;
           }

@@ -12,31 +12,31 @@
 			highlight-current-row
 			style="width: 100%" 
 			@selection-change="selsChange"> 
-	    <el-table-column type="selection" width="50" align="center"></el-table-column>
-	    <el-table-column type="index" width="50"></el-table-column>
-	    <el-table-column label="图片缩略图" width="150" align="center" height="100px">
+	    <el-table-column type="selection" width="50"></el-table-column>
+	    <el-table-column type="index" width="60"></el-table-column>
+	    <el-table-column label="图片缩略图" width="110">
 	    	<template scope="scope">
-		    	<div class="images">
-		    		<img :src="scope.row.filePath">
-		    	</div>	    		
+		    	<img :src="scope.row.filePath" width="100%" height="60px" style="padding-top: 7px">
 	    	</template>
 	    </el-table-column>
 	    <el-table-column label="上传者" prop="createName"></el-table-column>
-	    <el-table-column label="上传时间" prop="createTime" width="200"></el-table-column>
-	    <el-table-column label="是否为主图" prop="isMainPic" width="110"></el-table-column>
-	    <el-table-column label="是否显示">
+	    <el-table-column label="上传时间" prop="createTime" width="200" :formatter="formatCreateTime" sortable></el-table-column>
+	    <el-table-column label="是否为主图" prop="isMainPic" width="110" :formatter="formatIsMainPic"></el-table-column>
+	    <el-table-column label="是否显示" prop="status">
 	    	<template scope="scope">
 	    		<el-switch
 					  v-model="scope.row.status"
 					  on-color="#13ce66"
 					  off-color="#ff4949"
+					  on-text="是"
+					  on-off="否"
 					  @change="handleStatus(scope.row)">
 					</el-switch>
 	    	</template>
 	    </el-table-column>
 		  <el-table-column label="操作" width="200">
 	        <template scope="scope">
-	        	<el-button v-if="scope.row.isMainPic === '否'" size="small" type="primary" @click="handleSetMainImg(scope.$index, scope.row)">设为主图</el-button>
+	        	<el-button v-if="scope.row.isMainPic === 0" size="small" type="primary" @click="handleSetMainImg(scope.$index, scope.row)">设为主图</el-button>
 	        	<el-button size="small" type="danger" @click="handleMediaDel(scope.$index, scope.row)">删除</el-button>
 	        </template>
     	</el-table-column>
@@ -55,6 +55,7 @@
 				<el-col :span="20">	
 					<el-upload
 						name="fileName"
+						:data="uploadData"
 						ref="uploadMedia"
 						class="media-upload"
 			  		action="/imgUploadUrl"
@@ -83,7 +84,7 @@
 	</section>
 </template>
 <script>
-	import { createWareFile, getMediaList, fileUpdateState, updateIsMainPic } from '@/api'
+	import { createWareFile, getMediaList, fileUpdateState, updateIsMainPic, mediaFileDel } from '@/api'
 	export default{
 		data () {
 			return {
@@ -91,30 +92,28 @@
     		previewImgUrl: '',
 				uploadVisible: false,
     		previewVisible: false,
+    		uploadData: {
+	        fileUrlType: 1
+	      },
     		mediaForm: {
     			wareId: 10001,
     			fileList: []
-    			// "fileList": [
-    			// 	{
-	    		// 		"fileOldName": "07F9CF5A1BBB1A0361D188486120DDAA.jpg", 
-	    		// 		"filePath": "img/ware/main/07F9CF5A1BBB1A0361D188486120DDAA_1497515818222928.jpg",
-	    		// 		"fileType": 1
-	    		// 	},
-	    		// 	{
-	    		// 		"fileOldName": "07F9CF5A1BBB1A0361D188486120DDAA.jpg", 
-	    		// 		"filePath": "img/ware/main/07F9CF5A1BBB1A0361D188486120DDAA_1497515818222928.jpg",
-	    		// 		"fileType": 2
-	    		// 	}
-	    		// ]
     		},
 				mediaList: [],
     		sels: [],
+    		fileIdList: [],
     		value2: true
 			}
 		},
 		methods: {
+			formatIsMainPic (row, column) {
+				return row.isMainPic === 1 ? '是' : '否'
+			},
+			formatCreateTime (row, column) {
+				return this.$moment(row.createTime).format('YYYY-MM-DD HH:mm:ss')
+			},
 			// 获取图片列表
-			getImgList () {
+			getMultiMediaList () {
 				let params = {
 					wareId: 10001
 				}
@@ -124,7 +123,7 @@
 						this.mediaList = res.data.result.fileList
 						this.mediaList.forEach(function(media, index) {
 							media.status = media.status === 1 ? true : false;
-							media.isMainPic = media.isMainPic === 1 ? '是' : '否';
+							// media.isMainPic = media.isMainPic === 1 ? '是' : '否';
 							media.filePath = 'http://192.168.199.211:8080' + media.filePath;
 							// /yue_yb2b/img/ware/main/07F9CF5A1BBB1A0361D188486120DDAA_1497506691494403.jpg'
 						})
@@ -146,10 +145,13 @@
     	// 上传成功处理
     	handleSuccess (res, file) {
     		console.log(res)
-    		let resFile = res.result.file;
-		    file.path = resFile.filePath;
-    		// this.form.les = fileList.length;
-    		this.mediaForm.fileList.push(resFile)
+    		if (res.code === '0001') {
+    			let resFile = res.result.file;
+			    file.path = resFile.filePath;
+	    		this.mediaForm.fileList.push(resFile)
+    		} else {
+    			this.$message.error(res.message)
+    		}
     	},
     	// 上传失败处理
     	handleError (err, file) {
@@ -191,29 +193,39 @@
 			// 是否显示
 			handleStatus (row) {
 				console.log(row.status)
-				row.status = row.status ? 0 : 1
-				row.isMainPic = row.isMainPic === '是' ? 1 : 0
-				let data = Object.assign({}, row)
+				let data = {
+					fileId: row.fileId
+				}
 				console.log(data)
 				fileUpdateState(data).then(res => {
 					console.log(res)
+					if (res.data.code === '0001') {
+						this.$message.success(res.data.message)
+					} else {
+						row.status = row.status ? false : true
+						this.$message.error(res.data.message)
+					}
 				})
 			},
 			// 单张图片删除
 			handleMediaDel (index, row) {
+				let fileId = row.fileId
 				this.$confirm('确认删除该记录吗?', '提示', {
 					type: 'warning'
 				}).then(() => {
-					//此处调用删除接口
-					this.media.forEach((v,i,a)=>{
-						if(v.id==row.id){
-							this.media.splice(i,1)
+					this.fileIdList.push(row.fileId)
+					let data = {
+						fileIdList: this.fileIdList
+					}
+					console.log(data)
+					mediaFileDel(data).then(res => {
+						console.log(res)
+						if (res.data.code === '0001') {
+							this.$message.success(res.data.message)
+						} else {
+							this.$message.error(res.data.message)
 						}
 					})
-					this.$message({
-						message: '删除成功',
-						type: 'success'
-					});
 				}).catch(() => {
 					this.$message({
 						message: '已取消操作'
@@ -225,14 +237,19 @@
 				this.$confirm('确认删除选中记录吗？', '提示', {
 					type: 'warning'
 				}).then(() => {
+					mediaFileDel().then(res => {
+
+					}).catch(() => {
+
+					})
 					//此处调用批量删除接口
-					for (var i = 0;i < this.media.length;i++) {
-				    for (var j = 0;j < this.sels.length;j++) {
-			        if (this.media[i].id == this.sels[j].id) {
-			          this.media.splice(i, 1);
-			        }
-				    }			    
-					}
+					// for (var i = 0;i < this.media.length;i++) {
+				 //    for (var j = 0;j < this.sels.length;j++) {
+			  //       if (this.media[i].id == this.sels[j].id) {
+			  //         this.media.splice(i, 1);
+			  //       }
+				 //    }			    
+					// }
 					this.$message({
 						message: '删除成功',
 						type: 'success'
@@ -244,9 +261,8 @@
     			})   
 				});
 			},
-			// 设为默认
+			// 设为主图
 			handleSetMainImg (index, row) {	
-				//此处调用设为默认接口
 				console.log(row.fileId)
 				let data = {
 					fileId: row.fileId,
@@ -257,16 +273,11 @@
 					console.log(res)
 					if(res.data.code === '0001') {
 						this.$message.success(res.data.message)
+						this.getMultiMediaList()
 					} else {
 						this.$message.error(res.data.message)
 					}
 				})
-				// this.media.forEach((v,i,a)=>{
-				// 	if(v.id==row.id){
-				// 		this.media.splice(i,1);
-				// 		this.media.unshift(v)
-				// 	}
-				// })
 			},
 		},
 		computed:{
@@ -276,27 +287,7 @@
 		},
 		mounted () {
 			this.$store.dispatch('setStepActive', 3)
-			this.getImgList()
+			this.getMultiMediaList()
 		}
 	}
 </script>
-<style scoped>
-	/*.next{
-		text-align: center;
-		margin-top: 20px;
-	}
-	.copy{
-		font-weight: bold;
-		color: #13CE66;
-	}*/
-	.images{
-		width: 90px;
-		height: 60.4px;
-		margin: 0 auto;
-		padding: 5px 0;	
-	}
-	.images img{
-		width: 100%;
-		height: 100%;
-	}
-</style>

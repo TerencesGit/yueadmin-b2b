@@ -43,7 +43,7 @@ module.exports = {
         }
       },
       '/imgUploadUrl': {
-        target: 'http://192.168.199.211:8080/yue_yb2b/ware/file/upload',
+        target: 'http://192.168.199.211:8080/yue_yb2b/file/upload',
         changeOrigin: true,
         pathRewrite: {
           '^/imgUploadUrl': ''
