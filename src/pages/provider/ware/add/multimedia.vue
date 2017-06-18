@@ -5,46 +5,48 @@
 			<el-button type="primary" @click="uploadVisible = true">本地上传</el-button>
 			<el-button type="danger"  @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
 		</el-row>
-		<!-- 表格 -->
+		<!-- 图片列表 -->
 		<el-table 
-			:data="mediaList" 
 			border
+			:data="mediaList" 
 			highlight-current-row
 			style="width: 100%" 
 			@selection-change="selsChange"> 
-	    <el-table-column type="selection" width="50"></el-table-column>
+	    <el-table-column type="selection" width="55"></el-table-column>
 	    <el-table-column type="index" width="60"></el-table-column>
-	    <el-table-column label="图片缩略图" width="110">
+	    <el-table-column label="图片缩略图" width="120">
 	    	<template scope="scope">
-		    	<img :src="scope.row.filePath" width="100%" height="60px" style="padding-top: 7px">
+		    	<img :src="scope.row.filePath" height="50px" class="cell-img" @click="viewImage(scope.row.filePath)">
 	    	</template>
 	    </el-table-column>
-	    <el-table-column label="上传者" prop="createName"></el-table-column>
+	    <el-table-column label="上传者" prop="createName" width="150"></el-table-column>
 	    <el-table-column label="上传时间" prop="createTime" width="200" :formatter="formatCreateTime" sortable></el-table-column>
-	    <el-table-column label="是否为主图" prop="isMainPic" width="110" :formatter="formatIsMainPic"></el-table-column>
-	    <el-table-column label="是否显示" prop="status">
+	    <el-table-column label="是否为主图" prop="isMainPic" width="120" :formatter="formatIsMainPic"></el-table-column>
+	    <el-table-column label="是否显示" width="120">
 	    	<template scope="scope">
 	    		<el-switch
 					  v-model="scope.row.status"
 					  on-color="#13ce66"
 					  off-color="#ff4949"
 					  on-text="是"
-					  on-off="否"
+					  off-text="否"
+					  :on-value="1"
+					  :off-value="0"
 					  @change="handleStatus(scope.row)">
 					</el-switch>
 	    	</template>
 	    </el-table-column>
-		  <el-table-column label="操作" width="200">
+		  <el-table-column label="操作">
 	        <template scope="scope">
 	        	<el-button v-if="scope.row.isMainPic === 0" size="small" type="primary" @click="handleSetMainImg(scope.$index, scope.row)">设为主图</el-button>
-	        	<el-button size="small" type="danger" @click="handleMediaDel(scope.$index, scope.row)">删除</el-button>
+	        	<el-button size="small" type="danger" @click="handleSingleDelete(scope.$index, scope.row)">删除</el-button>
 	        </template>
     	</el-table-column>
 		</el-table>
 		<el-row class="text-center m-t">
 			<el-button size="large" type="primary">下一步</el-button>
 		</el-row>
-		<!-- 本地上传弹窗 -->
+		<!-- 本地上传 -->
 		<el-dialog title="本地上传" :visible.sync="uploadVisible" size="small">
 			<el-row>
 				<el-col :span="20">
@@ -57,11 +59,11 @@
 						name="fileName"
 						:data="uploadData"
 						ref="uploadMedia"
-						class="media-upload"
+						class="multiple-uploader"
 			  		action="/imgUploadUrl"
 			  		list-type="picture-card"
 			  		accept="image/jpg"
-			  		:on-preview="handleImgCardPreview"
+			  		:on-preview="handleImgPreview"
 			  		:on-remove="handleRemove"
 			  		:before-upload="beforeUpload"
 			  		:on-success="handleSuccess"
@@ -77,14 +79,14 @@
 			    <el-button type="primary" @click="onSubmit">确 定</el-button>
 	  		</div>  		
 		</el-dialog>
-		<!-- 图片预览弹窗 -->
+		<!-- 图片预览 -->
 		<el-dialog v-model="previewVisible" size="tiny">
 			<img width="100%" :src="previewImgUrl">
 		</el-dialog>
 	</section>
 </template>
 <script>
-	import { createWareFile, getMediaList, fileUpdateState, updateIsMainPic, mediaFileDel } from '@/api'
+	import { getWareFileList, createWareFile, updatetWareFileState, updateWareFileIsMainPic, deleteWareFile } from '@/api'
 	export default{
 		data () {
 			return {
@@ -99,7 +101,19 @@
     			wareId: 10001,
     			fileList: []
     		},
-				mediaList: [],
+				mediaList: [{
+					fileId: 1,
+					filePath: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
+					status: 1,
+					isMainPic: 0,
+					createName: '上传者'
+				},{
+					fileId: 2,
+					filePath: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
+					status: 1,
+					isMainPic: 0,
+					createName: '上传者'
+				}],
     		sels: [],
     		fileIdList: [],
     		value2: true
@@ -113,21 +127,23 @@
 				return this.$moment(row.createTime).format('YYYY-MM-DD HH:mm:ss')
 			},
 			// 获取图片列表
-			getMultiMediaList () {
+			getImageList () {
 				let params = {
 					wareId: 10001
 				}
-				getMediaList(params).then(res => {
+				getWareFileList(params).then(res => {
 					console.log(res)
 					if (res.data.code === '0001') {
 						this.mediaList = res.data.result.fileList
 						this.mediaList.forEach(function(media, index) {
-							media.status = media.status === 1 ? true : false;
-							// media.isMainPic = media.isMainPic === 1 ? '是' : '否';
 							media.filePath = 'http://192.168.199.211:8080' + media.filePath;
 							// /yue_yb2b/img/ware/main/07F9CF5A1BBB1A0361D188486120DDAA_1497506691494403.jpg'
 						})
+					} else {
+						this.$message.error(res.data.message)
 					}
+				}).catch((error) => {
+					this.$message.error(this.GLOBAL.resError)
 				})
 			},
 			// 上传校验
@@ -135,12 +151,12 @@
         const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
         const isLt2M = file.size / 1024 / 1024 < 2;
         if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 或 PNG格式!');
+          this.$message.error('图片只能是 JPG 或 PNG格式!');
         }
         if (!isLt2M) {
-           this.$message.error('上传头像图片大小不能超过 2MB!');
+          this.$message.error('图片大小不能超过 2MB!');
         }
-        return isJPG &&  isLt2M;
+        return isJPG && isLt2M;
 	    },
     	// 上传成功处理
     	handleSuccess (res, file) {
@@ -166,7 +182,7 @@
         this.mediaForm.fileList = fileList
   		},
 			// 图片预览
-			handleImgCardPreview (file, fileList) {
+			handleImgPreview (file, fileList) {
 				this.previewImgUrl = file.url;
         this.previewVisible = true;
     	},
@@ -190,6 +206,10 @@
 				this.sels = sels;
 				console.log(this.sels)
 			},
+			viewImage (filePath) {
+				this.previewImgUrl = filePath;
+        this.previewVisible = true;
+			},
 			// 是否显示
 			handleStatus (row) {
 				console.log(row.status)
@@ -197,69 +217,73 @@
 					fileId: row.fileId
 				}
 				console.log(data)
-				fileUpdateState(data).then(res => {
+				updatetWareFileState(data).then(res => {
 					console.log(res)
 					if (res.data.code === '0001') {
 						this.$message.success(res.data.message)
 					} else {
-						row.status = row.status ? false : true
+						row.status = row.status === 1 ? 0 : 1
 						this.$message.error(res.data.message)
 					}
+				}).catch(error => {
+					row.status = row.status === 1 ? 0 : 1
+					this.$message.error(this.GLOBAL.resError)
 				})
 			},
 			// 单张图片删除
-			handleMediaDel (index, row) {
-				let fileId = row.fileId
-				this.$confirm('确认删除该记录吗?', '提示', {
-					type: 'warning'
-				}).then(() => {
-					this.fileIdList.push(row.fileId)
+			handleSingleDelete (index, row) {
+				this.$confirm('确认删除该图片？', '提示', {type: 'warning'})
+				.then(_ => {
+					let fileIdList = []
+					fileIdList.push({fileId: row.fileId})
 					let data = {
-						fileIdList: this.fileIdList
+						fileIdList: fileIdList
 					}
 					console.log(data)
-					mediaFileDel(data).then(res => {
+					deleteWareFile(data).then(res => {
 						console.log(res)
 						if (res.data.code === '0001') {
 							this.$message.success(res.data.message)
 						} else {
 							this.$message.error(res.data.message)
 						}
+					}).catch(err => {
+						this.$message.error(this.GLOBAL.resError)
 					})
-				}).catch(() => {
-					this.$message({
-						message: '已取消操作'
-					})
-				});
+				})
+				.catch((err) => {
+					console.log(err)
+					this.$message('已取消操作')
+				})
 			},
 			// 批量删除
 			batchRemove () { 				
-				this.$confirm('确认删除选中记录吗？', '提示', {
-					type: 'warning'
-				}).then(() => {
-					mediaFileDel().then(res => {
-
-					}).catch(() => {
-
+				this.$confirm('确认删除选中记录吗？', '提示', {type: 'warning'})
+				.then(_ => {
+					let sels = Object.assign({}, this.sels)
+					let arr = [{fileId: 1}, {fileId: 2}, {fileId: 3}]
+					let data = {};
+					[].push.apply(data, arr)
+					console.log(data)
+					deleteWareFile(data)
+					.then(res => {
+						console.log(res)
+						if(res.data.code === '0001') {
+							this.$message.success('删除成功')
+							this.getWareFileList()
+						} else {
+							this.$message.error(res.data.message)
+						}
 					})
-					//此处调用批量删除接口
-					// for (var i = 0;i < this.media.length;i++) {
-				 //    for (var j = 0;j < this.sels.length;j++) {
-			  //       if (this.media[i].id == this.sels[j].id) {
-			  //         this.media.splice(i, 1);
-			  //       }
-				 //    }			    
-					// }
-					this.$message({
-						message: '删除成功',
-						type: 'success'
+					.catch((err) => {
+						console.log(err)
+						this.$message.error(this.GLOBAL.resError)
 					})
-				}).catch(() => {
-					this.$message({
-      			type: 'info',
-      			message: '已取消操作'
-    			})   
-				});
+				})
+				.catch((err) => {
+					console.log(err)
+					this.$message('已取消操作')
+				})
 			},
 			// 设为主图
 			handleSetMainImg (index, row) {	
@@ -273,7 +297,7 @@
 					console.log(res)
 					if(res.data.code === '0001') {
 						this.$message.success(res.data.message)
-						this.getMultiMediaList()
+						this.getImageList()
 					} else {
 						this.$message.error(res.data.message)
 					}
@@ -287,7 +311,7 @@
 		},
 		mounted () {
 			this.$store.dispatch('setStepActive', 3)
-			this.getMultiMediaList()
+			this.getImageList()
 		}
 	}
 </script>

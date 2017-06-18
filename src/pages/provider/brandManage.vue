@@ -1,6 +1,6 @@
 <template>
   <section>
-    <!-- 工具条 -->
+    <!-- 搜索栏 -->
     <el-col :span="24" class="toolbar">
       <el-form :inline="true" :model="filters" @submit.prevent="getBrandList">
         <el-form-item>
@@ -18,39 +18,32 @@
     <el-table 
       :data="brandList"
       border
-      v-loading="loading" 
       highlight-current-row 
       @selection-change="selsChange">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="brandName" label="名称" width="200" sortable></el-table-column>
-      <el-table-column prop="logoUrl" label="logo" width="100">
+      <el-table-column prop="brandName" label="名称" width="180" sortable></el-table-column>
+      <el-table-column prop="logoUrl" label="Logo" width="120">
         <template scope="scope">
-          <img :src="scope.row.logoUrl" width="100%" height="60px" style="padding: 5px 0">
+          <img :src="scope.row.logoUrl" class="cell-img" height="50px" @click="viewImage(scope.row.logoUrl)">
         </template>
       </el-table-column>
-      <!-- <el-table-column prop="content" label="描述"></el-table-column> -->
-      <el-table-column prop="brandPage" label="专题页"></el-table-column>
-      <el-table-column prop="updateTime" label="更新时间" width="180" sortable></el-table-column>
-     <!--  <el-table-column prop="status" label="状态" width="120">
+      <el-table-column label="专题页">
         <template scope="scope">
-          <el-switch
-            v-model="scope.row.status"
-            on-color="#13ce66"
-            off-color="#ff4949"
-            on-text="启用"
-            off-text="禁用"
-            @change="handleChange(scope.$index, scope.row)">
-          </el-switch>
+          <span v-if="!scope.row.brandPage">未设置</span>
+          <span v-else>{{scope.row.brandPage}}</span>
         </template>
-      </el-table-column> -->
-      <el-table-column label="操作" width="150" fixed="right">
+      </el-table-column>
+      <el-table-column prop="updateBy" label="更新者" width="120"></el-table-column>
+      <el-table-column prop="updateTime" label="更新时间" width="180" sortable></el-table-column>
+      <el-table-column label="操作" width="200">
         <template scope="scope">
           <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button type="danger" size="small" @click="handleDel(scope.row.brandId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页栏 -->
     <el-row class="m-t">
       <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
       <el-pagination
@@ -81,9 +74,7 @@
             :on-success="handleSuccess"
             :on-error="handleError"
             :before-upload="beforeUpload"
-            :on-progress="handleProgress"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove">
+            :on-progress="handleProgress">
             <img v-if="addForm.logoUrl" :src="addForm.logoUrl" class="upload-image">
             <i v-else class="el-icon-plus" v-loading="uploading"></i>
           </el-upload>
@@ -120,8 +111,7 @@
             :on-success="handleSuccess"
             :on-error="handleError"
             :on-progress="handleProgress"
-            :before-upload="beforeUpload"
-            :multiple="true">
+            :before-upload="beforeUpload">
             <img v-if="editForm.logoUrl" :src="editForm.logoUrl" class="upload-image">
             <i v-else class="el-icon-plus" v-loading="uploading"></i>
           </el-upload>
@@ -133,7 +123,7 @@
           <el-input v-model="editForm.brandPage" placeholder="URL地址"></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-switch v-model="editForm.status" on-text="启用" off-text="禁用"></el-switch>
+          <el-switch v-model="editForm.status" :on-value="1" :off-value="0" on-text="启用" off-text="禁用"></el-switch>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -141,14 +131,26 @@
         <el-button type="primary" @click.native="editSubmit" v-loading="editLoading">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 图片预览 -->
+    <el-dialog v-model="previewVisible" size="tiny">
+      <img width="100%" :src="previewImgUrl">
+    </el-dialog>
   </section>
 </template>
 <script>
-import { readBrandInfoList, createOrUpdateBrandInfo, brandEdit, brandAdd, brandDel, brandBatchDel } from '../../api'
+import { getBrandInfoList, saveBrandInfo, brandDel, brandBatchDel } from '@/api'
 export default {
   data() {
     return {
-      brandList: [],
+      previewImgUrl: '',
+      previewVisible: false,
+      brandList: [{
+        brandId: 100,
+        brandName: '商品品牌管理',
+        logoUrl: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
+        brandPage: 'http://192.168.199.211:8080',
+        status: 1
+      }],
       page: 1,
       pageSize: 10,
       total: 0,
@@ -195,9 +197,6 @@ export default {
     }
   },
   methods: {
-    formatStatus (row, column) {
-      return row.stauts === 1 ? ture : false
-    },
     // 品牌列表
     getBrandList () {
       this.loading = true
@@ -206,7 +205,7 @@ export default {
         currPage: this.page,
         pageSize: this.pageSize,
       }
-      readBrandInfoList(data).then((res) => {
+      getBrandInfoList(data).then((res) => {
         console.log(res)
         if (res.data.code === '0001') {
           let result = res.data.result
@@ -218,10 +217,10 @@ export default {
         } else {
           this.$message.error(res.data.message)
         }
-      }).then(() => {
         this.loading = false
-      }).catch(() => {
-        this.loading = false
+      }).catch((error) => {
+        this.loading = false;
+        this.$message.error('服务器响应失败，请重试')
       })
     },
     handleSizeChange (val) {
@@ -234,7 +233,7 @@ export default {
     },
     // 上传校验
     beforeUpload (file) {
-      const isJPG = file.type === 'image/jpeg' || 'image/png';
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG) {
         this.$message.error('品牌LOGO只能是 JPG 或 PNG 格式!');
@@ -244,7 +243,8 @@ export default {
       }
       return isJPG && isLt2M;
     },
-    handleProgress () {
+    // 上传中
+    handleProgress (event, file) {
       this.uploading = true
     },
     // 上传成功
@@ -261,23 +261,14 @@ export default {
     },
     // 上传失败
     handleError (err, file) {
-      this.uploading = false
       console.log(err)
+      this.uploading = false
+      this.$message.error(this.GLOBAL.resError)
       // this.addForm.logoUrl = URL.createObjectURL(file.raw)
-    },
-    handlePreview () {
-
-    },
-    handleRemove () {
-
-    },
-    handleChange (index, row) {
-      console.log(row.status)
     },
     // 显示编辑
     handleEdit (index, row) {
       this.editFormVisible = true
-      console.log(row)
       this.editForm = Object.assign({}, row);
     },
     // 编辑提交
@@ -285,9 +276,8 @@ export default {
       this.$refs.editForm.validate((valid) => {
         if (valid) {
           let data = Object.assign({}, this.editForm)
-          data.status = data.status ? 1 : 0
           console.log(data)
-          brandEdit(data).then((res) => {
+          saveBrandInfo(data).then((res) => {
             console.log(res)
             if (res.data.code === '0001') {
               this.$message.success('编辑成功')
@@ -299,11 +289,11 @@ export default {
         }
       })
     },
-    // 显示创建
+    // 显示新增
     handleAdd () {
       this.addFormVisible = true
     },
-    // 创建提交
+    // 新增提交
     addSubmit () {
       this.$refs.addForm.validate((valid) => {
         if(valid) {
@@ -368,10 +358,10 @@ export default {
           this.$message.info('取消操作')
         })
     },
-    handleBrandDetail (brandId) {
-      this.$router.push({
-        path: '/provider/brandDetail?id=' + brandId
-      })
+    // 图片查看
+    viewImage (imgUrl) {
+      this.previewImgUrl = imgUrl;
+      this.previewVisible = true;
     }
   },
   mounted () {
@@ -379,26 +369,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-  .image {
-    display: block;
-    width: 100%;
-    height: 225px;
-    cursor: pointer;
-  }
-  .time {
-    font-size: 13px;
-    color: #999;
-  }
-  .bottom {
-    margin-top: 13px;
-    line-height: 12px;
-  }
-  .el-card {
-    margin: 15px 0;
-    transition: all .3s
-  }
-  .el-card:hover {
-    transform: scaleX(1.03) scaleY(1.03);
-  }
-</style>

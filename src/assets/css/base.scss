@@ -224,6 +224,15 @@ table {
   width: 150px;
   height: 150px;
 }
+.multiple-uploader .el-upload--picture-card {
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+}
+.multiple-uploader .el-upload-list__item {
+  width: 80px;
+  height: 80px;
+}
 .steps-bar {
   margin-bottom: 15px;
   padding-top: 3px;
@@ -265,33 +274,8 @@ table {
   height: 40px;
   line-height: 40px
 }
-
-/*供应商商品管理-新建商品-多媒体*/
-.media-upload .el-upload--picture-card {
-  width: 80px;
-  height: 80px;
-  line-height: 80px;
+.cell-img {
+  width: 100%;
+  margin-top: 7px;
+  cursor: pointer
 }
-.media-dialog .el-dialog--small .el-dialog__header {
-  border-bottom: 2px solid #cccccc;
-  padding-bottom: 12px;
-}
-.media-dialog .el-dialog__body {
-  padding-top: 2px;  
-}
-.media-dialog .media-upload {
-  padding-bottom: 15px;
-}
-.media-upload .el-upload-list--picture-card .el-upload-list__item {
-  width: 80px;
-  height: 80px;
-}
-.upload-button .el-upload--picture-card {
-  background: #c0ccda;
-}
-.upload-button .el-upload--picture-card:hover {
-  border-color: #c0ccda;
-}
-.upload-button .el-upload--picture-card i {
-  color: #fff;
-} 

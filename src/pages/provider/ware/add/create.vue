@@ -159,12 +159,12 @@
 	</section>
 </template>
 <script>
-  import { readBrandInfoList, createOrUpdateWareInfo } from '@/api'
+  import { getBrandInfoList, saveWareInfo } from '@/api'
 	export default {
     data () {
       return {
-      	booking: false,
       	wareBrands: [],
+      	brandList: [],
         wareForm: {
         	wareName: '',
           channel: '0001',
@@ -267,13 +267,16 @@
     		this.wareForm.wareDesc = content
     	},
     	// 获取品牌列表
-    	getWareBrands () {
+    	getWareBrandList () {
     		let brandList = [
     			{brandId: '00001', brandName: '商品品牌1'},
     			{brandId: '00002', brandName: '商品品牌2'},
     			{brandId: '00003', brandName: '商品品牌3'},
     			{brandId: '00004', brandName: '商品品牌4'}
     		]
+    		let data = {
+    			
+    		}
     		this.wareBrands = brandList
     	},
       submitForm(formName) {
@@ -299,7 +302,7 @@
       }
     },
     mounted () {
-    	this.getWareBrands()
+    	this.getWareBrandList()
     	this.$store.dispatch('setStepActive', 1)
     }
   }

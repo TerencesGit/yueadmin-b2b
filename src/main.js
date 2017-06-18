@@ -26,6 +26,10 @@ import RegionPicker from '@/components/region-picker'
 NProgress.configure({ ease: 'ease', speed: 500, minimum: 0.5, showSpinner: false})
 Mock.bootstrap()
 Vue.prototype.$moment = moment
+const globalVariable = {
+  resError: '服务器响应失败，请重试'
+}
+Vue.prototype.GLOBAL = globalVariable
 Vue.use(Router)
 Vue.use(Vuex)
 Vue.use(ElementUI)
@@ -51,10 +55,8 @@ const editorOptions = {
       "full-screen",
     ],
     image: {
-        // 文件最大体积，单位字节  max file size 
         sizeLimit: 512 * 1024,
         // 上传参数,默认把图片转为base64而不上传 
-        // upload config,default null and convert image to base64 
         upload: {
             url: '/imgUploadUrl',
             headers: {},
@@ -69,18 +71,14 @@ const editorOptions = {
             height: 1600,
             quality: 80
         },
-        // 响应数据处理,最终返回图片链接 
-        // handle response data，return image url 
+        // 响应数据处理，最终返回图片链接 
         uploadHandler (responseText) {
-          console.log(responseText)
-            //default accept json data like  {ok:false,msg:"unexpected"} or {ok:true,data:"image url"} 
             let data = JSON.parse(responseText)
-            console.log(data)
             if (data.code === '0001') {
-                let filePath = 'http://192.168.199.211:8080/yue_yb2b/' + data.result.file.filePath;
-                return filePath;
+              let filePath = 'http://192.168.199.211:8080/yue_yb2b/' + data.result.file.filePath;
+              return filePath;
             } else {
-               alert(data.message)
+              alert(data.message)
             }
         }
     },
@@ -88,11 +86,11 @@ const editorOptions = {
 }
 Vue.use(VueHtml5Editor, editorOptions)
 Vue.config.productionTip = false
-Vue.filter('DateFormat', function(value){
-	return moment(value).format('YYYY-MM-DD')
+Vue.filter('DateFormat', (d) => {
+	return moment(d).format('YYYY-MM-DD')
 })
-Vue.filter('TimeFormat', function(value){
-	return moment(value).format('YYYY-MM-DD HH:mm:ss')
+Vue.filter('DateTimeFormat', (d) => {
+	return moment(d).format('YYYY-MM-DD HH:mm:ss')
 })
 Vue.directive('title', {
   inserted (el, binding) {
@@ -116,18 +114,20 @@ router.beforeEach((to, from, next) => {
 	}
 })
 router.afterEach((to, from, next) => {
-  console.log(to.path) 
+  // console.log(to.path) 
   NProgress.done()
 })
-/* request interceptors */
-axios.interceptors.request.use(function (config) {
+// request interceptors
+axios.interceptors.request.use((config) => {
   return config
-}, function (error) {
-  console.log('request error')
+}, (error) => {
+  ElementUI.Message({
+    message: '请求失败，请重试'
+  })
   return Promise.reject(error)
 })
-/* response interceptors */
-axios.interceptors.response.use(function (res) {
+// response interceptors
+axios.interceptors.response.use((res) => {
   if (res.data.code ===  999) {
   	localStorage.clear()
     ElementUI.Message({
@@ -138,14 +138,13 @@ axios.interceptors.response.use(function (res) {
   	return router.push('/NoPermission')
   }
   return res;
-}, function (error) {
-  // response error
+}, (err) => {
   ElementUI.Message({
  	  message: '服务器响应错误，请重试'
   })
-  return Promise.reject(error)
+  return Promise.reject(err)
 })
-
+    
 new Vue({
 	store,
   router,
