@@ -26,8 +26,11 @@ export const getCustomerUserInfo = data => { return loginUrl.post('/user/getCust
  * ############### 供应商-商品管理 ###############
  */
 // 商品品牌管理
-export const getBrandInfoList = params => { return baseUrl.get('/brand/readBrandInfoList', {params: params}) }
+export const readBrandList = params => { return baseUrl.get('/brand/readBrandList', {params: params}) }
 export const saveBrandInfo = data => { return jsonUrl.post('/brand/createOrUpdateBrandInfo', data) }
+
+// 商品列表
+export const readTripList = params => { return baseUrl.get('/draft/readTripList', {params: params}) }
 
 // 商品录入-基本信息
 export const saveWareInfo = data => { return jsonUrl.post('/ware/createOrUpdateWareInfo', data) }

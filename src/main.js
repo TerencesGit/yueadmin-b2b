@@ -60,7 +60,7 @@ const editorOptions = {
         upload: {
             url: '/imgUploadUrl',
             headers: {},
-            params: {},
+            params: {fileUrlType: 3},
             fieldName: 'fileName'
         },
         // 压缩参数,默认使用localResizeIMG进行压缩,设置为null禁止压缩 
@@ -71,7 +71,7 @@ const editorOptions = {
             height: 1600,
             quality: 80
         },
-        // 响应数据处理，最终返回图片链接 
+        // 响应数据处理，最终返回图片链接  
         uploadHandler (responseText) {
             let data = JSON.parse(responseText)
             if (data.code === '0001') {
@@ -98,11 +98,11 @@ Vue.directive('title', {
   }
 })
 const router = new Router({
-  routes  
+  routes
 })
 router.beforeEach((to, from, next) => {
 	if(to.path === '/register' || to.path === '/login') {
-    localStorage.clear()
+    // localStorage.clear()
 		return next()
 	}
 	let sessionId = localStorage.getItem('sessionId')
@@ -120,11 +120,12 @@ router.afterEach((to, from, next) => {
 // request interceptors
 axios.interceptors.request.use((config) => {
   return config
-}, (error) => {
+}, (err) => {
+  console.log('err')
   ElementUI.Message({
     message: '请求失败，请重试'
   })
-  return Promise.reject(error)
+  return Promise.reject(err)
 })
 // response interceptors
 axios.interceptors.response.use((res) => {

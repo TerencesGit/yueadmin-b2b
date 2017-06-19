@@ -16,8 +16,9 @@
     </el-col>
     <!-- 品牌列表 -->
     <el-table 
-      :data="brandList"
       border
+      :data="brandList"
+      v-loading="loading"
       highlight-current-row 
       @selection-change="selsChange">
       <el-table-column type="selection" width="55"></el-table-column>
@@ -138,7 +139,7 @@
   </section>
 </template>
 <script>
-import { getBrandInfoList, saveBrandInfo, brandDel, brandBatchDel } from '@/api'
+import { readBrandList, saveBrandInfo, brandDel, brandBatchDel } from '@/api'
 export default {
   data() {
     return {
@@ -205,7 +206,8 @@ export default {
         currPage: this.page,
         pageSize: this.pageSize,
       }
-      getBrandInfoList(data).then((res) => {
+      readBrandList(data)
+      .then((res) => {
         console.log(res)
         if (res.data.code === '0001') {
           let result = res.data.result
@@ -218,9 +220,10 @@ export default {
           this.$message.error(res.data.message)
         }
         this.loading = false
-      }).catch((error) => {
+      })
+      .catch((error) => {
         this.loading = false;
-        this.$message.error('服务器响应失败，请重试')
+        this.$message.error(this.GLOBAL.resError)
       })
     },
     handleSizeChange (val) {

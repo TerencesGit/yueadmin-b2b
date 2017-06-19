@@ -1,96 +1,149 @@
 <template>
-	<div class="itinerary">
-		<div class="itinerary-days">
-			<ul class="itinerary-days-ul">
-				<li v-for="day in days" v-text="day"></li>
-			</ul>
-		</div>
-		<div class="itinerary-content">
-			<div class="itinerary-content-title">
-				<span v-text="commodity.title"></span>
-				<span v-text="'产品ID:' + commodity.id"></span>
-			</div>
-			<div class="itinerary-content-content">
-				<ul>
-					<li style="display:flex; align-items:center;">
-						<div>
-							<span style="font-size:14px;">第一天</span>
-						</div>
-						<div style="margin-left:-3%;">
-							<el-button type="text" @click="changeTraffic" :value='trafficShow'>{{!trafficShow ? '请选择交通方式' : trafficShow + '--'}}<i :class="trafficIcon"></i></el-button>
-							<el-dialog :before-close="closeTraffic" top="30%" title="选择交通方式" :visible.sync="dialogFormVisible">
-							  <el-input :autofocus="true" :autosize="{ minRows: 6}" type="textarea" v-model="traffic"></el-input>
-							  <div style="border:1px solid #999; padding:10px;">
-							  	<el-button type="text">选择交通方式</el-button>
-							  	<el-button @click="chooseText(index)" :key="index" v-for="(trafficBtn,index) in trafficBtns" size="small" style="border-radius:50%;"><i :class="trafficBtn.icon"></i></el-button>
-							  	
-							  </div>
-							  
-							  <div slot="footer" class="dialog-footer">
-							    <el-button @click="dialogFormVisible = false">取 消</el-button>
-							    <el-button type="primary" @click="isTraffic(traffic)">确 定</el-button>
-							  </div>
-							</el-dialog>
-						</div>
-					</li>
-					<!-- 列表渲染 -->
-					<li v-for="list in lists">
-						<div>
-							<div :class="list.icon"></div>
-							<div class="line"></div>
-						</div>
-						<!-- <div v-show="false">
-							<el-time-picker size="small" style="width:50%;" placeholder="*HM:MM"></el-time-picker>
-						</div> -->
-						<div>
-							<el-input :placeholder="list.placeholder" size="mini"></el-input>
-						</div>
-					</li>
-					<el-button @click="addTripDialog = true" type="text">+ 新增行程</el-button>
-					<el-dialog title="新增行程" :visible.sync="addTripDialog">
-					  <div>
-					  	<el-cascader
-						  :options="options"
-						  :show-all-levels="false"
-						  @change="handleChange"
-						></el-cascader>
-						<div style="margin-top:20px;">
-							<el-row type="flex" :gutter="20">
-								<el-col :span="2">
-									<el-button type="text">类别</el-button>
-								</el-col>
-								<el-col :span="6">
-									<el-time-picker size="small" 
-									v-model="time" placeholder="*HM:MM"></el-time-picker>
-								</el-col>
-								<el-col :span="12">
-							  		<el-input autosize v-model="listPlaceholder" type="textarea" placeholder="请输入内容" size="small"></el-input>
-								</el-col>
-								<el-col :span="4" style="display:flex; align-items:center;">
-							  		<el-checkbox v-model="checked">自理</el-checkbox>
-								</el-col>
-							</el-row>
-						</div>
-					  </div>
-					  <div slot="footer" class="dialog-footer">
-					    <el-button @click="addTripDialog = false">取 消</el-button>
-					    <el-button type="primary" @click="addTrip">确 定</el-button>
-					  </div>
-					</el-dialog>
+	<section>
+		<el-row :gutter="20">
+			<el-col :span="2">
+				<ul class="trip-days bg-white">
+					<li v-for="num in wareInfo.tripDays*1" :key="num"><a href="#">D{{num}}</a></a></li>
+				</ul>
+			</el-col>
+			<el-col :span="18">
+				<div class="itinerary-content-title">
+					<span v-text="commodity.title"></span>
+					<span v-text="'产品ID:' + commodity.id"></span>
+				</div>
+				<div class="trip-content bg-white">
+					<ul>
+						<li v-for="num in wareInfo.tripDays*1" :key="num">
+							<div class="trip-day">
+								<h5>第{{num}}天</h5>
+								<el-button @click="addTripDialog = true" type="text">+ 添加行程</el-button>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</el-col>
+			<el-col :span="4">
+				<div class="bg-white">
+					<h4 style="margin: 0">剪切板</h4>
+					<el-input :autosize="true" type="textarea" placeholder="您可以将您即将录入的行程介绍复制黏贴到这里奥，方便您后续参考录入"></el-input>
+				</div>
+			</el-col>
+		</el-row>
+		<div class="itinerary">
+			<div class="itinerary-days">
+				<ul class="itinerary-days-ul">
+					<li v-for="day in days" v-text="day"></li>
 				</ul>
 			</div>
+			<div class="itinerary-content">
+				<div class="itinerary-content-title">
+					<span v-text="commodity.title"></span>
+					<span v-text="'产品ID:' + commodity.id"></span>
+				</div>
+				<div class="itinerary-content-content">
+					<ul>
+						<li style="display:flex; align-items:center;">
+							<div>
+								<span style="font-size:14px;">第一天</span>
+							</div>
+							<div style="margin-left:-3%;">
+								<el-button type="text" @click="changeTraffic" :value='trafficShow'>{{!trafficShow ? '请选择交通方式' : trafficShow + '--'}}<i :class="trafficIcon"></i></el-button>
+								<el-dialog :before-close="closeTraffic" top="30%" title="选择交通方式" :visible.sync="dialogFormVisible">
+								  <el-input :autofocus="true" :autosize="{ minRows: 6}" type="textarea" v-model="traffic"></el-input>
+								  <div style="border:1px solid #999; padding:10px;">
+								  	<el-button type="text">选择交通方式</el-button>
+								  	<el-button @click="chooseText(index)" :key="index" v-for="(trafficBtn,index) in trafficBtns" size="small" style="border-radius:50%;"><i :class="trafficBtn.icon"></i></el-button>
+								  	
+								  </div>
+								  
+								  <div slot="footer" class="dialog-footer">
+								    <el-button @click="dialogFormVisible = false">取 消</el-button>
+								    <el-button type="primary" @click="isTraffic(traffic)">确 定</el-button>
+								  </div>
+								</el-dialog>
+							</div>
+						</li>
+						<li v-for="list in lists">
+							<div>
+								<div :class="list.icon"></div>
+								<div class="line"></div>
+							</div>
+							<div v-show="false">
+								<el-time-picker size="small" style="width:50%;" placeholder="*HM:MM"></el-time-picker>
+							</div>
+							<div>
+								<el-input :placeholder="list.placeholder" size="mini"></el-input>
+							</div>
+						</li>
+						<el-button @click="addTripDialog = true" type="text">+ 添加行程</el-button>
+					</ul>
+				</div>
+			</div>
+			<div class="itinerary-cut">
+				<h4>剪切板</h4>
+				<el-input :autosize="true" type="textarea" placeholder="您可以将您即将录入的行程介绍复制黏贴到这里奥，方便您后续参考录入"></el-input>
+			</div>
+			<el-dialog title="添加行程" :visible.sync="addTripDialog">
+				<el-form :inline="true">
+					<el-form-item label="行程标题">
+						<el-input placeholder="行程标题"></el-input>
+					</el-form-item>
+					<el-form-item label="行程类型">
+						<el-cascader
+						  :options="options"
+						  :show-all-levels="false"
+						  @change="handleChange">
+					  </el-cascader>
+					</el-form-item>
+					<el-form-item label="行程时间">
+						<el-time-picker 
+							v-model="time" 
+							placeholder="行程时间">
+						</el-time-picker>
+					</el-form-item>
+					<el-form-item label="行程时长">
+						<el-input-number 
+							v-model="time" 
+							:min="1" 
+							:max="600" 
+							style="width: 140px">
+						</el-input-number>
+						<span class="input-unit">分钟</span>
+					</el-form-item>
+					<el-form-item label="行程明细">
+					 <el-input type="textarea"></el-input>
+					</el-form-item>
+					<el-form-item label="">
+						<el-checkbox v-model="checked">自理</el-checkbox>
+					</el-form-item>
+				</el-form>
+			  <div slot="footer" class="dialog-footer">
+			    <el-button @click="addTripDialog = false">取 消</el-button>
+			    <el-button type="primary" @click="addTrip">确 定</el-button>
+			  </div>
+			</el-dialog>
 		</div>
-		<div class="itinerary-cut">
-			<h4>剪切板</h4>
-			<el-input :autosize="true" type="textarea" placeholder="您可以将您即将录入的行程介绍复制黏贴到这里奥，方便您后续参考录入"></el-input>
-		</div>
-	</div>
+	</section>
 </template>
-
 <script>
 	export default {
 		data(){
 			return {
+				wareInfo: {
+					wareId: '2355624',
+					wareName: '泰国曼谷+普吉岛7日5晚半自助游直飞随心DIY+3晚海边酒店+双体游艇',
+					tripDays: '5'
+				},
+				form: {
+					wareId: '',
+					tripDayNum: '',
+					programType: '',
+					programTime: '',
+					programTitle: '',
+					programIsFree: '',
+					programDuration: '',
+					programDetail: ''
+				},
 				options: [{
 			    	value: 'fa fa-car fa-lg',
 			        label: '交通',
@@ -252,6 +305,15 @@
 </script>
 
 <style scoped>
+	.trip-days li {
+		padding: 30px 0;
+	}
+	.trip-content ul {
+		padding: 30px;
+	}
+	.trip-content li {
+		border-bottom: 1px solid #ccc
+	}
 	.itinerary{
 		display: flex;
 		justify-content: space-between;

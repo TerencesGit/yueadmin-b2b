@@ -16,6 +16,10 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.1;
   color: inherit;
 }
+ul, p {
+  margin: 0;
+  padding: 0
+}
 li {
   list-style: none
 }
@@ -278,4 +282,11 @@ table {
   width: 100%;
   margin-top: 7px;
   cursor: pointer
+}
+.region-picker .el-form-item .el-input__inner {
+  border-color: #bfcbd9;
+}
+.input-unit {
+  margin-left: 5px;
+  vertical-align: top;
 }

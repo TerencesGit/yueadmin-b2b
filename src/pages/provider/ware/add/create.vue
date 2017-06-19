@@ -71,54 +71,6 @@
 					</el-card>
 					<el-card class="input-width">
 						<el-row>
-					  	<el-col :span="12">
-					  		<el-form-item label="商品品牌">
-						    	<el-select v-model="wareForm.brandId">
-							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.brandId" :key="item.brandId"></el-option>
-							    </el-select> 
-							  </el-form-item>
-					  	</el-col>
-					  	<el-col :span="12">
-					  		<el-form-item label="商品品牌">
-						    	<el-select v-model="wareForm.brandId">
-							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.brandId" :key="item.brandId"></el-option>
-							    </el-select> 
-							  </el-form-item>
-					  	</el-col>
-					  </el-row>
-					  <el-row>
-					  	<el-col :span="12">
-					  		<el-form-item label="商品类别">
-						    	<el-select v-model="wareForm.brandId">
-							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.brandId" :key="item.brandId"></el-option>
-							    </el-select> 
-							  </el-form-item>
-					  	</el-col>
-					  	<el-col :span="12">
-					  		<el-form-item label="商品类型">
-						    	<el-select v-model="wareForm.brandId">
-							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.brandId" :key="item.brandId"></el-option>
-							    </el-select> 
-							  </el-form-item>
-					  	</el-col>
-					  </el-row>
-					  <el-row>
-					  	<el-col :span="12">
-					  		<el-form-item label="父商品">
-						    	<el-select v-model="wareForm.brandId">
-							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.brandId" :key="item.brandId"></el-option>
-							    </el-select> 
-							  </el-form-item>
-					  	</el-col>
-					  	<el-col :span="12">
-					  		<el-form-item label="建议售价">
-						      <el-input placeholder="建议售价"></el-input>
-							  </el-form-item>
-					  	</el-col>
-					  </el-row>
-					</el-card>
-					<el-card class="input-width">
-						<el-row>
 							<el-col :span="12">
 								<el-form-item label="行程天数" prop="tripDays" style="height: 36px">
 							    <el-input-number v-model="wareForm.tripDays" :min="1" :max="30" style="width: 140px"></el-input-number>
@@ -126,17 +78,17 @@
 							</el-col>
 							<el-col :span="12">
 					  		<el-form-item label="至少提前多少天购买">
-							     <el-input-number v-model="wareForm.sellPreDays" :min="7" :max="90" style="width: 140px"></el-input-number>
+							     <el-input-number v-model="wareForm.sellPreDays" :min="1" :max="45" style="width: 140px"></el-input-number>
 							  </el-form-item>
 					  	</el-col>
 					  </el-row>
 					  <el-row>
-					  	<el-col :span="12">
+					  	<!-- <el-col :span="12">
 					  		<el-form-item label="订金占位时长">
 							    <el-input-number v-model="wareForm.cashReserveMinute" :min="1" :max="24" style="width: 140px"></el-input-number>
 							    <span class="input-unit">小时</span>
 							  </el-form-item>
-					  	</el-col>
+					  	</el-col> -->
 					  	<el-col :span="12">
 					  		<el-form-item label="无订金订单占位时长">
 							    <el-input-number v-model="wareForm.nocashReserveMinute" :min="1" :max="24" style="width: 140px"></el-input-number>
@@ -144,13 +96,43 @@
 							  </el-form-item>
 					  	</el-col>  
 					  </el-row>
+						<el-row>
+					  	<el-col :span="12">
+					  		<el-form-item label="商品品牌" prop="brandId">
+						    	<el-select v-model="wareForm.brandId">
+							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.brandId" :key="item.brandId"></el-option>
+							    </el-select> 
+							  </el-form-item>
+					  	</el-col>
+					  	<el-col :span="12">
+					  		<el-form-item label="建议售价">
+						      <el-input v-model="wareForm.suggestedPrice" placeholder="建议售价"></el-input>
+							  </el-form-item>
+					  	</el-col>
+					  </el-row>
+					  <el-row>
+					  	<el-col :span="12">
+					  		<el-form-item label="商品类别">
+						    	<el-select v-model="wareForm.wareKind">
+							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.wareKind" :key="item.wareKind"></el-option>
+							    </el-select> 
+							  </el-form-item>
+					  	</el-col>
+					  	<el-col :span="12">
+					  		<el-form-item label="商品类型">
+						    	<el-select v-model="wareForm.wareType">
+							      <el-option v-for="item in wareBrands" :label="item.brandName" :value="item.wareType" :key="item.wareType"></el-option>
+							    </el-select> 
+							  </el-form-item>
+					  	</el-col>
+					  </el-row>
 					</el-card>
 					<el-card>
 						<p><strong>推荐概述</strong><span style="margin-left: 15px; font-size: 14px">最多输入8000个字符</span></p>
 						<vue-html5-editor :content="wareForm.wareDesc" :height="400" @change="updateData"></vue-html5-editor>
 					</el-card>
 					<el-form-item class="text-center">
-				    <el-button type="primary" @click="submitForm('wareForm')">下一步</el-button>
+				    <el-button type="primary" @click="submitForm">下一步</el-button>
 				    <el-button @click="resetForm('wareForm')">重置</el-button>
 				  </el-form-item>
 				</el-form>
@@ -159,7 +141,7 @@
 	</section>
 </template>
 <script>
-  import { getBrandInfoList, saveWareInfo } from '@/api'
+  import { readBrandList, saveWareInfo } from '@/api'
 	export default {
     data () {
       return {
@@ -177,11 +159,10 @@
           briefName: '',
           status: '',
           brandId: '',
-          tripDays: '',
-          nocashReserveMinute: '',
-          cashReserveMinute: '',
-          cashReserveMinute: '',
-          sellPreDays: '',
+          tripDays: '1',
+          sellPreDays: '7',
+          nocashReserveMinute: '12',
+          cashReserveMinute: '24',
           wareKind: '',
           wareType: '',
           parentId: '',
@@ -192,6 +173,9 @@
         		{required: true, message: '请输入商品名称', trigger: 'blur'}
         	],
         	briefName: [
+        		{required: true, message: '请输入商品缩略名', trigger: 'blur'}
+        	],
+        	keyWords: [
         		{required: true, message: '请输入商品缩略名', trigger: 'blur'}
         	],
         	openDate: [
@@ -205,6 +189,9 @@
         	],
         	dstCityCode: [
         		{required: true, message: '请选择目的城市', trigger: 'blur'}
+        	],
+        	brandId: [
+        		{type: 'number', required: true, message: '请选择商品品牌', trigger: 'change'}
         	],
         },
         pickerOptions: {
@@ -274,13 +261,23 @@
     			{brandId: '00003', brandName: '商品品牌3'},
     			{brandId: '00004', brandName: '商品品牌4'}
     		]
-    		let data = {
-    			
-    		}
-    		this.wareBrands = brandList
+    		readBrandList({})
+    		.then(res => {
+    			if (res.data.code === '0001') {
+    				this.wareBrands = res.data.result.brandInfo
+    			} else {
+    				this.$message.error(res.data.message)
+    			}
+    		})
+    		.catch((err) => {
+    			this.wareBrands = brandList
+    			this.$message.error(this.GLOBAL.resError)
+    		})
     	},
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
+      submitForm() {
+        this.$refs.wareForm.validate((valid) => {
+        	let form = Object.assign({}, this.wareForm)
+          console.log(form)
           if (valid) {
           	let data = Object.assign({}, this.wareForm)
             console.log(data)

@@ -129,7 +129,7 @@
 			// 获取图片列表
 			getImageList () {
 				let params = {
-					wareId: 10001
+					wareId: 10001 
 				}
 				getWareFileList(params).then(res => {
 					console.log(res)
@@ -212,7 +212,6 @@
 			},
 			// 是否显示
 			handleStatus (row) {
-				console.log(row.status)
 				let data = {
 					fileId: row.fileId
 				}

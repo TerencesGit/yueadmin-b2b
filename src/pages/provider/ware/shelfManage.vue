@@ -1,14 +1,17 @@
 <template>
 	<section>
 		<el-row class="toolbar">
-			<el-form :inline="true" :model="form">
+			<el-form :inline="true" :model="filter">
+				<el-form-item label="商品编号：">
+					<el-input v-model="filter.name" placeholder="商品编号"></el-input>
+				</el-form-item>
 				<el-form-item label="商品名称：">
-					<el-input v-model="form.name" placeholder="商品名称"></el-input>
+					<el-input v-model="filter.name" placeholder="商品名称"></el-input>
 				</el-form-item>
 			</el-form>
 		</el-row>
 		<el-table :data="wareList" border highlight-current-row>
-			<el-table-column prop="wareId" label="商品ID"></el-table-column>
+			<el-table-column prop="wareId" label="商品编号"></el-table-column>
 			<el-table-column prop="wareName" label="商品名称"></el-table-column>
 			<el-table-column prop="cityStart" label="出发城市"></el-table-column>
 			<el-table-column prop="contacts" label="联系人"></el-table-column>
@@ -24,24 +27,28 @@
 			<el-pagination 
 				@size-change="handleSizeChange"
 	      @current-change="handleCurrentChange"
-	      :current-page.sync="currentPage"
+	      :current-page.sync="currPage"
 	      :page-sizes="[10, 20, 30, 40]"
-	      :page-size="10"
+	      :page-size="pageSize"
 	      layout="total, sizes, prev, pager, next, jumper"
-	      :total="50">
+	      :total="total">
 			</el-pagination>
 		</el-row>
 	</section>
 </template>
 <script>
-	import { setShelfStatus } from '@/api'
+	import { readTripList, setShelfStatus } from '@/api'
 	export default {
 		data () {
 			return {
-				form: {
-					name: ''
+				filter: {
+					name: '',
+					code: '',
+					status: ''
 				},
-				currentPage: 1,
+				currPage: 1,
+				pageSize: 10,
+				total: 0,
 				wareList: [{
 					wareId: '0001',
 					status: 0
@@ -58,6 +65,30 @@
 		methods: {
 			formatStatus (row, column) {
 				return row.status === 0 ? '下架' : row.status === 1 ? '上架' : '未知'
+			},
+			getWareList () {
+				let data = {
+					currPage: this.currPage,
+					pageSize: this.pageSize,
+					wareName: this.filter.name,
+					wareCode: this.filter.code,
+					verifyStatus: this.filter.status
+				}
+				console.log(data)
+				readTripList(data)
+				.then(res => {
+					console.log(err)
+					if (res.data.code === '0001') {
+						console.log(res.data.wareList)
+						this.wareList = res.data.wareList
+					} else {
+						this.$message.error(res.data.message)
+					}
+				})
+				.catch(err => {
+					console.log(err)
+					// this.$message.error(this.GLOBAL.resError)
+				})
 			},
 			handleShelf (row) {
 				let status = row.status === 1 ? 0 : 1
@@ -86,5 +117,8 @@
 
 			}
 		},
+		mounted () {
+			this.getWareList()
+		}
 	}
 </script> 
