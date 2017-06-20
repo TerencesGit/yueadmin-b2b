@@ -86,11 +86,14 @@ const editorOptions = {
 }
 Vue.use(VueHtml5Editor, editorOptions)
 Vue.config.productionTip = false
-Vue.filter('DateFormat', (d) => {
-	return moment(d).format('YYYY-MM-DD')
+Vue.filter('DateFormat', (time) => {
+	return moment(time).format('YYYY-MM-DD')
 })
-Vue.filter('DateTimeFormat', (d) => {
-	return moment(d).format('YYYY-MM-DD HH:mm:ss')
+Vue.filter('DateTimeFormat', (time) => {
+	return moment(time).format('YYYY-MM-DD HH:mm:ss')
+})
+Vue.filter('TimeFormat', (time) => {
+  return moment(time).format('HH:mm')
 })
 Vue.directive('title', {
   inserted (el, binding) {

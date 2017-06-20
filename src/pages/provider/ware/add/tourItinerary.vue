@@ -1,35 +1,60 @@
 <template>
 	<section>
 		<el-row :gutter="20">
-			<el-col :span="2">
+			<!-- <el-col :span="2">
 				<ul class="trip-days bg-white">
-					<li v-for="num in wareInfo.tripDays*1" :key="num"><a href="#">D{{num}}</a></a></li>
+					<li v-for="num in tripInfo.tripDays" :key="num"><a href="#">D{{num}}</a></a></li>
+				</ul>
+			</el-col> -->
+			<el-col :span="18">
+				<div class="trip-title">
+					<span v-text="tripInfo.wareName"></span>
+					<span v-text="'产品ID:' + tripInfo.wareId"></span>
+				</div>
+				<ul class="trip-content bg-white">
+					<li v-for="num in tripInfo.tripDays" :key="num" class="border-bottom">
+						<el-card class="trip-day">
+							<h4>第{{num}}天</h4>
+							<ul class="trip-list">
+								<li v-for="item in tripList" v-if="item.tripDayNum === num">
+									<div class="trip-detail clearfix">
+										<p class="pull-left">
+											<span v-if="item.programType == 1"><i class="fa fa-plane"></i></span>
+											<span v-else-if="item.programType == 2"><i class="fa fa-car"></i></span>
+											<span v-else-if="item.programType == 10"><i class="fa fa-hotel"></i></span>
+											<span v-else-if="item.programType == 20"><i class="fa fa-binoculars"></i></span>
+											<span v-else-if="item.programType == 30"><i class="fa fa-cutlery"></i></span>
+											<span v-else-if="item.programType == 31"><i class="fa fa-cutlery"></i></span>
+											<span v-else-if="item.programType == 32"><i class="fa fa-coffee"></i></span>
+											<span v-else-if="item.programType == '3,33'"><i class="fa fa-cutlery"></i></span>
+											<span v-else-if="item.programType == 34"><i class="fa fa-cutlery"></i></span>
+											<span v-else-if="item.programType == 40"><i class="fa fa-shopping-bag"></i></span>
+											<span v-else-if="item.programType == 50"><i class="fa fa-child"></i></span>
+											<span v-else-if="item.programType == 60"><i class="fa fa-bell"></i></span>
+											<span v-else>&nbsp;</span>
+											<span>{{item.programTime | TimeFormat}}</span>
+											<span>{{item.programTitle}}</span>
+										</p>
+										<p class="pull-right">
+											<i class="fa fa-edit" @click="handleEdit(item)"></i>
+											<i class="fa fa-trash" @click="handleDelete(item)"></i>
+										</p>
+									</div>
+								</li>
+							</ul>
+							<el-button type="text" @click="handleAdd(num)">+ 添加行程</el-button>
+						</el-card>
+					</li>
 				</ul>
 			</el-col>
-			<el-col :span="18">
-				<div class="itinerary-content-title">
-					<span v-text="commodity.title"></span>
-					<span v-text="'产品ID:' + commodity.id"></span>
-				</div>
-				<div class="trip-content bg-white">
-					<ul>
-						<li v-for="num in wareInfo.tripDays*1" :key="num">
-							<div class="trip-day">
-								<h5>第{{num}}天</h5>
-								<el-button @click="addTripDialog = true" type="text">+ 添加行程</el-button>
-							</div>
-						</li>
-					</ul>
-				</div>
-			</el-col>
-			<el-col :span="4">
-				<div class="bg-white">
-					<h4 style="margin: 0">剪切板</h4>
-					<el-input :autosize="true" type="textarea" placeholder="您可以将您即将录入的行程介绍复制黏贴到这里奥，方便您后续参考录入"></el-input>
+			<el-col :span="6">
+				<div class="shear-plate bg-white">
+					<h4>剪切板</h4>
+					<el-input type="textarea" :rows="20" placeholder="您可以将您即将录入的行程介绍复制黏贴到这里奥，方便您后续参考录入"></el-input>
 				</div>
 			</el-col>
 		</el-row>
-		<div class="itinerary">
+		<!-- <div class="itinerary">
 			<div class="itinerary-days">
 				<ul class="itinerary-days-ul">
 					<li v-for="day in days" v-text="day"></li>
@@ -83,289 +108,264 @@
 				<h4>剪切板</h4>
 				<el-input :autosize="true" type="textarea" placeholder="您可以将您即将录入的行程介绍复制黏贴到这里奥，方便您后续参考录入"></el-input>
 			</div>
-			<el-dialog title="添加行程" :visible.sync="addTripDialog">
-				<el-form :inline="true">
-					<el-form-item label="行程标题">
-						<el-input placeholder="行程标题"></el-input>
+		</div> -->
+		<el-dialog title="添加行程" :visible.sync="addTripVisible">
+			<el-form :model="form" :rules="rules" ref="tripForm" class="form-item-width" label-width="100px">
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="行程标题：" prop="programTitle">
+							<el-input v-model="form.programTitle" placeholder="行程标题"></el-input>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="行程类型：">
+							<el-cascader
+							  :options="tripTypes"
+							  v-model="form.programType"
+							  :show-all-levels="false"
+							  placeholder="选择行程类型"
+							  @change="handleChange">
+						  </el-cascader>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="行程时间：" prop="programTime">
+							<el-time-picker 
+								v-model="form.programTime"
+								:picker-options="{
+									format: 'HH:mm:ss'
+								}"
+								placeholder="行程时间">
+							</el-time-picker>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="行程时长：" style="height: 36px">
+							<el-input-number 
+								v-model="form.programDuration" 
+								:min="0.5"
+								:max="24"
+								:step="0.5"
+								style="width: 140px">
+							</el-input-number>
+							<span class="input-unit">小时</span>
+						</el-form-item>
+					</el-col>
+				</el-row>
+				<el-row>
+					<el-form-item label="行程明细：" prop="programDetail">
+					 <el-input v-model="form.programDetail" type="textarea"></el-input>
 					</el-form-item>
-					<el-form-item label="行程类型">
-						<el-cascader
-						  :options="options"
-						  :show-all-levels="false"
-						  @change="handleChange">
-					  </el-cascader>
+				</el-row>
+				<el-row>
+					<el-form-item label="是否免费：">
+						<el-radio class="radio" v-model="form.programIsFree" :label="1">免费</el-radio>
+						<el-radio class="radio" v-model="form.programIsFree" :label="0">自费</el-radio>
 					</el-form-item>
-					<el-form-item label="行程时间">
-						<el-time-picker 
-							v-model="time" 
-							placeholder="行程时间">
-						</el-time-picker>
-					</el-form-item>
-					<el-form-item label="行程时长">
-						<el-input-number 
-							v-model="time" 
-							:min="1" 
-							:max="600" 
-							style="width: 140px">
-						</el-input-number>
-						<span class="input-unit">分钟</span>
-					</el-form-item>
-					<el-form-item label="行程明细">
-					 <el-input type="textarea"></el-input>
-					</el-form-item>
-					<el-form-item label="">
-						<el-checkbox v-model="checked">自理</el-checkbox>
-					</el-form-item>
-				</el-form>
-			  <div slot="footer" class="dialog-footer">
-			    <el-button @click="addTripDialog = false">取 消</el-button>
-			    <el-button type="primary" @click="addTrip">确 定</el-button>
-			  </div>
-			</el-dialog>
-		</div>
+				</el-row>
+			</el-form>
+		  <div slot="footer" class="dialog-footer">
+		    <el-button @click="addTripVisible = false">取 消</el-button>
+		    <el-button type="primary" @click="onSubmit">确 定</el-button>
+		  </div>
+		</el-dialog>
 	</section>
 </template>
 <script>
-	export default {
+	import { saveWareTripDetail } from '@/api'
+ 	export default {
 		data(){
 			return {
-				wareInfo: {
+				tripInfo: {
 					wareId: '2355624',
 					wareName: '泰国曼谷+普吉岛7日5晚半自助游直飞随心DIY+3晚海边酒店+双体游艇',
-					tripDays: '5'
+					tripDays: 5
 				},
+				tripList: [
+					{tripDayNum: 1, 
+						programTime: new Date(), 
+						programTitle: '早餐',
+						programType: [3, 33],
+						programDuration: 1,
+						programIsFree: 1,
+						programDetail: '普吉岛7日5晚半自助游直飞随心DIY普吉岛7日5晚半自助游直飞随心DIY普吉岛7日5晚半自助游直飞随心DIY'
+					}, 
+					{tripDayNum: 2, programTime: new Date(), programTitle: '旅行'}
+				],
+				addTripVisible: false,
 				form: {
+					id: '',
 					wareId: '',
 					tripDayNum: '',
-					programType: '',
+					programType: [0],
 					programTime: '',
 					programTitle: '',
-					programIsFree: '',
-					programDuration: '',
+					programIsFree: 1,
+					programDuration: 1,
 					programDetail: ''
 				},
-				options: [{
-			    	value: 'fa fa-car fa-lg',
-			        label: '交通',
-			    },{
-			    	value: 'fa fa-hotel fa-lg',
-			        label: '酒店',
-			    },{
-			    	value: 'fa fa-building fa-lg',
-			        label: '景点',
-			    },{
-			    	value: 'fa fa-cutlery fa-lg',
-			        label: '用餐',
-			        children:[{
-			        		value: 'fa fa-cutlery fa-lg',
-			        		label: '早餐'
-			        	},{
-			        		value: 'fa fa-cutlery fa-lg',
-			        		label: '午餐'
-			        	},{
-			        		value: 'fa fa-cutlery fa-lg',
-			        		label: '晚餐'
-			        	}]
-			    },{
-			    	value: 'fa fa-shopping-cart fa-lg',
-			        label: '购物',
-			    },{
-			    	value: 'fa fa-child fa-lg',
-			        label: '自由活动',
-			    },{
-			    	value: 'fa fa-plane fa-lg',
-			        label: '主题',
-			        children: [{
-			            value: 'fa fa-sun-o fa-lg',
-			            label: '蜜月'   
-			        },{
-			            value: 'fa fa-s15 fa-lg',
-			            label: '潜水'   
-			        },{
-			            value: 'fa fa-ship fa-lg',
-			            label: '游艇'   
-			        }]
-			    }],
-			    checked:'false',
-			    time:'',
-				trafficBtn:'',
-				dialogFormVisible:false,
-				addTripDialog:false,
-				trafficShow:'',
-				trafficIcon:'',
-				traffic:'',
-				text:'',
-				travelType:'',
-				listPlaceholder:'',
-				days:['D1','D2','D3','D4','D5'],
-				commodity:{
-					id:'2355624',
-					title:'泰国曼谷+普吉岛7日5晚半自助游直飞随心DIY+3晚海边酒店+双体游艇出海浮潜'
+				tripTypes: [
+					{ label: '航班', value: 1 },
+					{ label: '交通', value: 2 },
+					{ label: '酒店', value: 10 },
+					{ label: '景点', value: 20 },
+					{
+						label: '用餐',
+						value: 3,
+						children: [
+							{ label: '早餐', value: 30 },
+							{ label: '午餐', value: 31 },
+							{ label: '下午茶', value: 32 },
+							{ label: '晚餐', value: 33 },
+							{ label: '宵夜', value: 34 },
+						]
+					},
+					{ label: '购物', value: 40 },
+					{ label: '自由活动', value: 50 },
+					{ label: '主题活动', value: 60 }
+				],
+				rules: {
+					programTitle: [
+						{required: true, message: '请输入行程标题', trigger: 'blur'}
+					],
+					programTime: [
+						{type: 'date', required: true, message: '请选择行程时间', trigger: 'change'}
+					],
+					programDetail: [
+						{required: true, message: '请输入行程详情', trigger: 'blur'}
+					],
 				},
-				lists:[
-					{
-						icon:'fa fa-plane fa-lg',
-						placeholder:'是否直飞：待定'
-					},
-					{
-						icon:'fa fa-cutlery fa-lg',
-						placeholder:'早餐：请输入早餐内容'
-					},
-					{
-						icon:'fa fa-cutlery fa-lg',
-						placeholder:'中餐：请输入中餐内容'
-					},
-					{
-						icon:'fa fa-cutlery fa-lg',
-						placeholder:'晚餐：请输入晚餐内容'
-					},
-				],
-				trafficBtns:[
-					{
-						icon:'fa fa-plane fa-lg',
-						description:'&plane'
-					},
-					{
-						icon:'fa fa-bus fa-lg',
-						description:'&bus'
-					},
-					{
-						icon:'fa fa-train fa-lg',
-						description:'&train'
-					},
-					{
-						icon:'fa fa-ship fa-lg',
-						description:'&ship'
-					},
-					{
-						icon:'fa fa-cab fa-lg',
-						description:'&cab'
-					}
-				],
-				scheduleForms:[
-					{
-						isPlane:'',
-						breakfast:'',
-						lunch:'',
-						dinner:''
-					}
-				],
-				list:{
-					icon:'',
-					placeholder:''
-				}
-
 			}
 		},
 		methods:{
-			chooseText(index){
-				console.log(this.trafficBtns[index].description);
-				// this.traffic += this.trafficBtns[index].description;
-				this.trafficIcon = this.trafficBtns[index].icon;
+			handleAdd (num) {
+				this.form.id = 0;
+				this.form.tripDayNum = num;
+				this.addTripVisible = true
 			},
-			addTrip(){
-				/*this.lists.push({icon:'fa fa-cutlery fa-lg',
-						placeholder:'晚餐：请输入晚餐内容'})*/
-				if(this.list.icon){
-					this.list.placeholder = this.listPlaceholder;
-					this.lists.push(this.list);
-					this.addTripDialog = false;
-				}
+			onSubmit(){
+				this.$refs.tripForm.validate((valid) => {
+					if (valid) {
+						let form = Object.assign({}, this.form)
+						console.log(form)
+						let data = {
+							id: form.id,
+							wareId: form.wareId,
+							tripDayNum: form.tripDayNum,
+							programType: form.programType[form.programType.length - 1] * 1,
+							programTime: form.programTime,
+							programTitle: form.programTitle,
+							programIsFree: form.programIsFree,
+							programDuration: form.programDuration * 60,
+							programDetail: form.programDetail,
+							versionId: ''
+						}
+						data.programType = [data.programType]
+						this.tripList.push(data)
+						data = JSON.stringify(data)
+						console.log(data)
+						// saveWareTripDetail(data)
+						// .then(res => {
+						// 	console.log(res)
+						// 	if (res.data.code === '0001') {
+						// 		let result = res.data.result;
+						// 		this.$message.success('添加成功')
+						// 		this.addTripVisible = false
+						// 		this.$refs.tripForm.resetFields()
+						// 	} else {
+						// 		this.$message.error(res.data.message)
+						// 	}
+						// })
+						// .catch(err => {
+						// 	console.log(err)
+						// 	this.$message.error(this.GLOBAL.resError)
+						// })
+						this.addTripVisible = false
+						this.$refs.tripForm.resetFields()
+					} else {
+						this.$message.error('表单输入有误')
+					}
+				})
 			},
-			changeTraffic(){
-				this.dialogFormVisible = true;
+			handleEdit (item) {
+				console.log(item)
+				// item.programType = [item.programType]
+				// console.log(item)
+				this.form = item;
+				this.addTripVisible = true
 			},
-			closeTraffic(){
-				this.dialogFormVisible = false;
-			},
-			isTraffic(val){
-				if(!val){
-					this.trafficShow = val;
-					this.trafficIcon = '';
-					this.dialogFormVisible = false;
-				}else if(!this.trafficIcon){
-					this.$message({
-			          message: '请选择交通方式',
-			          type: 'warning'
-			        });
-				}else{
-					this.trafficShow = val;
-					this.dialogFormVisible = false;
-				}
+			handleDelete (item) {
+				console.log(item)
+				this.$confirm('确定删除该条行程', '提示', {type: 'warning'})
+				.then(() => {
+
+				})
+				.catch(err => {
+					console.log(err)
+					this.$message('已取消操作')
+				})
 			},
 			handleChange(val){
-				console.log(val[val.length-1]);
-				this.list.icon = val[val.length-1];
+				console.log(val)
+				console.log(val[val.length-1])
+				this.form.programType = val
 			}
 		},
 		mounted () {
+			let wareId = this.$route.query;
+			this.form.wareId = 10001
 			this.$store.dispatch('setStepActive', 2)
 		}
 	}
 </script>
 
-<style scoped>
-	.trip-days li {
+<style scoped lang="scss">
+	h4 {
+		margin: 0
+	}
+  .form-item-width .el-input,
+	.form-item-width .el-cascader {
+		width: 192px;
+	}
+	.trip-title {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 20px;
+		padding: 15px 20px;
+		background: #fff;
+	}
+	.trip-days li{
 		padding: 30px 0;
 	}
-	.trip-content ul {
-		padding: 30px;
+	/*.trip-content {
+		padding: 15px;
+	}*/
+	.trip-list {
+		padding: 5px 15px;
 	}
-	.trip-content li {
-		border-bottom: 1px solid #ccc
+	.trip-list > li {
+		margin: 10px 0;
+		padding: 10px;
+		background: #f0f0f0
 	}
-	.itinerary{
-		display: flex;
-		justify-content: space-between;
+	.trip-detail .pull-left span {
+		margin: 0 5px;
 	}
-	.itinerary > div{
-		/*height:500px;*/
+	.trip-detail .pull-right {
+		display: none;
 	}
-	.itinerary-days{
-		width:10%;
-		text-align: center;
-		/*background:#333;*/
+	.trip-detail .pull-right i {
+		cursor: pointer;
 	}
-	.itinerary-content{
-		width:68%;
+	.trip-detail:hover .pull-right {
+		display: block;
 	}
-	.itinerary-cut{
-		width:20%;
-		background:#fff;
-		padding: 20px;
-	}
-	.itinerary-cut > h4 {
-		text-align: center;
-		padding-bottom: 20px;
-		border-bottom: 1px solid #eee;
-	}
-	.itinerary-days-ul > li{
-		margin-top: 100px;
-	}
-	.itinerary-content-title{
-		display: flex;
-		justify-content: space-between;
-		background:#fff;
-		margin-bottom: 20px;
-		padding: 16px 30px;
-	}
-	.itinerary-content-content{
-		background:#fff;
-		padding: 20px;
-	}
-	.line{
-		width:1px;
-		height:50px;
-		border-left:1px solid #999; 
-	}
-	.itinerary-content-content > ul > li{
-		display: flex;
-		margin-bottom: 30px;
-	}
-	.itinerary-content-content > ul > li > div{
-		margin-right:10%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
+	.shear-plate {
+		padding: 15px;
+		h4 { 
+			margin-bottom: 15px
+		}
 	}
 </style>

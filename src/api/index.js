@@ -35,6 +35,9 @@ export const readTripList = params => { return baseUrl.get('/draft/readTripList'
 // 商品录入-基本信息
 export const saveWareInfo = data => { return jsonUrl.post('/ware/createOrUpdateWareInfo', data) }
 
+// 商品管理-行程介绍
+export const saveWareTripDetail = data => { return jsonUrl.post('/draft/saveDraftWareTripDetail', data) }
+
 // 商品录入-多媒体
 export const getWareFileList = params => { return baseUrl.get('/ware/file/readWareFileInfo', {params: params}) }
 export const createWareFile = data => { return jsonUrl.post('/ware/file/createWareFile', data) }
