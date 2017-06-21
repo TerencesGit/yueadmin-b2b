@@ -128,8 +128,8 @@
 					  </el-row>
 					</el-card>
 					<el-card>
-						<p><strong>推荐概述</strong><span style="margin-left: 15px; font-size: 14px">最多输入8000个字符</span></p>
-						<vue-html5-editor :content="wareForm.wareDesc" :height="400" @change="updateData"></vue-html5-editor>
+						<p class="m-b"><strong>推荐概述</strong><span style="margin-left: 15px; font-size: 14px">最多输入8000个字符</span></p>
+						<vue-html5-editor :content="wareForm.wareDesc" :height="400" :z-index="1" @change="updateData"></vue-html5-editor>
 					</el-card>
 					<el-form-item class="text-center">
 				    <el-button type="primary" @click="submitForm">下一步</el-button>
@@ -256,10 +256,10 @@
     	// 获取品牌列表
     	getWareBrandList () {
     		let brandList = [
-    			{brandId: '00001', brandName: '商品品牌1'},
-    			{brandId: '00002', brandName: '商品品牌2'},
-    			{brandId: '00003', brandName: '商品品牌3'},
-    			{brandId: '00004', brandName: '商品品牌4'}
+    			{brandId: 100001, brandName: '商品品牌1'},
+    			{brandId: 100002, brandName: '商品品牌2'},
+    			{brandId: 100003, brandName: '商品品牌3'},
+    			{brandId: 100004, brandName: '商品品牌4'}
     		]
     		readBrandList({})
     		.then(res => {
@@ -274,20 +274,6 @@
     			this.$message.error(this.GLOBAL.resError)
     		})
     	},
-      submitForm() {
-        this.$refs.wareForm.validate((valid) => {
-        	let form = Object.assign({}, this.wareForm)
-          console.log(form)
-          if (valid) {
-          	let data = Object.assign({}, this.wareForm)
-            console.log(data)
-          } else {
-          	this.$message.error('表单输入有误')
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
@@ -296,7 +282,32 @@
       },
       dstCityChange (code) {
       	this.wareForm.dstCityCode = code
-      }
+      },
+      submitForm() {
+        this.$refs.wareForm.validate((valid) => {
+        	let form = Object.assign({}, this.wareForm)
+          console.log(form)
+          if (valid) {
+          	let data = Object.assign({}, this.wareForm)
+            console.log(data)
+            saveWareInfo(data)
+            .then(res => {
+            	console.log(res)
+            	if (res.data.code === '0001') {
+
+            	} else {
+            		this.$message.error(res.data.message)
+            	}
+            })
+            .catch(err => {
+            	console.log(err)
+            })
+          } else {
+          	this.$message.error('表单输入有误')
+            return false;
+          }
+        })
+      },
     },
     mounted () {
     	this.getWareBrandList()

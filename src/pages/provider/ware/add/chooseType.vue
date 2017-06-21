@@ -28,7 +28,7 @@
 	</section>
 </template>
 <script>
-import { mapActions } from 'vuex'
+	import { mapActions } from 'vuex'
 	export default {
 		data () {
 			return { 
@@ -69,7 +69,7 @@ import { mapActions } from 'vuex'
 				this.$refs.wareForm.resetFields()
 			}
 		},
-		mounted () {
+		created () {
 			this.$store.dispatch('setStepActive', 0)
 		}
 	}

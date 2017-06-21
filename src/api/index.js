@@ -27,16 +27,18 @@ export const getCustomerUserInfo = data => { return loginUrl.post('/user/getCust
  */
 // 商品品牌管理
 export const readBrandList = params => { return baseUrl.get('/brand/readBrandList', {params: params}) }
-export const saveBrandInfo = data => { return jsonUrl.post('/brand/createOrUpdateBrandInfo', data) }
+export const saveBrandInfo = data => { return jsonUrl.post('/brand/saveBrandInfo', data) }
+export const updateBrandStatus = data => { return jsonUrl.post('/brand/updateBrandStatus', data) }
 
 // 商品列表
-export const readTripList = params => { return baseUrl.get('/draft/readTripList', {params: params}) }
+export const readWareList = params => { return baseUrl.get('/draft/readDraftWareTripList', {params: params}) }
 
 // 商品录入-基本信息
-export const saveWareInfo = data => { return jsonUrl.post('/ware/createOrUpdateWareInfo', data) }
+export const saveWareInfo = data => { return jsonUrl.post('/ware/saveDraftWareInfo', data) }
 
 // 商品管理-行程介绍
 export const saveWareTripDetail = data => { return jsonUrl.post('/draft/saveDraftWareTripDetail', data) }
+export const readTripDetailList = params => { return baseUrl.get('/draft/readTripDetailList', {params: params}) }
 
 // 商品录入-多媒体
 export const getWareFileList = params => { return baseUrl.get('/ware/file/readWareFileInfo', {params: params}) }
@@ -44,7 +46,8 @@ export const createWareFile = data => { return jsonUrl.post('/ware/file/createWa
 export const updatetWareFileState = data => { return baseUrl.post('/ware/file/updateState', data) }
 export const updateWareFileIsMainPic = data => { return baseUrl.post('/ware/file/updateIsMainPic', data) }
 export const deleteWareFile = data => { return baseUrl.post('/ware/file/updateImgIsEnable', data) }
-
+// 商品库存
+export const saveDraftSkuInfo = data => { return baseUrl.post('/ware/draft/saveDraftSkuInfo', data) }
 /**
  *  Mock测试
  */

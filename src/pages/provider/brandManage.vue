@@ -207,7 +207,7 @@ export default {
         pageSize: this.pageSize,
       }
       readBrandList(data)
-      .then((res) => {
+      .then(res => {
         console.log(res)
         if (res.data.code === '0001') {
           let result = res.data.result
@@ -221,7 +221,8 @@ export default {
         }
         this.loading = false
       })
-      .catch((error) => {
+      .catch(error => {
+        console.log(error)
         this.loading = false;
         this.$message.error(this.GLOBAL.resError)
       })

@@ -24,11 +24,11 @@ import { mapGetters } from 'vuex'
 				// '推荐活动', '多行程维护']
 				stepList: [
 					{title: '选择类别', link: '/chooseType'},
-					{title: '基本信息', link: '/basicInfo_photography'},
-					{title: '行程介绍', link: '/tour_itinerary'},
+					{title: '基本信息', link: '/basicInfoPhotography'},
+					{title: '行程介绍', link: '/tourItinerary'},
 					{title: '多媒体', link: '/multiMedia'},
-					{title: '费用/预定限制', link: '/book_limit'},
-					{title: '价格库存', link: '/price_stock'},
+					{title: '费用/预定限制', link: '/bookLimit'},
+					{title: '价格库存', link: '/priceStock'},
 					{title: '附加服务', link: '/additionalService'},
 					{title: '推荐活动', link: '/chooseType'},
 					{title: '多行程维护', link: '/multiPassMaintain'},

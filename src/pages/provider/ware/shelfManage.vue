@@ -37,7 +37,7 @@
 	</section>
 </template>
 <script>
-	import { readTripList, setShelfStatus } from '@/api'
+	import { readWareList, setShelfStatus } from '@/api'
 	export default {
 		data () {
 			return {
@@ -75,7 +75,7 @@
 					verifyStatus: this.filter.status
 				}
 				console.log(data)
-				readTripList(data)
+				readWareList(data)
 				.then(res => {
 					console.log(err)
 					if (res.data.code === '0001') {
