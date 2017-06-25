@@ -31,11 +31,11 @@ const ProWareList = resolve => require(['@/pages/provider/ware/edit/wareList'], 
 const ProWareEdit = resolve => require(['@/pages/provider/ware/edit/home'], resolve)
 
 // 商品上下架
-const shelfManage = resolve => require(['@/pages/provider/ware/shelfManage'], resolve)
+const ProShelfManage = resolve => require(['@/pages/provider/ware/shelfManage'], resolve)
 
 // 商品出入库
-const stockManage = resolve => require(['@/pages/provider/ware/stockManage'], resolve)
-const stockSet = resolve => require(['@/pages/provider/ware/setStock'], resolve)
+const ProStockManage = resolve => require(['@/pages/provider/ware/stockManage'], resolve)
+const ProStockSet = resolve => require(['@/pages/provider/ware/setStock'], resolve)
 
 // 订单管理
 const orderManage = resolve => require(['@/pages/provider/order/main'], resolve)
@@ -55,7 +55,9 @@ const UEditor = resolve => require(['@/pages/tools/UEditor'], resolve)
 
 /**********  商品管理  **********/
 // 商品审核
-const wareAuditing = resolve => require(['@/pages/admin/ware/auditing'], resolve)
+const WareAuditing = resolve => require(['@/pages/admin/ware/auditing'], resolve)
+const AdmWareDetail = resolve => require(['@/pages/admin/ware/detail'], resolve)
+const AdmShelfManage = resolve => require(['@/pages/admin/ware/shelfManage'], resolve)
 
 
 /**********  系统管理  **********/
@@ -112,13 +114,13 @@ const routes = [
         ] 
       },
       {
-        path: 'shelfManage', name: '商品上下架', component: shelfManage
+        path: 'shelfManage', name: '商品上下架', component: ProShelfManage
       },
       {
-        path: 'stockManage', name: '商品出入库', component: stockManage
+        path: 'stockManage', name: '商品出入库', component: ProStockManage
       },
       {
-        path: 'stockSet', name: '商品库存设置', component: stockSet
+        path: 'stockSet', name: '商品库存设置', component: ProStockSet
       },
     ]
   },
@@ -139,7 +141,9 @@ const routes = [
     name: '平台-商品管理',
     component: Layout,
     children: [
-      { path: 'auditing', name: '商品审核', component: wareAuditing },
+      { path: 'auditing', name: '商品审核', component: WareAuditing },
+      { path: 'detail', name: '商品详情', component: AdmWareDetail },
+      { path: 'shelfManage', name: '平台-商品上下架', component: AdmShelfManage },
     ]
   },
   {

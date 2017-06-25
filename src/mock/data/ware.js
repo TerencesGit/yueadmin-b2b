@@ -38,9 +38,11 @@ for (let i = 0; i < 50; i++) {
 		wareId: Mock.Random.id(),
 		wareCode: Mock.Random.id(),
 		wareName: Mock.mock('@ctitle(5, 8)'),
-		wareKind: Mock.mock('@ctitle(3, 5)'),
+		srcCityName: Mock.mock('@city'),
+		dstCityName: Mock.mock('@city'),
+		// wareKind: Mock.mock('@ctitle(3, 5)'),
 		verifyStatus: Mock.Random.integer(0, 2),
-		createTime: Mock.Random.date()
+		createTime: Mock.Random.datetime()
 	}))
 }
 export { Brands, WareKind, Wares }
