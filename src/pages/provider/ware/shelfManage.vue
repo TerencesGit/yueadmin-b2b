@@ -87,7 +87,7 @@
 				})
 				.catch(err => {
 					console.log(err)
-					// this.$message.error(this.GLOBAL.resError)
+					this.catchError(err.response)
 				})
 			},
 			handleShelf (row) {

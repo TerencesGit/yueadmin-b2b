@@ -148,7 +148,22 @@ axios.interceptors.response.use((res) => {
   })
   return Promise.reject(err)
 })
-    
+// catch error
+Vue.prototype.catchError = (res) => {
+  if (!res) {
+    ElementUI.Message({ message: '服务器响应超时'})
+    return;
+  }
+  if (res.status === 404) {
+    ElementUI.Message({ message: '方法名不存在'})
+  } else if (res.status === 500) {
+    ElementUI.Message({ message: '服务器响应失败'})
+  } else if (res.status === 504) {
+    ElementUI.Message({ message: '网关超时'})
+  } else {
+    ElementUI.Message({ message: res.status})
+  }
+}    
 new Vue({
 	store,
   router,

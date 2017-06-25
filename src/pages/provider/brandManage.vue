@@ -213,18 +213,14 @@ export default {
           let result = res.data.result
           this.total = result.pageInfo.count
           this.brandList = result.brandInfo
-          this.brandList.forEach((brand, index) => {
-            brand.status = brand.status === 1 ? true : false
-          })
         } else {
           this.$message.error(res.data.message)
         }
         this.loading = false
       })
       .catch(error => {
-        console.log(error)
         this.loading = false;
-        this.$message.error(this.GLOBAL.resError)
+        this.catchError(error.response)
       })
     },
     handleSizeChange (val) {
@@ -267,13 +263,16 @@ export default {
     handleError (err, file) {
       console.log(err)
       this.uploading = false
-      this.$message.error(this.GLOBAL.resError)
+      this.$message.error('上传失败')
       // this.addForm.logoUrl = URL.createObjectURL(file.raw)
     },
     // 显示编辑
     handleEdit (index, row) {
       this.editFormVisible = true
       this.editForm = Object.assign({}, row);
+      console.log(row)
+      console.log(Object.assign({}, row))
+      console.log(this.editForm)
     },
     // 编辑提交
     editSubmit () {
@@ -305,7 +304,7 @@ export default {
           this.addForm.status = this.addForm.status ? 1 : 0
           let data = JSON.stringify(Object.assign({}, this.addForm))
           console.log(data)
-          createOrUpdateBrandInfo(data).then(res => {
+          saveBrandInfo(data).then(res => {
             console.log(res)
             if(res.data.code === '0001') {
               this.$message.success(res.data.message)

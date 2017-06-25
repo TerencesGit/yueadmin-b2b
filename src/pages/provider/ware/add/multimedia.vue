@@ -19,8 +19,8 @@
 		    	<img :src="scope.row.filePath" height="50px" class="cell-img" @click="viewImage(scope.row.filePath)">
 	    	</template>
 	    </el-table-column>
-	    <el-table-column label="上传者" prop="createName" width="150"></el-table-column>
-	    <el-table-column label="上传时间" prop="createTime" width="200" :formatter="formatCreateTime" sortable></el-table-column>
+	    <el-table-column label="更新者" prop="createName" width="150"></el-table-column>
+	    <el-table-column label="更新时间" prop="createTime" width="200" :formatter="formatCreateTime" sortable></el-table-column>
 	    <el-table-column label="是否为主图" prop="isMainPic" width="120" :formatter="formatIsMainPic"></el-table-column>
 	    <el-table-column label="是否显示" width="120">
 	    	<template scope="scope">
@@ -49,7 +49,7 @@
 		<!-- 本地上传 -->
 		<el-dialog title="本地上传" :visible.sync="uploadVisible" size="small">
 			<el-row>
-				<el-col :span="20">
+				<el-col :span="20" :class="{ 'text-danger' : mediaLength === 0 }">
 					建议上传大小为1024*512图片，单张不超过2M，最多上传{{maxLength}}张，还可以上传{{mediaLength}}张。
 				</el-col>
 			</el-row>
@@ -62,7 +62,7 @@
 						class="multiple-uploader"
 			  		action="/imgUploadUrl"
 			  		list-type="picture-card"
-			  		accept="image/jpg"
+			  		accept="image/jpeg, image/png"
 			  		:on-preview="handleImgPreview"
 			  		:on-remove="handleRemove"
 			  		:before-upload="beforeUpload"
@@ -90,7 +90,7 @@
 	export default{
 		data () {
 			return {
-				maxLength: 4,
+				maxLength: 10,
     		previewImgUrl: '',
 				uploadVisible: false,
     		previewVisible: false,
@@ -132,18 +132,16 @@
 					wareId: 10001 
 				}
 				getWareFileList(params).then(res => {
-					console.log(res)
 					if (res.data.code === '0001') {
-						this.mediaList = res.data.result.fileList
+						this.mediaList = res.data.result.fileList;
 						this.mediaList.forEach(function(media, index) {
 							media.filePath = 'http://192.168.199.211:8080' + media.filePath;
-							// /yue_yb2b/img/ware/main/07F9CF5A1BBB1A0361D188486120DDAA_1497506691494403.jpg'
 						})
 					} else {
 						this.$message.error(res.data.message)
 					}
 				}).catch((error) => {
-					this.$message.error(this.GLOBAL.resError)
+					this.catchError(error.response)
 				})
 			},
 			// 上传校验
@@ -160,7 +158,6 @@
 	    },
     	// 上传成功处理
     	handleSuccess (res, file) {
-    		console.log(res)
     		if (res.code === '0001') {
     			let resFile = res.result.file;
 			    file.path = resFile.filePath;
@@ -189,13 +186,20 @@
  	    // 图片列表提交
 	    onSubmit () {
 	    	let data = JSON.stringify(Object.assign({}, this.mediaForm))
+	    	console.log()
 	    	createWareFile(data).then(res => {
-	    		console.log(res)
 	    		if(res.data.code === '0001') {
 	    			this.$message.success('上传成功')
+	    			this.getImageList()
 	    		} else {
-	    			this.$message.error('上传失败')
+	    			this.$message.error(res.data.message)
 	    		}
+	    		this.uploadVisible = false
+	    		this.mediaForm.fileList = []
+	    		this.$refs.uploadMedia.clearFiles()
+	    	})
+	    	.catch(error => {
+	    		this.catchError(error.response)
 	    		this.uploadVisible = false
 	    		this.mediaForm.fileList = []
 	    		this.$refs.uploadMedia.clearFiles()
@@ -204,8 +208,8 @@
 	    // 图片选中
 			selsChange (sels) {
 				this.sels = sels;
-				console.log(this.sels)
 			},
+			// 图片查看
 			viewImage (filePath) {
 				this.previewImgUrl = filePath;
         this.previewVisible = true;
@@ -215,9 +219,7 @@
 				let data = {
 					fileId: row.fileId
 				}
-				console.log(data)
 				updatetWareFileState(data).then(res => {
-					console.log(res)
 					if (res.data.code === '0001') {
 						this.$message.success(res.data.message)
 					} else {
@@ -226,28 +228,29 @@
 					}
 				}).catch(error => {
 					row.status = row.status === 1 ? 0 : 1
-					this.$message.error(this.GLOBAL.resError)
+					this.catchError(error.response)
 				})
 			},
 			// 单张图片删除
 			handleSingleDelete (index, row) {
+				let _fileIdList = [];
+				_fileIdList[0] = { fileId: row.fileId }
 				this.$confirm('确认删除该图片？', '提示', {type: 'warning'})
-				.then(_ => {
-					let fileIdList = []
-					fileIdList.push({fileId: row.fileId})
+				.then(() => {
 					let data = {
-						fileIdList: fileIdList
+						fileIdList: _fileIdList
 					}
 					console.log(data)
-					deleteWareFile(data).then(res => {
+					deleteWareFile(JSON.stringify(data)).then(res => {
 						console.log(res)
 						if (res.data.code === '0001') {
 							this.$message.success(res.data.message)
+							this.getImageList()
 						} else {
 							this.$message.error(res.data.message)
 						}
-					}).catch(err => {
-						this.$message.error(this.GLOBAL.resError)
+					}).catch(error => {
+						this.catchError(error.response)
 					})
 				})
 				.catch((err) => {
@@ -258,25 +261,27 @@
 			// 批量删除
 			batchRemove () { 				
 				this.$confirm('确认删除选中记录吗？', '提示', {type: 'warning'})
-				.then(_ => {
-					let sels = Object.assign({}, this.sels)
-					let arr = [{fileId: 1}, {fileId: 2}, {fileId: 3}]
-					let data = {};
-					[].push.apply(data, arr)
-					console.log(data)
-					deleteWareFile(data)
+				.then(() => {
+					let fileIds = this.sels.map(sel => sel.fileId);
+					let _fileIdList = [];
+					fileIds.forEach((value, key) => {
+						_fileIdList.push({ fileId: value })
+					})
+					let data = {
+						fileIdList: _fileIdList
+					}
+					deleteWareFile(JSON.stringify(data))
 					.then(res => {
-						console.log(res)
 						if(res.data.code === '0001') {
-							this.$message.success('删除成功')
-							this.getWareFileList()
+							this.$message.success(res.data.message)
+							this.getImageList()
 						} else {
 							this.$message.error(res.data.message)
 						}
 					})
-					.catch((err) => {
-						console.log(err)
-						this.$message.error(this.GLOBAL.resError)
+					.catch((error) => {
+						console.log(error)
+						this.catchError(error.response)
 					})
 				})
 				.catch((err) => {
@@ -286,20 +291,21 @@
 			},
 			// 设为主图
 			handleSetMainImg (index, row) {	
-				console.log(row.fileId)
 				let data = {
 					fileId: row.fileId,
 					isMainPic: 1,
 					wareId: 10001
 				}	
-				updateIsMainPic(data).then(res => {
-					console.log(res)
+				updateWareFileIsMainPic(data).then(res => {
 					if(res.data.code === '0001') {
 						this.$message.success(res.data.message)
 						this.getImageList()
 					} else {
 						this.$message.error(res.data.message)
 					}
+				})
+				.catch(error => {
+					this.catchError(error.response)
 				})
 			},
 		},
