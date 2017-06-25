@@ -11,14 +11,14 @@
       </el-input>
       <el-button :plain="true" type="primary" class="pull-right" @click="addWare">添加商品</el-button>
     </el-row>
-    <el-table :data="wares" v-loading="loading" style="width: 100%">
+    <el-table :data="wareList" v-loading="loading" border style="width: 100%">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="wareCode" label="商品编号" sortable></el-table-column>
+      <el-table-column prop="wareCode" label="商品编号" sortable width="200"></el-table-column>
       <el-table-column prop="wareName" label="商品名称" width="200"></el-table-column>
-      <el-table-column prop="wareKind" label="商品类别" width="150"></el-table-column>
+      <!-- <el-table-column prop="wareKind" label="商品类别" width="150"></el-table-column> -->
       <el-table-column prop="verifyStatus" label="审核状态" width="120" :formatter="formatStatus" >
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" sortable width="150"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" sortable></el-table-column>
       <el-table-column label="操作" width="120">
         <template scope="scope">
           <el-button
@@ -33,7 +33,7 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
+        :current-page="currPage"
         :page-sizes="[10, 20, 30, 40]"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -43,16 +43,16 @@
   </section>
 </template>
 <script>
-import { getWareList } from '@/api'
+import { readWareList } from '@/api'
 export default {
   data () {
     return {
       criteria: '',
-      currentPage: 1,
+      currPage: 1,
       pageSize: 20,
       total: 0,
       loading: false,
-      wares: [],
+      wareList: [],
       filteredWare: [
         {
           ware_code: '001',
@@ -75,16 +75,22 @@ export default {
     getWares () {
       this.loading = true
       let params = {
-        page: this.currentPage,
+        page: this.currPage,
         pageSize: this.pageSize
       }
-      getWareList(params).then(res => {
+      readWareList(params).then(res => {
         console.log(res)
-        this.wares = res.data.wareList
-
-      }).then(() => {
+        if (res.data.code === '0001') {
+          let page = res.data.result.pageInfo;
+          this.total = page.count;
+          this.currPage = page.currPage;
+          this.wareList = res.data.result.wareList
+        } else {
+          tihs.$message.error(res.data.message)
+        }
         this.loading = false
-      }).catch((error) => {
+      }).catch((err) => {
+        console.log(err)
         this.loading = false
       })
     },
@@ -97,11 +103,11 @@ export default {
     handleSizeChange (val) {
     },
     handleCurrentChange (val) {
-      this.currentPage = val
+      this.currPage = val
     },
     handleEdit ($index, row) {
       this.$router.push({
-        path: '/provider/ware/edit/basicInfo_photography?id=' + row.wareId
+        path: '/provider/ware/new/basicInfoPhotography?id=' + row.wareId
       })
     }
   },

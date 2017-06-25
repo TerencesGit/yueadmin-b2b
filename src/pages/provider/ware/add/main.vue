@@ -6,7 +6,7 @@
 			  <el-step v-for="(item, index) in stepList" :title="item" :key="index"></el-step>
 			</el-steps> -->
 			<link-steps space="12%" :active="stepActive" align-center center>
-			  <link-step v-for="(item, index) in stepList" :title="item.title" :key="index" :link="path + item.link">
+			  <link-step v-for="(item, index) in stepList" :title="item.title" :key="index" :link="path + item.link + param">
 			  </link-step>
 			</link-steps>
 		</el-row>
@@ -42,6 +42,10 @@ import { mapGetters } from 'vuex'
 			path () {
 				let _path = this.$route.path;
 				return '#'+_path.substring(0, _path.lastIndexOf('/'))
+			},
+			param () {
+				let id = this.$route.query.id
+				return id ? '?id='+id : ''
 			}
 		}
 	}

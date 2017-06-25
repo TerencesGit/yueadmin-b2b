@@ -8,13 +8,17 @@
 				<el-form-item label="商品名称：">
 					<el-input v-model="filter.name" placeholder="商品名称"></el-input>
 				</el-form-item>
+				<el-form-item label="">
+					<el-button type="primary" @click="getWareList">搜索</el-button>
+				</el-form-item>
 			</el-form>
 		</el-row>
 		<el-table :data="wareList" border highlight-current-row>
-			<el-table-column prop="wareId" label="商品编号"></el-table-column>
-			<el-table-column prop="wareName" label="商品名称"></el-table-column>
-			<el-table-column prop="cityStart" label="出发城市"></el-table-column>
-			<el-table-column prop="contacts" label="联系人"></el-table-column>
+			<el-table-column prop="wareId" label="商品编号" srotable></el-table-column>
+			<el-table-column prop="wareName" label="商品名称" srotable></el-table-column>
+			<el-table-column prop="srcCityName" label="出发城市"></el-table-column>
+			<!-- <el-table-column prop="dstCityName" label="目的城市"></el-table-column> -->
+			<el-table-column prop="createName" label="联系人"></el-table-column>
 			<el-table-column prop="status" label="状态" :formatter="formatStatus"></el-table-column>
 			<el-table-column label="操作">
 				<template scope="scope">
@@ -37,14 +41,13 @@
 	</section>
 </template>
 <script>
-	import { readWareList, setShelfStatus } from '@/api'
+	import { readWareList, updateWareUpDownStatus } from '@/api'
 	export default {
 		data () {
 			return {
 				filter: {
 					name: '',
 					code: '',
-					status: ''
 				},
 				currPage: 1,
 				pageSize: 10,
@@ -72,15 +75,16 @@
 					pageSize: this.pageSize,
 					wareName: this.filter.name,
 					wareCode: this.filter.code,
-					verifyStatus: this.filter.status
 				}
 				console.log(data)
-				readWareList(data)
-				.then(res => {
-					console.log(err)
+				readWareList(data).then(res => {
+					console.log(res)
 					if (res.data.code === '0001') {
-						console.log(res.data.wareList)
-						this.wareList = res.data.wareList
+						let page = res.data.result.pageInfo;
+						this.currPage = page.currPage;
+						this.pageSize = page.pageSize;
+						this.total = page.count;
+						this.wareList = res.data.result.wareList
 					} else {
 						this.$message.error(res.data.message)
 					}
@@ -96,9 +100,9 @@
 				this.$confirm('确定'+text+'该产品？', '提示', {}).then(() => {
 					let data = {
 						wareId: row.wareId,
-						status: status
+						// status: status
 					}
-					setShelfStatus(data).then(res => {
+					updateWareUpDownStatus(data).then(res => {
 						console.log(res)
 						if (res.data.code === '0001') {
 							this.$message.success('操作成功')
@@ -106,7 +110,8 @@
 							this.$message.error('操作失败')
 						}
 					})
-				}).catch(() => {
+				}).catch(err => {
+					console.log(err)
 					this.$message.info('已取消操作')
 				})
 			},

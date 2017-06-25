@@ -126,7 +126,7 @@
 	</section>
 </template>
 <script>
-	import { saveWareTripDetail } from '@/api'
+	import { saveWareTripDetail, deletTripDetail, readTripDetailList } from '@/api'
  	export default {
 		data(){
 			return {
@@ -155,6 +155,7 @@
 					programDuration: 1,
 					programDetail: ''
 				},
+				submitType: 1,
 				tripTypes: [
 					{ label: '航班', value: 1 },
 					{ label: '交通', value: 2 },
@@ -183,10 +184,28 @@
 			}
 		},
 		methods:{
+			getTripList (id) {
+				readTripDetailList({wareId: id}).then(res => {
+					console.log(res)
+					if(res.data.code === '0001') {
+						this.tripList = res.data.result.tripDetailList
+						this.tripList.forEach((trip) => {
+								trip.programTime = new Date(trip.programTime)
+						})
+					} else {
+						this.$message.error(res.data.message)
+					}
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			getTripInfo () {
+
+			},
 			handleAdd (num) {
 				this.form = {
 					id: '',
-					wareId: '',
+					wareId: 22,
 					tripDayNum: num,
 					programType: 1,
 					programTime: new Date(),
@@ -195,6 +214,7 @@
 					programDuration: 1,
 					programDetail: ''
 				}
+				this.submitType = 1;
 				this.dialogTitle = '添加行程';
 				this.addTripVisible = true;
 				this.$refs.tripForm.resetFields()
@@ -203,6 +223,7 @@
 				item = Object.assign({}, item)
 				console.log(item)
 				this.form = item;
+				this.submitType = 2;
 				this.dialogTitle = '编辑行程'
 				this.addTripVisible = true
 			},
@@ -215,10 +236,22 @@
 						.then(res => {
 							console.log(res)
 							if (res.data.code === '0001') {
-								let result = res.data.result;
-								this.$message.success('添加成功')
-								this.addTripVisible = false
-								this.$refs.tripForm.resetFields()
+								this.$message.success(res.data.message)
+								let tripDetail = res.data.result.tripDetail;
+								if (this.submitType === 1) {
+									tripDetail.programTime = new Date(tripDetail.programTime)
+									this.tripList.push(tripDetail)
+								} else {
+									this.tripList.some(trip => {
+										if (trip.id === tripDetail.id) {
+											trip.programTitle = tripDetail.programTitle;
+											trip.programTime = tripDetail.programTime;
+											trip.programDuration = tripDetail.programDuration;
+											trip.programDetail = tripDetail.programDetail;
+											trip.programIsFree = tripDetail.programIsFree;
+										}
+									})
+								}
 							} else {
 								this.$message.error(res.data.message)
 							}
@@ -227,9 +260,6 @@
 							console.log(err)
 							this.$message.error(this.GLOBAL.resError)
 						})
-						data.id = Date.now()
-						this.tripList.push(data)
-						console.log(this.tripList)
 						this.addTripVisible = false
 						this.$refs.tripForm.resetFields()
 					} else {
@@ -242,8 +272,21 @@
 				console.log(this.tripList.indexOf(item))
 				this.$confirm('确定删除该条行程', '提示', {type: 'warning'})
 				.then(() => {
-					let index = this.tripList.indexOf(item)
-					this.tripList.splice(index, 1)
+					let data = {
+						id: item.id
+					}
+					deletTripDetail(data).then(res => {
+						console.log(res)
+						if (res.data.code === '0001') {
+							let index = this.tripList.indexOf(item)
+							this.tripList.splice(index, 1)
+						} else {
+							this.$message.error(res.data.message)
+						}
+					}).catch(err => {
+						console.log(err)
+					})
+					
 				})
 				.catch(err => {
 					console.log(err)
@@ -256,6 +299,7 @@
 			}
 		},
 		created () {
+			console.log(this.$route.query)
 			// let wareInfo = this.$route.query;
 			let wareInfo = {
 				wareId: 100001,
@@ -266,6 +310,9 @@
 		},
 		mounted () {
 			this.$store.dispatch('setStepActive', 2)
+			let wareId = this.$route.query.id;
+			console.log(wareId)
+      wareId && this.getTripList(wareId)
 		}
 	}
 </script>

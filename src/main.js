@@ -157,7 +157,7 @@ Vue.prototype.catchError = (res) => {
   if (res.status === 404) {
     ElementUI.Message({ message: '方法名不存在'})
   } else if (res.status === 500) {
-    ElementUI.Message({ message: '服务器响应失败'})
+    ElementUI.Message({ message: '服务器响应错误'})
   } else if (res.status === 504) {
     ElementUI.Message({ message: '网关超时'})
   } else {

@@ -1,6 +1,6 @@
 <template>
-	<section class="region-picker" v-bind:style="{width: width + 'px'}">
-		<el-input v-model="areaName" :placeholder="placeholder" @focus="pickerVisible = true"></el-input>
+	<section class="region-picker" v-bind:style="{width: width + 'px'}" :cityName="cityName">
+		<el-input v-model="areaName" :placeholder="cityName" @focus="pickerVisible = true"></el-input>
 		<el-dialog v-model="pickerVisible" title="选择城市">
 			<el-form :model="pickerForm" :inline="true" ref="pickerForm" :rules="pickerRules" label-width="60px">
 				<el-form-item label="国家" prop="country">
@@ -36,6 +36,7 @@
 	export default {
 		name: 'RegionPicker',
 		props: {
+			cityName: String,
 			placeholder: {
 				type: String,
 				default: '选择城市'
@@ -79,6 +80,7 @@
 							let regionId = this.pickerForm.city
 							pickerRegion = Region.filter(region => region.id === regionId && region.level === 2)
 						}
+						console.log(this.areaName)
 						this.areaName = pickerRegion[0].name
 						this.areaCode = pickerRegion[0].areaCode
 						this.$emit('change', this.areaCode)

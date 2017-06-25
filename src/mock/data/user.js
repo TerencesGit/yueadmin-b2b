@@ -39,7 +39,7 @@ const UserPerssionList = [
       name: '平台-商品管理',
       icon: 'fa-desktop',
       children: [
-        {name: '待审核商品', link: '/admin/ware/pendding', index: '/admin/ware/pendding'},
+        {name: '待审核商品', link: '/admin/ware/auditing', index: '/admin/ware/auditing'},
         {name: '商品上下架', link: '/admin/ware/shelfManage', index: '/admin/ware/shelfManage'},
         {name: '商品价格管理', link: '/admin/ware/priceManage', index: '/admin/ware/priceManage'},
         {name: '商品管理', link: '/admin/ware/manage', index: '/admin/ware/manage'},

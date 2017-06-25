@@ -8,7 +8,7 @@ import Home from '@/pages/admin/home'
 
 const userManage = resolve => require(['@/pages/admin/userManage'], resolve)
 
-/********************  供应商管理 start  ******************/
+/********************  供应商页面 start  ******************/
 // 品牌管理
 const ProBrandManage = resolve => require(['@/pages/provider/brandManage'], resolve)
 // 商品管理
@@ -45,16 +45,24 @@ const confirmed = resolve => require(['@/pages/provider/order/confirmed'], resol
 const html5Editor = resolve => require(['@/pages/tools/VueHtml5Editor'], resolve)
 const UEditor = resolve => require(['@/pages/tools/UEditor'], resolve)
 
-/********************  供应商管理 end  ******************/
+/********************  供应商页面 end  ******************/
 
-/********************  分销商管理 start  ******************/
+/********************  分销商页面 start  ******************/
 
-/********************  分销商管理 end ******************/
+/********************  分销商页面 end ******************/
 
-/********************  平台管理 start  *******************/
+/********************  平台页面 start  *******************/
+
+/**********  商品管理  **********/
+// 商品审核
+const wareAuditing = resolve => require(['@/pages/admin/ware/auditing'], resolve)
+
+
+/**********  系统管理  **********/
 const categoryManage = resolve => require(['@/pages/admin/system/categoryManage'], resolve)
 
-/********************  平台管理 end  *******************/
+
+/********************  平台页面 end  *******************/
 const routes = [
   {
     path: '/',
@@ -124,6 +132,14 @@ const routes = [
           { path: 'confirmed', name: '待确认订单', component: confirmed }
         ]
       },
+    ]
+  },
+  {
+    path: '/admin/ware',
+    name: '平台-商品管理',
+    component: Layout,
+    children: [
+      { path: 'auditing', name: '商品审核', component: wareAuditing },
     ]
   },
   {

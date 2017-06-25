@@ -4,6 +4,7 @@ axios.defaults.baseURL = ''
 axios.defaults.headers.common['Authorization'] = localStorage.getItem('sessionId')
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.transformRequest = [(data) => {
+	console.log(Qs.stringify(data))
   return Qs.stringify(data)
 }]
 axios.defaults.timeout = 5000
@@ -35,14 +36,18 @@ export const saveBrandInfo = data => { return jsonUrl.post('/brand/saveBrandInfo
 export const updateBrandStatus = data => { return jsonUrl.post('/brand/updateBrandStatus', data) }
 
 // 商品列表
-export const readWareList = params => { return baseUrl.get('/draft/readDraftWareTripList', {params: params}) }
+export const readWareList = params => { return baseUrl.get('/draft/readWareList', {params: params}) }
+// 商品详情
+export const readWareInfo = params => { return baseUrl.get('/draft/readWareInfo', {params: params}) }
 
 // 商品录入-基本信息
-export const saveWareInfo = data => { return baseUrl.post('/ware/saveDraftWareInfo', data) }
+export const saveWareInfo = data => { return jsonUrl.post('/ware/saveWareTripInfo', data) }
 
 // 商品管理-行程介绍
-export const saveWareTripDetail = data => { return jsonUrl.post('/draft/saveDraftWareTripDetail', data) }
+export const saveWareTripDetail = data => { return jsonUrl.post('/draft/saveWareTripDetail', data) }
+export const deletTripDetail = data => { return baseUrl.post('/draft/deletTripDetail', data) }
 export const readTripDetailList = params => { return baseUrl.get('/draft/readTripDetailList', {params: params}) }
+export const readTripDetail = params => { return baseUrl.get('/draft/readTripDetail', {params: params}) }
 
 // 商品录入-多媒体
 export const getWareFileList = params => { return baseUrl.get('/ware/readWareFileList', {params: params}) }
@@ -51,9 +56,9 @@ export const updatetWareFileState = data => { return baseUrl.post('/ware/updateS
 export const updateWareFileIsMainPic = data => { return baseUrl.post('/ware/updateIsMainPic', data) }
 export const deleteWareFile = data => { return jsonUrl.post('/ware/updateImgIsEnable', data) }
 // 商品库存
-export const saveDraftSkuInfo = data => { return baseUrl.post('/ware/draft/saveDraftSkuInfo', data) }
+export const saveSkuInfo = data => { return baseUrl.post('/ware/draft/saveSkuInfo', data) }
 // 商品上下架
-// export const saveDraftSkuInfo = data => { return baseUrl.post('/ware/draft/saveDraftSkuInfo', data) }
+export const updateWareUpDownStatus = data => { return baseUrl.post('/ware/updateWareUpDownStatus', data) }
 
 /**
  *  Mock测试
