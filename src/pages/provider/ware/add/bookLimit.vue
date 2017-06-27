@@ -95,15 +95,20 @@
 <style scoped>
 	.table th {
 		padding: 15px;
-		border: 0;
+		background: #fff;
+		border-right: 0;
+		border-bottom: 1px solid #dfe6ec;
 	}
-	.table tbody tr td {
+	.table > tbody td {
 		text-align: center
 	}
-	.table tbody tr td:first-child {
+	.table > tbody td:first-child {
 		width: 60px;
 	}
-	.table tbody tr td:last-child {
+	.table > tbody td:last-child {
 		padding: 20px;
+	}
+	.table .text-right {
+		text-align: right
 	}
 </style>

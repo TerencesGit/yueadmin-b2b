@@ -2,14 +2,17 @@
   <section>
     <div v-title :data-title="this.$route.name"></div>
     <el-row class="toolbar">
-      <el-input
-        placeholder="输入商品名称"
-        icon="search"
-        v-model="criteria"
-        :on-icon-click="handleIconClick"
-        style="width: 300px; float: left">
-      </el-input>
-      <el-button :plain="true" type="primary" class="pull-right" @click="addWare">添加商品</el-button>
+      <el-form :inline="true" :model="filter">
+        <el-form-item label="">
+          <el-input v-model="filter.name" placeholder="商品编号"></el-input>
+        </el-form-item>
+        <el-form-item label="">
+          <el-input v-model="filter.name" placeholder="商品名称"></el-input>
+        </el-form-item>
+        <el-form-item label="">
+          <el-button type="primary" @click="getWareList">搜索</el-button>
+        </el-form-item>
+      </el-form>
     </el-row>
     <el-table :data="wareList" v-loading="loading" border style="width: 100%">
       <el-table-column type="index" width="60"></el-table-column>
@@ -47,7 +50,10 @@ import { readWareList } from '@/api'
 export default {
   data () {
     return {
-      criteria: '',
+      filter: {
+        name: '',
+        code: '',
+      },
       currPage: 1,
       pageSize: 20,
       total: 0,
@@ -72,26 +78,29 @@ export default {
     formatStatus (row, column) {
       return row.verifyStatus === 1 ? '审核通过' : row.verifyStatus === 0 ? '未审核' : row.verifyStatus === 2 ? '审核未通过' : '未知'
     },
-    getWares () {
-      this.loading = true
-      let params = {
-        page: this.currPage,
-        pageSize: this.pageSize
+    getWareList () {
+      let data = {
+        currPage: this.currPage,
+        pageSize: this.pageSize,
+        wareName: this.filter.name,
+        wareCode: this.filter.code,
       }
-      readWareList(params).then(res => {
+      console.log(data)
+      readWareList(data).then(res => {
         console.log(res)
         if (res.data.code === '0001') {
           let page = res.data.result.pageInfo;
-          this.total = page.count;
           this.currPage = page.currPage;
+          this.pageSize = page.pageSize;
+          this.total = page.count;
           this.wareList = res.data.result.wareList
         } else {
-          tihs.$message.error(res.data.message)
+          this.$message.error(res.data.message)
         }
-        this.loading = false
-      }).catch((err) => {
+      })
+      .catch(err => {
         console.log(err)
-        this.loading = false
+        this.catchError(err.response)
       })
     },
     handleIconClick () {
@@ -112,7 +121,7 @@ export default {
     }
   },
   mounted () {
-    this.getWares()
+    this.getWareList()
   },
   computed: {
     // filteredWare () {

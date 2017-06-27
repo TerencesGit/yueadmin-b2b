@@ -51,7 +51,6 @@
             </div>
           </div>
         </div>
-
         <!-- full events when click show more -->
         <div class="more-events" v-show="showMore"
              :style="{left: morePos.left + 'px', top: morePos.top + 'px'}">
@@ -226,7 +225,7 @@
         if (!event.isShow) return;
         jsEvent.stopPropagation();
         let pos = this.computePos(jsEvent.target);
-        this.$emit('eventClick', event, jsEvent, pos);
+        this.$emit('eventClick', event.start, event, jsEvent, pos);
       }
     },
     filters: {

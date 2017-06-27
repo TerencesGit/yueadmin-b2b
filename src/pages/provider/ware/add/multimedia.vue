@@ -98,7 +98,7 @@
 	        fileUrlType: 1
 	      },
     		mediaForm: {
-    			wareId: 10001,
+    			wareId: '',
     			fileList: []
     		},
 				mediaList: [{
@@ -129,7 +129,7 @@
 			// 获取图片列表
 			getImageList () {
 				let params = {
-					wareId: 10001 
+					wareId: this.mediaForm.wareId 
 				}
 				getWareFileList(params).then(res => {
 					if (res.data.code === '0001') {
@@ -186,7 +186,7 @@
  	    // 图片列表提交
 	    onSubmit () {
 	    	let data = JSON.stringify(Object.assign({}, this.mediaForm))
-	    	console.log()
+	    	console.log(data)
 	    	createWareFile(data).then(res => {
 	    		if(res.data.code === '0001') {
 	    			this.$message.success('上传成功')
@@ -316,6 +316,8 @@
 		},
 		mounted () {
 			this.$store.dispatch('setStepActive', 3)
+			console.log(this.$route.query.id)
+			this.mediaForm.wareId = this.$route.query.id * 1
 			this.getImageList()
 		}
 	}

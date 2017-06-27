@@ -59,7 +59,11 @@ export const deleteWareFile = data => { return jsonUrl.post('/ware/updateImgIsEn
 export const saveSkuInfo = data => { return baseUrl.post('/ware/draft/saveSkuInfo', data) }
 // 商品上下架
 export const updateWareUpDownStatus = data => { return baseUrl.post('/ware/updateWareUpDownStatus', data) }
-
+/**
+ * ############### 平台-商品管理 ###############
+ */
+// 商品审核
+export const verifyWareInfo = data => { return baseUrl.post('/ware/verifyWareInfo', data) }
 /**
  *  Mock测试
  */

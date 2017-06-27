@@ -47,7 +47,7 @@
   </section>
 </template>
 <script>
-import { getWareList } from '@/api'
+import { readWareList } from '@/api'
 export default {
   data () {
     return {
@@ -86,7 +86,7 @@ export default {
         page: this.currPage,
         pageSize: this.pageSize
       }
-      getWareList(params).then(res => {
+      readWareList(params).then(res => {
         console.log(res)
         if (res.data.code === '0001') {
           let page = res.data.result.pageInfo;

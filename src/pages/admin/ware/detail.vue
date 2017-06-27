@@ -1,5 +1,9 @@
 <template>
 	<section>
+    <el-row class="m-t m-b">
+      <el-button type="success" @click="verifyPass">通过</el-button>
+      <el-button type="warning" @click="verifyVisible = true">驳回</el-button>
+    </el-row>
     <el-tabs type="border-card">
       <el-tab-pane>
         <span slot="label"><i class="el-icon-date"></i> 基本信息</span>
@@ -60,17 +64,18 @@
               </li>
               <li>
                 <label>无订金订单占位时长：</label>
-                <span>{{wareForm.nocashReserveMinute}}小时</span>
+                <span>{{wareForm.nocashReserveMinute / 60}}小时</span>
               </li>
             </ul>
-          </el-col>
+          </el-col>  
         </el-row>
         <el-row>
           <h3>推荐概述</h3>
           <div v-html="" style="margin: 15px">推荐概述</div>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane label="行程介绍">
+      <el-tab-pane>
+        <span slot="label"><i class="fa fa-cab"></i> 行程介绍</span>
         <ul class="trip-content">
           <li v-for="num in wareInfo.tripDays" :key="num">
             <el-card class="trip-day">
@@ -127,7 +132,8 @@
           </li>
         </ul>
       </el-tab-pane>
-      <el-tab-pane label="多媒体">
+      <el-tab-pane label="">
+        <span slot="label"><i class="fa fa-image"></i> 多媒体</span>
         <el-table 
           border
           :data="mediaList" 
@@ -157,19 +163,33 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="费用/预定限制">定时任务补偿</el-tab-pane>
+      <el-tab-pane label="费用/预定限制">
+        <span slot="label"><i class="fa fa-money"></i> 费用/预定限制</span>
+        定时任务补偿
+      </el-tab-pane>
       <el-tab-pane label="价格库存">定时任务补偿</el-tab-pane>
       <el-tab-pane label="附加服务">定时任务补偿</el-tab-pane>
       <el-tab-pane label="推荐活动">定时任务补偿</el-tab-pane>
       <el-tab-pane label="多行程维护">定时任务补偿</el-tab-pane>
     </el-tabs>
+    <el-dialog v-model="verifyVisible" title="驳回原因">
+      <el-form :model="verifyForm" ref="verifyForm" :rules="rules">
+        <el-form-item label="" prop="verifyInfo">
+          <el-input v-model="verifyForm.verifyInfo" type="textarea" :rows="4" placeholder="填写驳回原因"></el-input>
+        </el-form-item>
+        <el-form-item label="" class="text-right">
+          <el-button type="primary" @click="verifyFail">确定</el-button>
+          <el-button @click="verifyVisible = false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <el-dialog v-model="previewVisible" size="tiny">
       <img width="100%" :src="previewImgUrl">
     </el-dialog>
 	</section>
 </template>
 <script>
-  import { readBrandList, saveWareInfo, readWareInfo } from '@/api'
+  import { readBrandList, saveWareInfo, readWareInfo, readTripDetailList, getWareFileList, verifyWareInfo } from '@/api'
 	export default {
     data () {
       return {
@@ -228,6 +248,18 @@
           createName: '上传者',
           createTime: new Date(),
         }],
+        verifyVisible: false,
+        verifyForm: {
+          wareId: '',
+          verifyStatus: '',
+          verifyInfo: '',
+        },
+        rules: {
+          verifyInfo: [
+            { required: true, message: '请填写驳回原因', trigger: 'blur' },
+            { minlength: 10, message: '驳回原因不少于10个字符', trigger: 'blur' },
+          ]
+        }
       };
     },
     methods: {
@@ -263,6 +295,29 @@
         }).catch(err => {
           console.log(err)
           this.catchError(err.response)
+        })
+        readTripDetailList({wareId: id}).then(res => {
+          console.log(res)
+          if( res.data.code === '0001') {
+            this.tripList = res.data.result.tripDetailList
+          } else {
+            console.log(res.data.message)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+        getWareFileList({wareId: id}).then(res => {
+          console.log(res)
+          if( res.data.code === '0001') {
+            this.mediaList = res.data.result.fileList
+            this.mediaList.forEach((media) => {
+              media.filePath = 'http://192.168.199.211:8080' + media.filePath
+            })
+          } else {
+            console.log(res.data.message)
+          }
+        }).catch(err => {
+          console.log(err)
         })
       },
     	// 获取品牌列表
@@ -328,11 +383,56 @@
           }
         })
       },
+      // 审核通过
+      verifyPass () {
+        this.$confirm('确定该商品通过审核', '提示', {type: 'warning'}).then(() => {
+          let data = {
+            wareId: this.verifyForm.wareId,
+            verifyStatus: 1
+          }
+          console.log(data)
+          verifyWareInfo(data).then(res => {
+            console.log(res)
+            if(res.data.code === '0001') {
+              this.$message.success(res.data.message)
+              this.$route.back()
+            } else {
+              this.$message.error('取消操作')
+            }
+          }).catch(err => {
+            console.log(err)
+          })
+          this.$router.back()
+        }).catch(() => {
+          this.$message('取消操作')
+        })
+      },
+      // 审核不通过
+      verifyFail () {
+        this.$refs.verifyForm.validate((valid) => {
+          if(valid) {
+            let data = {
+              wareId: this.verifyForm.wareId,
+              verifyStatus: 2,
+              verifyInfo: this.verifyForm.verifyInfo
+            }
+            console.log(data)
+            // verifyWareInfo(data).then(res => {
+            //   console.log(res)
+            // })
+            this.verifyVisible = false
+            this.$refs.verifyForm.resetFields()
+          } else{
+            console.log('error')
+          }
+        })
+      }
     },
     mounted () {
     	this.getWareBrandList()
     	this.$store.dispatch('setStepActive', 1)
       let wareId = this.$route.query.id;
+      this.verifyForm.wareId = wareId * 1
       wareId && this.getWareDetail(wareId)
     }
   }

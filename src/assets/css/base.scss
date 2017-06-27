@@ -186,24 +186,48 @@ table {
 }
 .table {
   width: 100%;
-  max-width: 100%;
-  margin-bottom: 1rem;
+  border: 1px solid #dfe6ec;
 }
-.table-bordered, 
-.table-bordered td, 
-.table-bordered th {
-  border: 1px solid #eceeef;
+.table tbody {
+   background: #fff
 }
-.table-bordered thead td, 
-.table-bordered thead th {
-  border-bottom-width: 2px;
+.table th, .table td {
+  height: 40px;
+  padding: 5px 15px;
+  font-size: 14px;
+  text-align: left;
+  border-right: 1px solid #dfe6ec;
 }
-.table thead th {
-  border-bottom: 2px solid #eceeef;
+.table th {
+  background: #eef1f6;
+  border-bottom: 1px solid #dfe6ec;
 }
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: #f9f9f9;
+.table td {
+  border-bottom: 1px solid #dfe6ec;
 }
+.table.hover tr:hover {
+  background: #eef1f6
+}
+// .table {
+//   width: 100%;
+//   max-width: 100%;
+//   margin-bottom: 1rem;
+// }
+// .table-bordered, 
+// .table-bordered td, 
+// .table-bordered th {
+//   border: 1px solid #eceeef;
+// }
+// .table-bordered thead td, 
+// .table-bordered thead th {
+//   border-bottom-width: 2px;
+// }
+// .table thead th {
+//   border-bottom: 2px solid #eceeef;
+// }
+// .table-striped tbody tr:nth-of-type(odd) {
+//   background-color: #f9f9f9;
+// }
 /* element-ui style */
 .uploader .el-upload {
   border: 1px dashed #d9d9d9;
@@ -258,6 +282,9 @@ table {
 }
 .el-input-number {
   width: 100%
+}
+.input-width-control .el-input {
+  width: 217px;
 }
 .select-width {
   width: 217px;
