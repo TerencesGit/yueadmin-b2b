@@ -4,7 +4,7 @@
     <el-col :span="24" class="toolbar">
       <el-form :inline="true" :model="filters" @submit.prevent="getBrandList">
         <el-form-item>
-          <el-input v-model="filters.name" placeholder="品牌名称" icon="search" @click.enter="null"></el-input>
+          <el-input v-model="filters.name" placeholder="品牌名称" icon="search"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getBrandList">查询</el-button>

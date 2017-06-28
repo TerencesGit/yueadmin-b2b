@@ -56,7 +56,8 @@ export const updatetWareFileState = data => { return baseUrl.post('/ware/updateS
 export const updateWareFileIsMainPic = data => { return baseUrl.post('/ware/updateIsMainPic', data) }
 export const deleteWareFile = data => { return jsonUrl.post('/ware/updateImgIsEnable', data) }
 // 商品库存
-export const saveSkuInfo = data => { return baseUrl.post('/ware/draft/saveSkuInfo', data) }
+export const saveSkuInfo = data => { return jsonUrl.post('/draft/saveSkuInfo', data) }
+
 // 商品上下架
 export const updateWareUpDownStatus = data => { return baseUrl.post('/ware/updateWareUpDownStatus', data) }
 /**

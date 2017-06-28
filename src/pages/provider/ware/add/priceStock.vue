@@ -20,14 +20,13 @@
             @change="dateChange">
           </el-date-picker>
         </el-form-item>
-        <!-- <el-form-item label="" label-width="80px">
-          <el-checkbox v-model="checkAll" @change="handleCheckAllChange">每天</el-checkbox>
-          <el-checkbox-group v-model="checkedWeeks" @change="handleCheckedCitiesChange" style="display: inline-block">
-            <el-checkbox v-for="(item, index) in weeks" :label="item" :key="index">{{item}}</el-checkbox>
+        <el-form-item label="" label-width="80px" prop="checkedWeeks">
+          <el-checkbox-group v-model="batchSkuForm.checkedWeeks" @change="handleCheckedChange" style="display: inline-block">
+            <el-checkbox v-for="(item, index) in weeks" :label="index" :key="index" checked>{{item}}</el-checkbox>
           </el-checkbox-group>
-        </el-form-item> -->
-        <el-form-item label="库存：" prop="stockNum">
-          <el-input v-model.number="batchSkuForm.stockNum" placeholder="输入库存数量"></el-input>
+        </el-form-item>
+        <el-form-item label="库存：" prop="storageNum">
+          <el-input v-model.number="batchSkuForm.storageNum" placeholder="输入库存数量"></el-input>
         </el-form-item>
         <el-form-item label="成人价：" prop="adultPrice">
           <el-input v-model.number="batchSkuForm.adultPrice" placeholder="输入成人价"></el-input>
@@ -50,8 +49,8 @@
         <el-form-item label="日期：">
           <span v-text="singleSkuForm.skuDate"></span>
         </el-form-item>
-        <el-form-item label="库存：" prop="stockNum">
-          <el-input v-model.number="singleSkuForm.stockNum" placeholder="输入库存数量"></el-input>
+        <el-form-item label="库存：" prop="storageNum">
+          <el-input v-model.number="singleSkuForm.storageNum" placeholder="输入库存数量"></el-input>
         </el-form-item>
         <el-form-item label="成人价：" prop="adultPrice">
           <el-input v-model.number="singleSkuForm.adultPrice" placeholder="输入成人价"></el-input>
@@ -81,19 +80,22 @@
         singleSkuFormVisible: false,
         batchSkuForm: {
           wareId: '',
+          skuId: '',
+          stockId: '',
           startDate: '',
           endDate: '',
           skuDate: '',
-          stockNum: 100,
+          storageNum: 100,
           adultPrice: 8000,
           childPrice: 7000,
           singlePrice: 5000,
           skuDate: [],
+          checkedWeeks: []
         },
         singleSkuForm: {
           wareId: '',
           skuDate: '',
-          stockNum: 100,
+          storageNum: 100,
           adultPrice: 8000,
           childPrice: 7000,
           singlePrice: 5000,
@@ -108,7 +110,7 @@
           childPrice: [
             { type: 'number', required: true, message: '儿童价不能为空', trigger: 'blur'},
           ],
-          stockNum: [
+          storageNum: [
             { type: 'number', required: true, message: '库存数量不能为空', trigger: 'blur'},
           ],
           skuDate: [
@@ -116,7 +118,10 @@
           ],
           singlePrice: [
             { type: 'number', required: true, message: '单人补差价不能为空', trigger: 'change'},
-          ]
+          ],
+          checkedWeeks: [
+            { type: 'array', required: true, message: '至少勾选一项', trigger: 'change'},
+          ],
         },
         pickerOptions: {
           shortcuts: [{
@@ -147,20 +152,18 @@
         },
         checkAll: true,
         weeks: weekOptions,
-        checkedWeeks: weekOptions,
         isIndeterminate: false
   		}
   	},
   	methods: {
-      handleCheckAllChange(event) {
-        this.checkedWeeks = event.target.checked ? weekOptions : [];
-        // this.isIndeterminate = false;
-      },
-      handleCheckedCitiesChange(value) {
-        console.log(value)
-        let checkedCount = value.length;
-        this.checkAll = checkedCount === this.weeks.length;
-        this.isIndeterminate = checkedCount > 0 && checkedCount < this.weeks.length;
+      handleCheckedChange(value) {
+        let weeks = [0, 0, 0, 0, 0, 0, 0];
+        value.forEach((v, i) => {
+            weeks[v] = 1
+        })
+        let weekStr = weeks.join('')
+        weekStr = weekStr === '0000000' ? '1111111' : weekStr
+        console.log(weekStr)
       },
   		changeMonth (start, end, current) {
 	      console.log('changeMonth', start.format(), end.format(), current.format())
@@ -186,10 +189,10 @@
           if (valid) {
             this.batchSkuForm.startDate = this.batchSkuForm.skuDate[0]
             this.batchSkuForm.endDate = this.batchSkuForm.skuDate[1]
-            this.batchSkuForm.skuDate = []
+            this.batchSkuForm.skuDate = ''
             let data = Object.assign({}, this.batchSkuForm)
             console.log(data)
-            saveSkuInfo(data).then(res => {
+            saveSkuInfo(JSON.stringify(data)).then(res => {
               console.log(res)
               if (res.data.code === '0001') {
                 this.$message.success(res.data.message)
@@ -209,44 +212,45 @@
   	},
   	mounted () {
 			this.$store.dispatch('setStepActive', 5)
-      this.batchSkuForm.wareId = this.$route.query.id
+      this.batchSkuForm.wareId = this.$route.query.id * 1
       let demoEvents = [
         {
           start: '2017-06-06',
           adultPrice: '18000.00',
           childPrice: '12000.00',
-          stockNum: '100',
-          singlePrice: 5000
+          storageNum: '100',
+          singlePrice: 5000,
+          skuId: 10001
         },
         {
           start: '2017-06-07',
           adultPrice: '18000.00',
           // childPrice: '12000.00',
-          stockNum: '100'
+          storageNum: '100'
         },
         {
           start: '2017-06-08',
           adultPrice: '18000.00',
           childPrice: '12000.00',
-          stockNum: '100'
+          storageNum: '100'
         },
         {
           start: '2017-06-09',
           adultPrice: '18000.00',
           childPrice: '12000.00',
-          stockNum: '100'
+          storageNum: '100'
         },
         {
           start: '2017-06-10',
           adultPrice: '18000.00',
           childPrice: '12000.00',
-          stockNum: '100'
+          storageNum: '100'
         },
         {
           start: '2017-05-30',
           adultPrice: '18000.00',
           childPrice: '12000.00',
-          stockNum: '100'
+          storageNum: '100'
         },
       ]
       this.skuData = demoEvents
