@@ -186,6 +186,7 @@ table {
 }
 .table {
   width: 100%;
+  overflow-x: scroll;
   border: 1px solid #dfe6ec;
 }
 .table tbody {
@@ -320,4 +321,10 @@ table {
 }
 .text-danger {
   color: #f00
+}
+.vue-html5-editor > .content {
+  padding: 20px
+}
+.vue-html5-editor > .content img {
+  width: 80%;
 }

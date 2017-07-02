@@ -132,7 +132,8 @@
 					</el-card>
 					<el-form-item class="text-center">
 				    <el-button type="primary" @click="submitForm">保存</el-button>
-            <back-button></back-button>
+				    <!-- <el-button @click="resetForm('wareForm')">重置</el-button> -->
+				    <back-button></back-button>
 				  </el-form-item>
 				</el-form>
 			</el-col>
@@ -140,7 +141,7 @@
 	</section>
 </template>
 <script>
-  import { readBrandList, saveWareInfo, readWareInfo } from '@/api'
+  import { readBrandList, saveWareServerInfo, readWareInfo } from '@/api'
 	export default {
     data () {
       return {
@@ -164,6 +165,7 @@
           suggestedPrice: 6800,
           srcCityName: '请选择城市',
           dstCityName: '请选择城市',
+          parentId: ''
         },
         rules: {
         	wareName: [
@@ -277,6 +279,9 @@
     			this.$message.error(this.GLOBAL.resError)
     		})
     	},
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
       srcCityChange (code) {
       	this.wareForm.srcCityCode = code
       },
@@ -290,10 +295,8 @@
           if (valid) {
           	let data = Object.assign({}, this.wareForm)
             console.log(data)
-            data.openDate = this.$moment(data.openDate).format('YYYY-MM-DD HH:mm:ss')
-            data.closeDate = this.$moment(data.closeDate).format('YYYY-MM-DD HH:mm:ss')
             data.nocashReserveMinute = data.nocashReserveMinute * 60
-            saveWareInfo(JSON.stringify(data))
+            saveWareServerInfo(JSON.stringify(data))
             .then(res => {
             	console.log(res)
             	if (res.data.code === '0001') {
@@ -319,8 +322,9 @@
     },
     mounted () {
     	this.getWareBrandList()
-    	this.$store.dispatch('setStepActive', 1)
+    	this.$store.dispatch('setStepActive', 6)
       let wareId = this.$route.query.id;
+      this.wareForm.parentId = wareId;
       wareId && this.getWareDetail(wareId)
     }
   }

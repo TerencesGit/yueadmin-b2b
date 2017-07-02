@@ -105,10 +105,12 @@
 					updateWareUpDownStatus(data).then(res => {
 						console.log(res)
 						if (res.data.code === '0001') {
-							this.$message.success('操作成功')
+							this.$message.success(res.data.message)
 						} else {
-							this.$message.error('操作失败')
+							this.$message.error(res.data.message)
 						}
+					}).catch(err => {
+						console.log(err)
 					})
 				}).catch(err => {
 					console.log(err)

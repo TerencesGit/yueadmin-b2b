@@ -11,9 +11,9 @@
     <!-- 批量sku设置 -->
     <el-dialog title="库存价格设置（价格单位：元）" v-model="batchSkuFormVisible">
       <el-form :model="batchSkuForm" ref="batchSkuForm" :rules="rules" label-width="180px" class="input-width-control">
-        <el-form-item label="起止日期：" prop="skuDate">
+        <el-form-item label="起止日期：" prop="skuDateRange">
           <el-date-picker
-            v-model="batchSkuForm.skuDate"
+            v-model="batchSkuForm.skuDateRange"
             type="daterange"
             placeholder="选择日期范围"
             :picker-options="pickerOptions"
@@ -62,7 +62,7 @@
           <el-input v-model.number="singleSkuForm.singlePrice" placeholder="输入单人补差价"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">提交</el-button>
+          <el-button type="primary" @click="skuSubmit">提交</el-button>
           <el-button @click="singleSkuFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -70,7 +70,7 @@
 	</section>
 </template>
 <script>
-  import { saveSkuInfo } from '@/api'
+  import { saveSkuInfo, readSkuInfoList } from '@/api'
   const weekOptions = ['每周日', '每周一', '每周二', '每周三', '每周四', '每周五', '每周六'];
   export default {
   	data () {
@@ -79,8 +79,8 @@
         batchSkuFormVisible: false,
         singleSkuFormVisible: false,
         batchSkuForm: {
-          wareId: '',
-          skuId: '',
+          wareId: 22,
+          skuIdList: [],
           stockId: '',
           startDate: '',
           endDate: '',
@@ -89,12 +89,13 @@
           adultPrice: 8000,
           childPrice: 7000,
           singlePrice: 5000,
-          skuDate: [],
-          checkedWeeks: []
+          checkedWeeks: [],
+          skuDateRange: []
         },
         singleSkuForm: {
           wareId: '',
           skuDate: '',
+          skuIdList: [],
           storageNum: 100,
           adultPrice: 8000,
           childPrice: 7000,
@@ -113,7 +114,7 @@
           storageNum: [
             { type: 'number', required: true, message: '库存数量不能为空', trigger: 'blur'},
           ],
-          skuDate: [
+          skuDateRange: [
             { type: 'array', required: true, message: '日期不能为空', trigger: 'change'},
           ],
           singlePrice: [
@@ -156,6 +157,24 @@
   		}
   	},
   	methods: {
+      getSkuList (id) {
+        console.log(id)
+        readSkuInfoList({wareId: id}).then(res => {
+          console.log(res)
+          if(res.data.code === '0001') {
+            if(!res.data.result.skuList) return;
+            this.skuData = res.data.result.skuList;
+            this.skuData.forEach((data) => {
+              data.start = data.skuDate
+            })
+          } else {
+            this.$message.error(res.data.message)
+          }
+        }).catch(err => {
+          console.log(err)
+          this.catchError(err.response)
+        })
+      },
       handleCheckedChange(value) {
         let weeks = [0, 0, 0, 0, 0, 0, 0];
         value.forEach((v, i) => {
@@ -182,14 +201,15 @@
         this.singleSkuFormVisible = true
 	    },
       dateChange (val) {
-        this.batchSkuForm.skuDate = val.split(' - ')
+        this.batchSkuForm.skuDateRange = val.split(' - ')
       },
+      // 批量设置
       onSubmit () {
         this.$refs.batchSkuForm.validate((valid) => {
           if (valid) {
-            this.batchSkuForm.startDate = this.batchSkuForm.skuDate[0]
-            this.batchSkuForm.endDate = this.batchSkuForm.skuDate[1]
-            this.batchSkuForm.skuDate = ''
+            this.batchSkuForm.startDate = this.batchSkuForm.skuDateRange[0]
+            this.batchSkuForm.endDate = this.batchSkuForm.skuDateRange[1]
+            // this.batchSkuForm.skuDate = ''
             let data = Object.assign({}, this.batchSkuForm)
             console.log(data)
             saveSkuInfo(JSON.stringify(data)).then(res => {
@@ -209,10 +229,36 @@
           }
         })
       },
+      // 单条设置
+      skuSubmit () {
+        this.$refs.singleSkuForm.validate((valid) => {
+          if (valid) {
+            let data = Object.assign({}, this.singleSkuForm)
+            console.log(data)
+            data.skuIdList = [data.skuId]
+            data.startDate = '';
+            data.endDate = '';
+            saveSkuInfo(JSON.stringify(data)).then(res => {
+              console.log(res)
+              if(res.data.code === '0001') {
+                console.log(res.data.result)
+                tihs.$message.success(res.data.message)
+                this.singleSkuFormVisible = false
+              } else {
+                this.$message.error(res.data.message)
+              }
+            }).catch(err => {
+              console.log(err)
+            })
+          } else {
+            console.log(this.singleSkuForm)
+          }
+        })
+      }
   	},
   	mounted () {
 			this.$store.dispatch('setStepActive', 5)
-      this.batchSkuForm.wareId = this.$route.query.id * 1
+      this.batchSkuForm.wareId = this.$route.query.wareId * 1
       let demoEvents = [
         {
           start: '2017-06-06',
@@ -254,6 +300,7 @@
         },
       ]
       this.skuData = demoEvents
+      this.getSkuList(this.batchSkuForm.wareId)
 		}
   }
 </script>

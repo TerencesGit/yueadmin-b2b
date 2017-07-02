@@ -22,8 +22,9 @@ const ProWareTourItinerary = resolve => require(['@/pages/provider/ware/add/tour
 const ProWareMultiMedia = resolve => require(['@/pages/provider/ware/add/multimedia'], resolve)
 const ProWareBookLimit = resolve => require(['@/pages/provider/ware/add/bookLimit'], resolve)
 const ProWareSkuSet = resolve => require(['@/pages/provider/ware/add/priceStock'], resolve)
-const ProWareAddiService = resolve => require(['@/pages/provider/ware/add/additionalService'], resolve)
-const ProWareAddiServiceNew = resolve => require(['@/pages/provider/ware/add/newAdditionalService'], resolve)
+const ProWareService = resolve => require(['@/pages/provider/ware/add/service'], resolve)
+const ProWareServiceNew = resolve => require(['@/pages/provider/ware/add/newService'], resolve)
+const ProWareActivity = resolve => require(['@/pages/provider/ware/add/activity'], resolve)
 const ProWareMultiPassMaintain = resolve => require(['@/pages/provider/ware/add/multiPassMaintain'], resolve)
 
 // 商品信息-编辑
@@ -97,8 +98,9 @@ const routes = [
           { path: 'multiMedia', name: '新建商品-多媒体', component: ProWareMultiMedia },
           { path: 'bookLimit', name: '新建商品-费用/预定限制', component: ProWareBookLimit },
           { path: 'priceStock', name: '新建商品-价格库存', component: ProWareSkuSet },
-          { path: 'additionalService', name: '新建商品-附加服务', component: ProWareAddiService },
-          { path: 'newAdditionalService', name: '新建商品-新增附加服务', component: ProWareAddiServiceNew },
+          { path: 'additionalService', name: '新建商品-附加服务', component: ProWareService },
+          { path: 'newAdditionalService', name: '新建商品-新增附加服务', component: ProWareServiceNew },
+          { path: 'activity', name: '新建商品-新增推荐活动', component: ProWareActivity },
           { path: 'multiPassMaintain', name: '新建商品-多行程维护', component: ProWareMultiPassMaintain },
         ] 
       },

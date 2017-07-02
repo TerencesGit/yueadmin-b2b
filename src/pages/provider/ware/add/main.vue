@@ -5,7 +5,7 @@
 			<!-- <el-steps space="12%" :active="stepActive" finish-status="success" align-center center>
 			  <el-step v-for="(item, index) in stepList" :title="item" :key="index"></el-step>
 			</el-steps> -->
-			<link-steps space="12%" :active="stepActive" align-center center>
+			<link-steps space="15%" :active="stepActive" align-center center>
 			  <link-step v-for="(item, index) in stepList" :title="item.title" :key="index" :link="path + item.link + param">
 			  </link-step>
 			</link-steps>
@@ -23,15 +23,15 @@ import { mapGetters } from 'vuex'
 				// stepList: ['选择类别', '基本信息', '行程介绍', '多媒体', '费用/预定限制', '价格库存', '附加服务',
 				// '推荐活动', '多行程维护']
 				stepList: [
-					{title: '选择类别', link: '/chooseType'},
+					// {title: '选择类别', link: '/chooseType'},
 					{title: '基本信息', link: '/basicInfoPhotography'},
 					{title: '行程介绍', link: '/tourItinerary'},
 					{title: '多媒体', link: '/multiMedia'},
 					{title: '费用/预定限制', link: '/bookLimit'},
 					{title: '价格库存', link: '/priceStock'},
 					{title: '附加服务', link: '/additionalService'},
-					{title: '推荐活动', link: '/chooseType'},
-					{title: '多行程维护', link: '/multiPassMaintain'},
+					{title: '推荐活动', link: '/activity'},
+					// {title: '多行程维护', link: '/multiPassMaintain'},
 				]
 		 }
 		},
