@@ -4,7 +4,7 @@
       <el-button type="primary" @click="batchSkuFormVisible = true">批量设置</el-button>
     </el-row>
 		<full-calendar 
-      :events="skuList" 
+      :events="skuData" 
       first-day='0' 
       @changeMonth="changeMonth" 
       @dayClick="dayClick"
@@ -48,27 +48,30 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <!-- 单条sku设置 -->
-    <el-dialog title="库存价格设置（价格单位：元）" v-model="singleSkuFormVisible">
-      <el-form :model="singleSkuForm" ref="singleSkuForm" :rules="rules" label-width="180px" class="input-width-control">
-        <el-form-item label="日期：">
-          <span v-text="singleSkuForm.skuDate"></span>
+     <!-- 单条价格设置 -->
+    <el-dialog v-model="singlePriceFormVisible" title="设置五级价格">
+      <el-form :model="priceForm" ref="priceForm" :rules="rules" label-width="240px" class="sku-form">
+        <el-form-item label="日期">
+          <span>{{priceForm.skuDate}}</span>
         </el-form-item>
-        <el-form-item label="库存：" prop="storageNum">
-          <el-input v-model.number="singleSkuForm.storageNum" placeholder="输入库存数量"></el-input>
+        <el-form-item label="一级价格" prop="price1">
+          <el-input v-model.number="priceForm.price1" placeholder="输入一级价格"></el-input>
         </el-form-item>
-        <el-form-item label="成人价：" prop="adultPrice">
-          <el-input v-model.number="singleSkuForm.adultPrice" placeholder="输入成人价"></el-input>
+        <el-form-item label="二级价格" prop="price2">
+          <el-input v-model.number="priceForm.price2" placeholder="输入二级价格"></el-input>
         </el-form-item>
-        <el-form-item label="儿童价：" prop="childPrice">
-          <el-input v-model.number="singleSkuForm.childPrice" placeholder="输入儿童价"></el-input>
+        <el-form-item label="三级价格" prop="price3">
+          <el-input v-model.number="priceForm.price3" placeholder="输入三级价格"></el-input>
         </el-form-item>
-        <el-form-item label="单人补差价：" prop="singlePrice">
-          <el-input v-model.number="singleSkuForm.singlePrice" placeholder="输入单人补差价"></el-input>
+        <el-form-item label="四级价格" prop="price4">
+          <el-input v-model.number="priceForm.price4" placeholder="输入四级价格"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="skuSubmit">提交</el-button>
-          <el-button @click="singleSkuFormVisible = false">取消</el-button>
+        <el-form-item label="五级价格" prop="price5">
+          <el-input v-model.number="priceForm.price5" placeholder="输入五级价格"></el-input>
+        </el-form-item>
+        <el-form-item label="" class="text-right">
+          <el-button type="primary" @click="singlePriceSubmit">确定</el-button>
+          <el-button @click="singlePriceFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -81,9 +84,10 @@
   	data () {
   		return {
         wareId: '',
-  			skuList : [],
+  			skuData : [],
         batchSkuFormVisible: false,
         singleSkuFormVisible: false,
+        singlePriceFormVisible: false,
         batchSkuForm: {
           wareId: '',
           skuIdList: [],
@@ -107,27 +111,30 @@
           childPrice: 7000,
           singlePrice: 5000,
         },
+        priceForm: {
+          skuId: '',
+          skuDate: '',
+          price1: '',
+          price2: '',
+          price3: '',
+          price4: '',
+          price5: '',
+        },
         rules: {
-          type: [
-            {required: true, message: '操作类型不能为空', trigger: 'blur'}
+          price1: [
+            { required: true, message: '请输入一级价格', trigger: 'blur'},
           ],
-          adultPrice: [
-            { type: 'number', required: true, message: '成人价不能为空', trigger: 'blur'},
+          price2: [
+            { required: true, message: '请输入二级价格', trigger: 'blur'},
           ],
-          childPrice: [
-            { type: 'number', required: true, message: '儿童价不能为空', trigger: 'blur'},
+          price3: [
+            { required: true, message: '请输入三级价格', trigger: 'blur'},
           ],
-          storageNum: [
-            { type: 'number', required: true, message: '库存数量不能为空', trigger: 'blur'},
+          price4: [
+            { required: true, message: '请输入四级价格', trigger: 'blur'},
           ],
-          skuDateRange: [
-            { type: 'array', required: true, message: '日期不能为空', trigger: 'change'},
-          ],
-          singlePrice: [
-            { type: 'number', required: true, message: '单人补差价不能为空', trigger: 'change'},
-          ],
-          checkedWeeks: [
-            { type: 'array', required: true, message: '至少勾选一项', trigger: 'change'},
+          price5: [
+            { required: true, message: '请输入五级价格', trigger: 'blur'},
           ],
         },
         pickerOptions: {
@@ -168,8 +175,8 @@
         readSkuInfoList({wareId: this.wareId}).then(res => {
           console.log(res)
           if(res.data.code === '0001') {
-            this.skuList = res.data.result.skuList;
-            this.skuList.forEach((data) => {
+            this.skuData = res.data.result.skuList;
+            this.skuData.forEach((data) => {
               data.start = data.skuDate
             })
           } else {
@@ -203,12 +210,12 @@
         if(event){
           console.log(Object.assign({}, event))
           let data = Object.assign({}, event)
-          this.singleSkuForm = data
+          this.priceForm.skuDate = data.start;
+          this.priceForm.skuId = data.skuId
+          this.singlePriceFormVisible = true
         } else {
           this.singleSkuForm = {}
         }
-        this.singleSkuForm.skuDate = day
-        this.singleSkuFormVisible = true
 	    },
       // 批量设置
       onSubmit () {
@@ -216,14 +223,13 @@
           if (valid) {
             this.batchSkuForm.startDate = this.batchSkuForm.skuDateRange[0]
             this.batchSkuForm.endDate = this.batchSkuForm.skuDateRange[1]
+            // this.batchSkuForm.skuDate = ''
             let data = Object.assign({}, this.batchSkuForm)
-            data.wareId = this.wareId;
             console.log(data)
             saveSkuInfo(JSON.stringify(data)).then(res => {
               console.log(res)
               if (res.data.code === '0001') {
                 this.$message.success(res.data.message)
-                this.skuList = res.data.result.skuList.skuDateList;
               } else {
                 this.$message.error(res.data.message)
               }
@@ -238,19 +244,17 @@
         })
       },
       // 单条设置
-      skuSubmit () {
-        this.$refs.singleSkuForm.validate((valid) => {
+      singlePriceSubmit () {
+        this.$refs.priceForm.validate((valid) => {
           if (valid) {
-            let data = Object.assign({}, this.singleSkuForm)
-            data.skuIdList = [data.skuId]
-            data.startDate = '';
-            data.endDate = '';
+            let data = Object.assign({}, this.priceForm)
             console.log(data)
             saveSkuInfo(JSON.stringify(data)).then(res => {
               console.log(res)
               if(res.data.code === '0001') {
-                this.$message.success(res.data.message)
-                this.singleSkuFormVisible = false
+                console.log(res.data.result)
+                tihs.$message.success(res.data.message)
+                this.priceFormVisible = false
               } else {
                 this.$message.error(res.data.message)
               }
@@ -258,7 +262,7 @@
               console.log(err)
             })
           } else {
-            console.log(this.singleSkuForm)
+            console.log(this.priceForm)
           }
         })
       },
@@ -270,12 +274,58 @@
   	mounted () {
 			this.$store.dispatch('setStepActive', 4)
       this.wareId = parseInt(this.$route.query.wareId)
+      let demoEvents = [
+        {
+          start: '2017-06-06',
+          adultPrice: '18000.00',
+          childPrice: '12000.00',
+          storageNum: '100',
+          singlePrice: 5000,
+          skuId: 10001,
+          price1: 10000,
+          price2: 20000,
+          price3: 30000,
+          price4: 40000,
+          price5: 50000,
+        },
+        {
+          start: '2017-06-07',
+          adultPrice: '18000.00',
+          // childPrice: '12000.00',
+          storageNum: '100'
+        },
+        {
+          start: '2017-06-28',
+          adultPrice: '18000.00',
+          childPrice: '12000.00',
+          storageNum: '100'
+        },
+        {
+          start: '2017-06-09',
+          adultPrice: '18000.00',
+          childPrice: '12000.00',
+          storageNum: '100'
+        },
+        {
+          start: '2017-06-10',
+          adultPrice: '18000.00',
+          childPrice: '12000.00',
+          storageNum: '100'
+        },
+        {
+          start: '2017-05-30',
+          adultPrice: '18000.00',
+          childPrice: '12000.00',
+          storageNum: '100'
+        },
+      ]
+      this.skuData = demoEvents
       this.wareId && this.getSkuList()
 		}
   }
 </script>
 <style scoped>
   .sku-form .el-input {
-    width: 180px;
+    width: 200px;
   }
 </style>

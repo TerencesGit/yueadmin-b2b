@@ -204,15 +204,16 @@
     		this.wareForm.wareDesc = content
     	},
       // 获取商品详情
-      getWareDetail (id) {
-        readWareInfo({wareId: id}).then(res => {
+      getWareDetail () {
+        readWareInfo({wareId: this.wareForm.wareId}).then(res => {
           console.log(res)
           if(res.data.code === '0001') {
             let wareInfo = res.data.result.wareInfo
             wareInfo.openDate = new Date(wareInfo.openDate)
             wareInfo.closeDate = new Date(wareInfo.closeDate)
-            this.wareForm = res.data.result.wareInfo
-            console.log(this.wareForm)
+            wareInfo.suggestedPrice = wareInfo.suggestedPrice / 100
+            wareInfo.nocashReserveMinute = wareInfo.nocashReserveMinute / 60
+            this.wareForm = wareInfo
           } else {
             this.$message.error(res.data.message)
           }
@@ -251,11 +252,8 @@
       // 保存商品信息
       submitForm() {
         this.$refs.wareForm.validate((valid) => {
-        	let form = Object.assign({}, this.wareForm)
-          console.log(form)
           if (valid) {
           	let data = Object.assign({}, this.wareForm)
-            console.log(data)
             data.openDate = this.$moment(data.openDate).format('YYYY-MM-DD HH:mm:ss')
             data.closeDate = this.$moment(data.closeDate).format('YYYY-MM-DD HH:mm:ss')
             data.nocashReserveMinute = data.nocashReserveMinute * 60
@@ -264,7 +262,6 @@
             	console.log(res)
             	if (res.data.code === '0001') {
                 let wareId = res.data.result.wareId;
-                console.log(wareId)
                 this.$router.push({
                   path: 'trip?wareId=' + wareId
                 })
@@ -286,8 +283,11 @@
     mounted () {
     	this.getWareBrandList()
     	this.$store.dispatch('setStepActive', 0)
-      let wareId = this.$route.query.wareId;
-      wareId && this.getWareDetail(wareId)
+      let wareId = parseInt(this.$route.query.wareId);
+      if (wareId) {
+        this.wareForm.wareId = wareId
+        this.getWareDetail()
+      }
     }
   }
 </script>

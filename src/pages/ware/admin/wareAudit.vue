@@ -114,9 +114,8 @@ export default {
       this.currPage = val
     },
     handleAuditing ($index, row) {
-    	console.log(row.wareId)
       this.$router.push({
-        path: '/admin/ware/detail?id=' + row.wareId
+        path: '/admin/ware/detail?wareId=' + row.wareId
       })
     }
   },

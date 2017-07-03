@@ -209,23 +209,6 @@ table {
 .table.hover tr:hover {
   background: #eef1f6
 }
-// .table {
-//   width: 100%;
-//   max-width: 100%;
-//   margin-bottom: 1rem;
-// }
-// .table-bordered, 
-// .table-bordered td, 
-// .table-bordered th {
-//   border: 1px solid #eceeef;
-// }
-// .table-bordered thead td, 
-// .table-bordered thead th {
-//   border-bottom-width: 2px;
-// }
-// .table thead th {
-//   border-bottom: 2px solid #eceeef;
-// }
 // .table-striped tbody tr:nth-of-type(odd) {
 //   background-color: #f9f9f9;
 // }
@@ -327,4 +310,7 @@ table {
 }
 .vue-html5-editor > .content img {
   width: 80%;
+}
+.el-tabs--border-card>.el-tabs__content {
+  min-height: 400px;
 }

@@ -1,15 +1,17 @@
 <template>
 	<section>
+		<!-- 工具栏 -->
 		<el-row class="toolbar">
 			<el-button type="primary" @click="handleAdd">新增附加服务</el-button>
 		</el-row>
+		<!-- 附加服务列表 -->
 		<el-table :data="serviceList" border highlight-current-row>
 			<el-table-column type="index"></el-table-column>
 			<el-table-column prop="wareCode" label="服务ID" width="180px"></el-table-column>
 			<el-table-column prop="wareName" label="服务名称"></el-table-column>
 			<el-table-column prop="wareDesc" label="服务描述"></el-table-column>
 			<el-table-column prop="status" label="状态" width="100px" :formatter="formatStatus"></el-table-column>
-			<el-table-column label="操作" width="260px">
+			<el-table-column label="操作" width="220px">
 				<template scope="scope">
 					<el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
 					<!-- <el-button v-if="scope.row.status === 0" type="primary" size="small" @click="handleShelf(scope.row)">上架</el-button>
@@ -18,6 +20,10 @@
 				</template>
 			</el-table-column>
 		</el-table>
+		<el-row class="toolbar text-center">
+			<el-button type="primary" @click="next">下一步</el-button>
+		</el-row>
+		<!-- 新增服务 -->
 		<el-dialog :visible.sync="serviceFormVisible" title="新增附加服务">
 			<el-form :model="wareForm" :rules="rules" ref="wareForm" label-width="110px" class="form-item-width">
 					<el-row>
@@ -58,7 +64,7 @@
 	</section>
 </template>
 <script>
-	import { readWareService, saveWareServerInfom, updateWareUpDownStatus } from '@/api'
+	import { readWareService, saveWareServerInfo, updateWareUpDownStatus } from '@/api'
 	export default {
 		data () {
 			return {
@@ -199,13 +205,21 @@
       	this.$router.push({
       		path: '/provider/ware/new/priceStock?wareId=' + wareId
       	})
+      },
+      // 下一步
+      next () {
+        this.$router.push('/provider/ware/new/activity?wareId='+this.wareId)
       }
 		},
 		mounted () {
-			this.wareForm.parentId = this.wareId = 22
-			//this.$route.query.id;
 			this.$store.dispatch('setStepActive', 6)
-			this.getServiceList()
+			let wareId = parseInt(this.$route.query.wareId)
+			if (wareId) {
+				this.wareForm.parentId = this.wareId = wareId;
+				this.getServiceList()
+			} else {
+				this.$router.push('/provider/ware/new/base')
+			}
 		}
 	}
 </script>

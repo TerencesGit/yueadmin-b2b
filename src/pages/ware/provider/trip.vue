@@ -52,19 +52,19 @@
 				</div>
 			</el-col>
 		</el-row>
-		<el-dialog :title="dialogTitle" :visible.sync="addTripVisible">
-			<el-form :model="form" :rules="rules" ref="tripForm" class="form-item-width" label-width="100px">
+		<el-dialog :title="dialogTitle" :visible.sync="tripFormVisible">
+			<el-form :model="tripForm" :rules="rules" ref="tripForm" class="form-item-width" label-width="100px">
 				<el-row>
 					<el-col :span="12">
 						<el-form-item label="行程标题：" prop="programTitle">
-							<el-input v-model="form.programTitle" placeholder="行程标题"></el-input>
+							<el-input v-model="tripForm.programTitle" placeholder="行程标题"></el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="行程类型：">
 						  <el-select 
 							  clearable 
-							  v-model="form.programType"
+							  v-model="tripForm.programType"
 							  placeholder="选择行程类型">
 						  	<el-option 
 						  		v-for="item in tripTypes"
@@ -80,7 +80,7 @@
 					<el-col :span="12">
 						<el-form-item label="行程时间：" prop="programTime">
 							<el-time-picker
-								v-model="form.programTime"
+								v-model="tripForm.programTime"
 								:picker-options="{
 									format: 'HH:mm:ss'
 								}"
@@ -91,7 +91,7 @@
 					<el-col :span="12">
 						<el-form-item label="行程时长：" style="height: 36px">
 							<el-input-number 
-								v-model="form.programDuration" 
+								v-model="tripForm.programDuration" 
 								:min="10"
 								:max="720"
 								:step="10"
@@ -103,18 +103,18 @@
 				</el-row>
 				<el-row>
 					<el-form-item label="行程明细：" prop="programDetail">
-					 <el-input v-model="form.programDetail" type="textarea"></el-input>
+					 <el-input v-model="tripForm.programDetail" type="textarea"></el-input>
 					</el-form-item>
 				</el-row>
 				<el-row>
 					<el-form-item label="是否免费：">
-						<el-radio class="radio" v-model="form.programIsFree" :label="1">免费</el-radio>
-						<el-radio class="radio" v-model="form.programIsFree" :label="0">自费</el-radio>
+						<el-radio class="radio" v-model="tripForm.programIsFree" :label="1">免费</el-radio>
+						<el-radio class="radio" v-model="tripForm.programIsFree" :label="0">自费</el-radio>
 					</el-form-item>
 				</el-row>
 			</el-form>
 		  <div slot="footer" class="dialog-footer">
-		    <el-button @click="addTripVisible = false">取 消</el-button>
+		    <el-button @click="tripFormVisible = false">取 消</el-button>
 		    <el-button type="primary" @click="onSubmit">确 定</el-button>
 		  </div>
 		</el-dialog>
@@ -125,7 +125,7 @@
  	export default {
 		data(){
 			return {
-				wareId: 27,
+				wareId: '',
 				wareInfo: {
 					wareName: '普吉岛',
 					tripDays: 1
@@ -141,9 +141,9 @@
 					}, 
 					{tripDayNum: 2, programType: 1, programTime: new Date(), programTitle: '旅行'},
 				],
-				addTripVisible: false,
+				tripFormVisible: false,
 				dialogTitle: '',
-				form: {
+				tripForm: {
 					id: '',
 					wareId: '',
 					tripDayNum: '',
@@ -198,6 +198,7 @@
 			// 获取商品行程信息
 			getTripList () {
 				readTripDetailList({wareId: this.wareId}).then(res => {
+					console.log(res)
 					if(res.data.code === '0001') {
 						this.tripList = res.data.result.tripDetailList;
 						this.tripList.forEach((trip) => {
@@ -212,9 +213,9 @@
 			},
 			// 新增行程
 			handleAdd (dayNum) {
-				this.form = {
+				this.tripForm = {
 					id: '',
-					wareId: 22,
+					wareId: '',
 					tripDayNum: dayNum,
 					programType: 1,
 					programTime: new Date(),
@@ -225,24 +226,23 @@
 				}
 				this.submitType = 1;
 				this.dialogTitle = '添加行程';
-				this.addTripVisible = true;
-				this.$refs.tripForm.resetFields()
+				this.tripFormVisible = true;
 			},
 			// 编辑行程
 			handleEdit (item) {
-				item = Object.assign({}, item)
-				console.log(item)
-				this.form = item;
+				this.tripForm = Object.assign({}, item);
 				this.submitType = 2;
 				this.dialogTitle = '编辑行程'
-				this.addTripVisible = true
+				this.tripFormVisible = true
 			},
 			// 保存行程
 			onSubmit(){
 				this.$refs.tripForm.validate((valid) => {
 					if (valid) {
-						let data = Object.assign({}, this.form)
+						let data = Object.assign({}, this.tripForm)
+						data.wareId = this.wareId;
 						console.log(data)
+						data.programTime = new Date(data.programTime)
 						saveWareTripDetail(JSON.stringify(data))
 						.then(res => {
 							console.log(res)
@@ -271,8 +271,7 @@
 							console.log(err)
 							this.$message.error(this.GLOBAL.resError)
 						})
-						this.addTripVisible = false
-						this.$refs.tripForm.resetFields()
+						this.tripFormVisible = false
 					} else {
 						this.$message.error('表单输入有误')
 					}
@@ -314,17 +313,16 @@
 			this.$store.dispatch('setStepActive', 1)
 			let wareId = this.$route.query.wareId;
 			if(wareId) {
-				this.wareId = wareId;
+				this.wareId = parseInt(wareId);
 				this.getWareInfo()
 	      this.getTripList()
+			}else {
+				this.$router.push('/provider/ware/new/base')
 			}
 		}
 	}
 </script>
 <style scoped lang="scss">
-	h4 {
-		margin: 0
-	}
   .form-item-width .el-input,
   .form-item-width .el-select {
 		width: 192px;

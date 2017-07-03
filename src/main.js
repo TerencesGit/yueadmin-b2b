@@ -96,7 +96,7 @@ Vue.filter('TimeFormat', (time) => {
   return moment(time).format('HH:mm')
 })
 Vue.filter('currency', (amount) => {
-  return amount.toFixed(2)
+  return amount && parseInt(amount) && amount.toFixed(2)
 })
 Vue.directive('title', {
   inserted (el, binding) {
