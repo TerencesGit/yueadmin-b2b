@@ -1,7 +1,7 @@
 <template>
 	<section>
     <el-row class="toolbar">
-      <el-button type="success" @click="verifyPass">设置价格</el-button>
+      <el-button type="primary" @click="setPrice">设置价格</el-button>
       <el-button type="success" @click="verifyPass">通过</el-button>
       <el-button type="warning" @click="verifyVisible = true">驳回</el-button>
     </el-row>
@@ -161,34 +161,8 @@
         </el-table>
       </el-tab-pane>
     </el-tabs>
-    <!-- 设置价格 -->
-    <el-dialog v-model="setPriceVisible" title="设置五级价格">
-      <el-form :model="setPriceForm" ref="setPriceForm" :rules="rules" label-width="240px" class="form-item-control">
-        <el-form-item label="一级价格" prop="firstPrice" :rules="[
-            { required: true, message: '请填写一级价格', trigger: 'blur' },
-          ]">
-          <el-input v-model="setPriceForm.firstPrice" placeholder="输入一级价格"></el-input>
-        </el-form-item>
-        <el-form-item label="二级价格" prop="secondPrice">
-          <el-input v-model="setPriceForm.secondPrice" placeholder="输入二级价格"></el-input>
-        </el-form-item>
-        <el-form-item label="三级价格" prop="firstPrice">
-          <el-input v-model="setPriceForm.firstPrice" placeholder="输入三级价格"></el-input>
-        </el-form-item>
-        <el-form-item label="四级价格" prop="fourthPrice">
-          <el-input v-model="setPriceForm.firstPrice" placeholder="输入四级价格"></el-input>
-        </el-form-item>
-        <el-form-item label="五级价格" prop="fifthPrice">
-          <el-input v-model="setPriceForm.firstPrice" placeholder="输入五级价格"></el-input>
-        </el-form-item>
-        <el-form-item label="" class="text-right">
-          <el-button type="primary">确定</el-button>
-          <el-button @click="setPriceVisible = false">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
     <!-- 审核驳回 -->
-    <el-dialog v-model="verifyVisible" title="驳回原因">
+    <el-dialog v-model="verifyVisible" title="商品驳回">
       <el-form :model="verifyForm" ref="verifyForm" :rules="rules">
         <el-form-item label="" prop="verifyInfo">
           <el-input v-model="verifyForm.verifyInfo" type="textarea" :rows="4" placeholder="填写驳回原因"></el-input>
@@ -210,6 +184,7 @@
 	export default {
     data () {
       return {
+        wareId: '',
         wareInfo: {},
         tripList: [],
         mediaList: [],
@@ -230,21 +205,7 @@
             { required: true, message: '请填写驳回原因', trigger: 'blur' },
             { minlength: 10, message: '驳回原因不少于10个字符', trigger: 'blur' },
           ],
-          // firstPrice: [
-          //   { required: true, message: '请填写一级价格', trigger: 'blur' },
-          // ],
-          secondPrice: [
-            { required: true, message: '请填写二级价格', trigger: 'blur' },
-          ],
         },
-        setPriceVisible: false,
-        setPriceForm: {
-          firstPrice: '',
-          secondPrice: '',
-          thirdPrice: '',
-          fourthPrice: '',
-          fifthPrice: '',
-        }
       };
     },
     methods: {
@@ -339,30 +300,35 @@
           console.log(err)
         })
       },
+      // 设置价格
+      setPrice () {
+        this.$router.push({
+          path: '/admin/ware/priceSet?wareId=' + this.wareId
+        })
+      },
       // 审核通过
       verifyPass () {
-        this.setPriceVisible = true
-        // this.$confirm('确定该商品通过审核', '提示', {type: 'warning'}).then(() => {
-        //   let data = {
-        //     wareId: this.verifyForm.wareId,
-        //     verifyStatus: 1
-        //   }
-        //   console.log(data)
-        //   verifyWareInfo(data).then(res => {
-        //     console.log(res)
-        //     if(res.data.code === '0001') {
-        //       this.$message.success(res.data.message)
-        //       this.$route.back()
-        //     } else {
-        //       this.$message.error('取消操作')
-        //     }
-        //   }).catch(err => {
-        //     console.log(err)
-        //   })
-        //   this.$router.back()
-        // }).catch(() => {
-        //   this.$message('取消操作')
-        // })
+        this.$confirm('确定该商品通过审核？', '商品审核', {type: 'warning'}).then(() => {
+          let data = {
+            wareId: this.verifyForm.wareId,
+            verifyStatus: 1
+          }
+          console.log(data)
+          verifyWareInfo(data).then(res => {
+            console.log(res)
+            if(res.data.code === '0001') {
+              this.$message.success(res.data.message)
+              this.$route.back()
+            } else {
+              this.$message.error('取消操作')
+            }
+          }).catch(err => {
+            console.log(err)
+          })
+          this.$router.back()
+        }).catch(() => {
+          this.$message('取消操作')
+        })
       },
       // 审核不通过
       verifyFail () {
@@ -390,9 +356,9 @@
     },
     mounted () {
     	this.$store.dispatch('setStepActive', 1)
-      let wareId = parseInt(this.$route.query.wareId);
-      this.verifyForm.wareId = wareId;
-      wareId && this.getWareDetail(wareId)
+      this.wareId = parseInt(this.$route.query.wareId);
+      this.verifyForm.wareId = this.wareId;
+      this.wareId && this.getWareDetail(this.wareId)
     }
   }
 </script>

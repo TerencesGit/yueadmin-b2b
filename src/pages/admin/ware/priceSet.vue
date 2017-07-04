@@ -1,7 +1,8 @@
 <template>
 	<section>
     <el-row class="toolbar">
-      <el-button type="primary" @click="batchSkuFormVisible = true">批量设置</el-button>
+      <el-button type="primary" @click="handleBatch">批量设置</el-button>
+      <back-button></back-button>
     </el-row>
 		<full-calendar 
       :events="skuData" 
@@ -10,64 +11,59 @@
       @dayClick="dayClick"
       @eventClick="dayClick">
     </full-calendar>
-    <el-row class="toolbar text-center">
-      <el-button type="primary" @click="next">下一步</el-button>
-    </el-row>
     <!-- 批量sku设置 -->
-    <el-dialog title="库存价格设置（价格单位：元）" v-model="batchSkuFormVisible">
-      <el-form :model="batchSkuForm" ref="batchSkuForm" :rules="rules" label-width="180px" class="input-width-control">
+    <el-dialog :visible.sync="batchPriceFormVisible" title="批量设置五级价格">
+      <el-form :model="batchPriceForm" ref="batchPriceForm" :rules="rules" label-width="180px" class="input-width-control">
         <el-form-item label="起止日期：" prop="skuDateRange">
           <el-date-picker
-            v-model="batchSkuForm.skuDateRange"
+            v-model="batchPriceForm.skuDateRange"
             type="daterange"
             placeholder="选择日期范围"
             :picker-options="pickerOptions"
             @change="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="" label-width="80px" prop="checkedWeeks">
-          <el-checkbox-group v-model="batchSkuForm.checkedWeeks" @change="handleCheckedChange" style="display: inline-block">
-            <el-checkbox v-for="(item, index) in weeks" :label="index" :key="index" checked>{{item}}</el-checkbox>
-          </el-checkbox-group>
+        <el-form-item label="一级价格：" prop="price1">
+          <el-input v-model.number="batchPriceForm.price1" placeholder="输入一级价格"></el-input>
         </el-form-item>
-        <el-form-item label="库存：" prop="storageNum">
-          <el-input v-model.number="batchSkuForm.storageNum" placeholder="输入库存数量"></el-input>
+        <el-form-item label="二级价格：" prop="price2">
+          <el-input v-model.number="batchPriceForm.price2" placeholder="输入二级价格"></el-input>
         </el-form-item>
-        <el-form-item label="成人价：" prop="adultPrice">
-          <el-input v-model.number="batchSkuForm.adultPrice" placeholder="输入成人价"></el-input>
+        <el-form-item label="三级价格：" prop="price3">
+          <el-input v-model.number="batchPriceForm.price3" placeholder="输入三级价格"></el-input>
         </el-form-item>
-        <el-form-item label="儿童价：" prop="childPrice">
-          <el-input v-model.number="batchSkuForm.childPrice" placeholder="输入儿童价"></el-input>
+        <el-form-item label="四级价格：" prop="price4">
+          <el-input v-model.number="batchPriceForm.price4" placeholder="输入四级价格"></el-input>
         </el-form-item>
-        <el-form-item label="单人补差价：" prop="singlePrice">
-          <el-input v-model.number="batchSkuForm.singlePrice" placeholder="输入单人补差价"></el-input>
+        <el-form-item label="五级价格：" prop="price5">
+          <el-input v-model.number="batchPriceForm.price5" placeholder="输入五级价格"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">提交</el-button>
-          <el-button @click="batchSkuFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="batchSubmit">提交</el-button>
+          <el-button @click="batchPriceFormVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
      <!-- 单条价格设置 -->
-    <el-dialog v-model="singlePriceFormVisible" title="设置五级价格">
-      <el-form :model="priceForm" ref="priceForm" :rules="rules" label-width="240px" class="sku-form">
-        <el-form-item label="日期">
-          <span>{{priceForm.skuDate}}</span>
+    <el-dialog :visible.sync="singlePriceFormVisible" title="设置五级价格">
+      <el-form :model="singlePriceForm" ref="singlePriceForm" :rules="rules" label-width="240px" class="sku-form">
+        <el-form-item label="日期：">
+          <span>{{singlePriceForm.skuDate}}</span>
         </el-form-item>
-        <el-form-item label="一级价格" prop="price1">
-          <el-input v-model.number="priceForm.price1" placeholder="输入一级价格"></el-input>
+        <el-form-item label="一级价格：" prop="price1">
+          <el-input v-model.number="singlePriceForm.price1" placeholder="输入一级价格"></el-input>
         </el-form-item>
-        <el-form-item label="二级价格" prop="price2">
-          <el-input v-model.number="priceForm.price2" placeholder="输入二级价格"></el-input>
+        <el-form-item label="二级价格：" prop="price2">
+          <el-input v-model.number="singlePriceForm.price2" placeholder="输入二级价格"></el-input>
         </el-form-item>
-        <el-form-item label="三级价格" prop="price3">
-          <el-input v-model.number="priceForm.price3" placeholder="输入三级价格"></el-input>
+        <el-form-item label="三级价格：" prop="price3">
+          <el-input v-model.number="singlePriceForm.price3" placeholder="输入三级价格"></el-input>
         </el-form-item>
-        <el-form-item label="四级价格" prop="price4">
-          <el-input v-model.number="priceForm.price4" placeholder="输入四级价格"></el-input>
+        <el-form-item label="四级价格：" prop="price4">
+          <el-input v-model.number="singlePriceForm.price4" placeholder="输入四级价格"></el-input>
         </el-form-item>
-        <el-form-item label="五级价格" prop="price5">
-          <el-input v-model.number="priceForm.price5" placeholder="输入五级价格"></el-input>
+        <el-form-item label="五级价格：" prop="price5">
+          <el-input v-model.number="singlePriceForm.price5" placeholder="输入五级价格"></el-input>
         </el-form-item>
         <el-form-item label="" class="text-right">
           <el-button type="primary" @click="singlePriceSubmit">确定</el-button>
@@ -78,40 +74,26 @@
 	</section>
 </template>
 <script>
-  import { saveSkuInfo, readSkuInfoList } from '@/api'
-  const weekOptions = ['每周日', '每周一', '每周二', '每周三', '每周四', '每周五', '每周六'];
+  import { saveSkuPrice, readSkuInfoList } from '@/api'
   export default {
   	data () {
   		return {
         wareId: '',
   			skuData : [],
-        batchSkuFormVisible: false,
-        singleSkuFormVisible: false,
+        batchPriceFormVisible: false,
         singlePriceFormVisible: false,
-        batchSkuForm: {
-          wareId: '',
-          skuIdList: [],
-          stockId: '',
+        batchPriceForm: {
           startDate: '',
           endDate: '',
           skuDate: '',
-          storageNum: 100,
-          adultPrice: 8000,
-          childPrice: 7000,
-          singlePrice: 5000,
-          checkedWeeks: [],
-          skuDateRange: []
+          skuDateRange: [],
+          price1: '',
+          price2: '',
+          price3: '',
+          price4: '',
+          price5: '',
         },
-        singleSkuForm: {
-          wareId: '',
-          skuDate: '',
-          skuIdList: [],
-          storageNum: 100,
-          adultPrice: 8000,
-          childPrice: 7000,
-          singlePrice: 5000,
-        },
-        priceForm: {
+        singlePriceForm: {
           skuId: '',
           skuDate: '',
           price1: '',
@@ -121,27 +103,30 @@
           price5: '',
         },
         rules: {
+          skuDateRange: [
+            { type: 'array', required: true, message: '请选择时间范围', trigger: 'blur'},
+          ],
           price1: [
-            { required: true, message: '请输入一级价格', trigger: 'blur'},
+            { type: 'number', required: true, message: '请输入一级价格', trigger: 'blur'},
           ],
           price2: [
-            { required: true, message: '请输入二级价格', trigger: 'blur'},
+            { type: 'number', required: true, message: '请输入二级价格', trigger: 'blur'},
           ],
           price3: [
-            { required: true, message: '请输入三级价格', trigger: 'blur'},
+            { type: 'number', required: true, message: '请输入三级价格', trigger: 'blur'},
           ],
           price4: [
-            { required: true, message: '请输入四级价格', trigger: 'blur'},
+            { type: 'number', required: true, message: '请输入四级价格', trigger: 'blur'},
           ],
           price5: [
-            { required: true, message: '请输入五级价格', trigger: 'blur'},
+            { type: 'number', required: true, message: '请输入五级价格', trigger: 'blur'},
           ],
         },
         pickerOptions: {
           shortcuts: [{
             text: '未来一周',
             onClick(picker) {
-              const end = new Date();
+              const end = new Date(); 
               const start = new Date();
               end.setTime(start.getTime() + 3600 * 1000 * 24 * 7);
               picker.$emit('pick', [start, end]);
@@ -164,9 +149,6 @@
             }
           }]
         },
-        checkAll: true,
-        weeks: weekOptions,
-        isIndeterminate: false
   		}
   	},
   	methods: {
@@ -188,7 +170,7 @@
         })
       },
       dateChange (val) {
-        this.batchSkuForm.skuDateRange = val.split(' - ')
+        this.batchPriceForm.skuDateRange = val.split(' - ')
       },
       // 选择每周几
       handleCheckedChange(value) {
@@ -201,32 +183,45 @@
         console.log(weekStr)
       },
   		changeMonth (start, end, current) {
-	      console.log('changeMonth', start.format(), end.format(), current.format())
+	      // console.log(current.format())
 	    },
       // 选择日期
 	    dayClick (day, event) {
         day = this.$moment(day).format('YYYY-MM-DD')
 	      console.log(day, event)
         if(event){
-          console.log(Object.assign({}, event))
           let data = Object.assign({}, event)
-          this.priceForm.skuDate = data.start;
-          this.priceForm.skuId = data.skuId
+          console.log(data)
+          this.singlePriceForm = data
+          this.singlePriceForm.skuDate = data.start;
           this.singlePriceFormVisible = true
-        } else {
-          this.singleSkuForm = {}
         }
 	    },
-      // 批量设置
-      onSubmit () {
-        this.$refs.batchSkuForm.validate((valid) => {
+      // 批量价格设置
+      handleBatch () {
+        this.batchPriceForm = {
+          startDate: '',
+          endDate: '',
+          skuDate: '',
+          skuDateRange: [],
+          price1: '',
+          price2: '',
+          price3: '',
+          price4: '',
+          price5: '',
+        }
+        this.batchPriceFormVisible = true
+      },
+      // 批量提交
+      batchSubmit () {
+        this.$refs.batchPriceForm.validate((valid) => {
           if (valid) {
-            this.batchSkuForm.startDate = this.batchSkuForm.skuDateRange[0]
-            this.batchSkuForm.endDate = this.batchSkuForm.skuDateRange[1]
-            // this.batchSkuForm.skuDate = ''
-            let data = Object.assign({}, this.batchSkuForm)
+            this.batchPriceForm.startDate = this.batchPriceForm.skuDateRange[0]
+            this.batchPriceForm.endDate = this.batchPriceForm.skuDateRange[1]
+            let data = Object.assign({}, this.batchPriceForm)
             console.log(data)
-            saveSkuInfo(JSON.stringify(data)).then(res => {
+            data.wareId = this.wareId;
+            saveSkuPrice(JSON.stringify(data)).then(res => {
               console.log(res)
               if (res.data.code === '0001') {
                 this.$message.success(res.data.message)
@@ -236,25 +231,24 @@
             }).catch(err => {
               console.log(err)
             })
-            this.batchSkuFormVisible = false;
-            this.$refs.batchSkuForm.resetFields()
+            this.batchPriceFormVisible = false;
           } else {
             console.log('err submit')
           }
         })
       },
-      // 单条设置
+      // 单条提交
       singlePriceSubmit () {
-        this.$refs.priceForm.validate((valid) => {
+        this.$refs.singlePriceForm.validate((valid) => {
           if (valid) {
-            let data = Object.assign({}, this.priceForm)
+            let data = Object.assign({}, this.singlePriceForm)
             console.log(data)
-            saveSkuInfo(JSON.stringify(data)).then(res => {
+            saveSkuPrice(JSON.stringify(data)).then(res => {
               console.log(res)
               if(res.data.code === '0001') {
                 console.log(res.data.result)
                 tihs.$message.success(res.data.message)
-                this.priceFormVisible = false
+                this.singlePriceFormVisible = false
               } else {
                 this.$message.error(res.data.message)
               }
@@ -262,14 +256,10 @@
               console.log(err)
             })
           } else {
-            console.log(this.priceForm)
+            console.log(this.singlePriceForm)
           }
         })
       },
-      // 下一步
-      next () {
-        this.$router.push('/provider/ware/new/service?wareId='+this.wareId)
-      }
   	},
   	mounted () {
 			this.$store.dispatch('setStepActive', 4)
@@ -292,13 +282,15 @@
           start: '2017-06-07',
           adultPrice: '18000.00',
           // childPrice: '12000.00',
-          storageNum: '100'
+          storageNum: '100',
+          price1: 10000
         },
         {
           start: '2017-06-28',
           adultPrice: '18000.00',
           childPrice: '12000.00',
-          storageNum: '100'
+          storageNum: '0',
+          price1: 0
         },
         {
           start: '2017-06-09',

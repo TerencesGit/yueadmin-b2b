@@ -21,9 +21,9 @@
       v-loading="loading"
       highlight-current-row 
       @selection-change="selsChange">
-      <el-table-column type="selection" width="55"></el-table-column>
+      <!-- <el-table-column type="selection" width="55"></el-table-column> -->
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="brandName" label="名称" width="180" sortable></el-table-column>
+      <el-table-column prop="brandName" label="名称" sortable></el-table-column>
       <el-table-column prop="logoUrl" label="Logo" width="120">
         <template scope="scope">
           <img :src="scope.row.logoUrl" class="cell-img" height="50px" @click="viewImage(scope.row.logoUrl)">
@@ -37,16 +37,29 @@
       </el-table-column>
       <el-table-column prop="updateBy" label="更新者" width="120"></el-table-column>
       <el-table-column prop="updateTime" label="更新时间" width="180" sortable></el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column label="状态" width="100">
+        <template scope="scope">
+          <el-switch
+            v-model="scope.row.status"
+            on-color="#13ce66"
+            off-color="#ff4949"
+            :on-value="1"
+            :off-value="0"
+            on-text="启用"
+            off-text="禁用"
+            @change="handleChange(scope.row)">
+          </el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="100">
         <template scope="scope">
           <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button type="danger" size="small" @click="handleDel(scope.row.brandId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页栏 -->
-    <el-row class="m-t">
-      <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
+    <el-row class="toolbar">
+     <!--  <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button> -->
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -139,7 +152,7 @@
   </section>
 </template>
 <script>
-import { readBrandList, saveBrandInfo, brandDel, brandBatchDel } from '@/api'
+import { readBrandList, saveBrandInfo, updateBrandStatus } from '@/api'
 export default {
   data() {
     return {
@@ -280,13 +293,17 @@ export default {
         if (valid) {
           let data = Object.assign({}, this.editForm)
           console.log(data)
-          saveBrandInfo(data).then((res) => {
+          saveBrandInfo(JSON.stringify(data)).then((res) => {
             console.log(res)
             if (res.data.code === '0001') {
               this.$message.success('编辑成功')
+              this.getBrandList()
             } else {
               this.$message.error(res.data.message)
             }
+          }).catch(err => {
+            console.log(err)
+            this.catchError(err.response)
           })
           this.editFormVisible = false
         }
@@ -304,7 +321,7 @@ export default {
           this.addForm.status = this.addForm.status ? 1 : 0
           let data = JSON.stringify(Object.assign({}, this.addForm))
           console.log(data)
-          saveBrandInfo(data).then(res => {
+          saveBrandInfo(JSON.stringify(data)).then(res => {
             console.log(res)
             if(res.data.code === '0001') {
               this.$message.success(res.data.message)
@@ -312,55 +329,72 @@ export default {
             }else {
               this.$message.error(res.data.message)
             }
+          }).catch(err => {
+            console.log(err)
+            this.catchError(err.response)
           })
           this.addLoading = false
           this.addFormVisible = false
         }
       })
     },
-    // 删除操作
-    handleDel (brandId) {
-      console.log(brandId)
-      this.$confirm('此操作将删除该品牌, 是否继续?', '提示', {
-          type: 'warning',
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-      }).then(() => {
-        brandDel({id: brandId}).then((res) => {
-          if(res.data.code === '0001') {
-            this.$message.success(res.data.message)
-            this.getBrandList()
-          } else {
-            this.$message.error(res.data.message)
-          }
-        })
-      }).catch(() => {
-        this.$message.info('取消操作')
+    // 状态设置
+    handleChange (row) {
+      console.log(row)
+      updateBrandStatus({brandId: row.brandId}).then(res => {
+        console.log(res)
+        if (res.data.code === '0001') {
+          this.$message.success(res.data.message)
+        } else {
+          this.$message.error(res.data.message)
+        }
+      }).catch(err => {
+        console.log(err)
       })
     },
     selsChange (sels) {
       this.sels = sels
     },
-    // 批量删除
-    batchRemove () {
-      let ids = this.sels.map(item => item.brandId).toString();
-      this.$confirm('确认删除选中记录吗？', '提示', {
-          type: 'warning'
-        }).then(() => {
-          this.listLoading = true;
-          let para = { ids: ids }
-          brandBatchDel(para).then((res) => {
-            this.listLoading = false;
-            this.$message({
-              message: '删除成功',
-              type: 'success'
-            });
-            this.getBrandList()
-          });
-        }).catch(() => {
-          this.$message.info('取消操作')
-        })
-    },
+    // 删除操作
+    // handleDel (brandId) {
+    //   console.log(brandId)
+    //   this.$confirm('此操作将删除该品牌, 是否继续?', '提示', {
+    //       type: 'warning',
+    //       confirmButtonText: '确定',
+    //       cancelButtonText: '取消',
+    //   }).then(() => {
+    //     brandDel({id: brandId}).then((res) => {
+    //       if(res.data.code === '0001') {
+    //         this.$message.success(res.data.message)
+    //         this.getBrandList()
+    //       } else {
+    //         this.$message.error(res.data.message)
+    //       }
+    //     })
+    //   }).catch(() => {
+    //     this.$message.info('取消操作')
+    //   })
+    // },
+    // // 批量删除
+    // batchRemove () {
+    //   let ids = this.sels.map(item => item.brandId).toString();
+    //   this.$confirm('确认删除选中记录吗？', '提示', {
+    //       type: 'warning'
+    //     }).then(() => {
+    //       this.listLoading = true;
+    //       let para = { ids: ids }
+    //       brandBatchDel(para).then((res) => {
+    //         this.listLoading = false;
+    //         this.$message({
+    //           message: '删除成功',
+    //           type: 'success'
+    //         });
+    //         this.getBrandList()
+    //       });
+    //     }).catch(() => {
+    //       this.$message.info('取消操作')
+    //     })
+    // },
     // 图片查看
     viewImage (imgUrl) {
       this.previewImgUrl = imgUrl;

@@ -4,15 +4,12 @@
         <p class="adultPrice" v-if="event.adultPrice">成人价格：<i class="fa fa-rmb"></i>{{ event.adultPrice }}</p>
         <p class="childPrice" v-if="event.childPrice">儿童价格：<i class="fa fa-rmb"></i>{{ event.childPrice }}</p>
         <p class="singlePrice" v-if="event.singlePrice">单人数补差：<i class="fa fa-rmb"></i>{{ event.singlePrice }}</p>
-        <p class="stock" v-if="event.storageNum">库存： {{ event.storageNum }}</p>
-        <p v-if="event.price1">一级价格： {{ event.price1 }}</p>
-        <p v-if="event.price2">二级价格： {{ event.price2 }}</p>
-        <p v-if="event.price3">三级价格： {{ event.price3 }}</p>
-        <p v-if="event.price4">四级价格： {{ event.price4 }}</p>
-        <p v-if="event.price5">五级价格： {{ event.price5 }}</p>
-       <!--  <slot :event="event" v-if="showTitle">
-            Default: {{ event }}
-        </slot> -->
+        <p class="stock >= 0" v-if="event.storageNum">库存：{{ event.storageNum }}</p>
+        <p v-if="event.price1">一级价格：<i class="fa fa-rmb"></i>{{ event.price1 }}</p>
+        <p v-if="event.price2">二级价格：<i class="fa fa-rmb"></i>{{ event.price2 }}</p>
+        <p v-if="event.price3">三级价格：<i class="fa fa-rmb"></i>{{ event.price3 }}</p>
+        <p v-if="event.price4">四级价格：<i class="fa fa-rmb"></i>{{ event.price4 }}</p>
+        <p v-if="event.price5">五级价格：<i class="fa fa-rmb"></i>{{ event.price5 }}</p>
     </div>
 </template>
 

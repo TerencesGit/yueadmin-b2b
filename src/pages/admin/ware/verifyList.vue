@@ -29,7 +29,7 @@
             :plain="true"
             size="small"
             type="primary"
-            @click="handleAuditing(scope.$index, scope.row)">审核</el-button>
+            @click="handleVerify(scope.$index, scope.row)">审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -105,27 +105,19 @@ export default {
     handleIconClick () {
       console.log(this.criteria)
     },
-    addWare () {
-      this.$router.push('/provider/addWare')
-    },
     handleSizeChange (val) {
     },
     handleCurrentChange (val) {
       this.currPage = val
     },
-    handleAuditing ($index, row) {
+    handleVerify ($index, row) {
       this.$router.push({
-        path: '/admin/ware/detail?wareId=' + row.wareId
+        path: '/admin/ware/verifyDetail?wareId=' + row.wareId
       })
     }
   },
   mounted () {
     this.getWares()
   },
-  computed: {
-    // filteredWare () {
-    //   return this.wareList.filter(ware => ware.ware_name.indexOf(this.criteria) !== -1)
-    // }
-  }
 }
 </script>
