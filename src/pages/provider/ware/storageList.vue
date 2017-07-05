@@ -68,13 +68,14 @@ export default {
   methods: {
     // 商品列表
     getWareList () {
-      let data = {
+      let params = {
         currPage: this.currPage,
         pageSize: this.pageSize,
         wareName: this.filter.name,
         wareCode: this.filter.code,
+        verifyStatus: 1
       }
-      readWareList(data).then(res => {
+      readWareList(params).then(res => {
         console.log(res)
         if (res.data.code === '0001') {
           let page = res.data.result.pageInfo;

@@ -4,7 +4,7 @@
         <p class="adultPrice" v-if="event.adultPrice">成人价格：<i class="fa fa-rmb"></i>{{ event.adultPrice }}</p>
         <p class="childPrice" v-if="event.childPrice">儿童价格：<i class="fa fa-rmb"></i>{{ event.childPrice }}</p>
         <p class="singlePrice" v-if="event.singlePrice">单人数补差：<i class="fa fa-rmb"></i>{{ event.singlePrice }}</p>
-        <p class="stock >= 0" v-if="event.storageNum">库存：{{ event.storageNum }}</p>
+        <p class="stock" v-if="event.storageNum > 0">库存：{{ event.storageNum }}</p>
         <p v-if="event.price1">一级价格：<i class="fa fa-rmb"></i>{{ event.price1 }}</p>
         <p v-if="event.price2">二级价格：<i class="fa fa-rmb"></i>{{ event.price2 }}</p>
         <p v-if="event.price3">三级价格：<i class="fa fa-rmb"></i>{{ event.price3 }}</p>
@@ -35,7 +35,7 @@
                     cssClasses.push('is-end');
                 }
 
-                if (! this.event.isShow) {
+                if (!this.event.isShow) {
                     cssClasses.push('is-opacity');
                 }
 

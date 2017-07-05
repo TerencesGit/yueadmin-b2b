@@ -44,7 +44,7 @@
     <el-dialog title="库存设置" :visible.sync="stockFormVisible">
       <el-form :model="stockForm" label-width="220px" :rule="rules">
         <el-form-item label="起止日期：">
-          <span>{{ stockForm.date }}</span>
+          <span>{{ stockForm.date }}</span> 
         </el-form-item>
         <!-- <el-form-item label="当前库存：">
         <span>{{ stockForm.stock }}</span>

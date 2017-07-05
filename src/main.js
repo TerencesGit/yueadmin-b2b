@@ -158,7 +158,7 @@ Vue.prototype.catchError = (res) => {
     return;
   }
   if (res.status === 404) {
-    ElementUI.Message({ message: '方法名不存在'})
+    ElementUI.Message({ message: '该方法不存在'})
   } else if (res.status === 500) {
     ElementUI.Message({ message: '服务器响应错误'})
   } else if (res.status === 504) {

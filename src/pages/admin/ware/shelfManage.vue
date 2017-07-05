@@ -14,7 +14,7 @@
 			</el-form>
 		</el-row>
 		<el-table :data="wareList" border highlight-current-row>
-			<el-table-column prop="wareId" label="商品编号" srotable></el-table-column>
+			<el-table-column prop="wareCode" label="商品编号" srotable></el-table-column>
 			<el-table-column prop="wareName" label="商品名称" srotable></el-table-column>
 			<el-table-column prop="srcCityName" label="出发城市"></el-table-column>
 			<!-- <el-table-column prop="dstCityName" label="目的城市"></el-table-column> -->
@@ -52,17 +52,7 @@
 				currPage: 1,
 				pageSize: 10,
 				total: 0,
-				wareList: [{
-					wareId: '0001',
-					status: 0
-				},
-				{
-					wareId: '0002',
-					status: 1
-				},{
-					wareId: '0003',
-					status: 1
-				}]
+				wareList: []
 			}
 		},
 		methods: {
@@ -75,6 +65,7 @@
 					pageSize: this.pageSize,
 					wareName: this.filter.name,
 					wareCode: this.filter.code,
+					verifyStatus: 1
 				}
 				console.log(data)
 				readWareList(data).then(res => {
@@ -115,11 +106,13 @@
 					this.$message.info('已取消操作')
 				})
 			},
-			handleSizeChange () {
-
+			handleSizeChange (val) {
+				this.pageSize = val;
+				this.getWareList()
 			},
-			handleCurrentChange () {
-
+			handleCurrentChange (val) {
+				this.currPage = val;
+				this.getWareList()
 			}
 		},
 		mounted () {

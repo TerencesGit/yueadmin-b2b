@@ -38,6 +38,12 @@
         <el-form-item label="五级价格：" prop="price5">
           <el-input v-model.number="batchPriceForm.price5" placeholder="输入五级价格"></el-input>
         </el-form-item>
+        <el-form-item label="儿童价：" prop="priceChild">
+          <el-input v-model.number="batchPriceForm.priceChild" placeholder="输入儿童价"></el-input>
+        </el-form-item>
+        <el-form-item label="单人价：" prop="priceSingle">
+          <el-input v-model.number="batchPriceForm.priceSingle" placeholder="输入单人价"></el-input>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="batchSubmit">提交</el-button>
           <el-button @click="batchPriceFormVisible = false">取消</el-button>
@@ -92,6 +98,8 @@
           price3: '',
           price4: '',
           price5: '',
+          priceChild: '',
+          priceSingle: ''
         },
         singlePriceForm: {
           skuId: '',
@@ -209,6 +217,8 @@
           price3: '',
           price4: '',
           price5: '',
+          priceChild: '',
+          priceSingle: ''
         }
         this.batchPriceFormVisible = true
       },
@@ -231,12 +241,17 @@
             }).catch(err => {
               console.log(err)
             })
-            this.batchPriceFormVisible = false;
+            // this.batchPriceFormVisible = false;
           } else {
             console.log('err submit')
           }
         })
       },
+
+      dataType:"jsonp",
+      jsonp:"callback",
+      jsonpCallback:"success_jsonpCallback",
+
       // 单条提交
       singlePriceSubmit () {
         this.$refs.singlePriceForm.validate((valid) => {

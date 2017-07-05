@@ -10,7 +10,7 @@
 					<el-input v-model="filter.name" placeholder="商品名称"></el-input>
 				</el-form-item>
 				<el-form-item label="">
-					<el-button type="primary" @click="getWares">搜索</el-button>
+					<el-button type="primary" @click="getWareList">搜索</el-button>
 				</el-form-item>
 			</el-form>
 		</el-row>
@@ -80,11 +80,12 @@ export default {
     formatStatus (row, column) {
       return row.verifyStatus === 1 ? '审核通过' : row.verifyStatus === 0 ? '未审核' : row.verifyStatus === 2 ? '审核未通过' : '未知'
     },
-    getWares () {
+    getWareList () {
       this.loading = true
       let params = {
         page: this.currPage,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        verifyStatus: 0
       }
       readWareList(params).then(res => {
         console.log(res)
@@ -106,9 +107,12 @@ export default {
       console.log(this.criteria)
     },
     handleSizeChange (val) {
+      this.pageSize = val;
+      this.getWareList()
     },
     handleCurrentChange (val) {
       this.currPage = val
+      this.getWareList()
     },
     handleVerify ($index, row) {
       this.$router.push({
@@ -117,7 +121,7 @@ export default {
     }
   },
   mounted () {
-    this.getWares()
+    this.getWareList()
   },
 }
 </script>

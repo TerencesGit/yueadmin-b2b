@@ -194,7 +194,7 @@
         console.log(weekStr)
       },
   		changeMonth (start, end, current) {
-	      console.log('changeMonth', start.format(), end.format(), current.format())
+	      // console.log(current.format())
 	    },
       // 选择日期
 	    dayClick (day, event) {
@@ -224,6 +224,9 @@
               if (res.data.code === '0001') {
                 this.$message.success(res.data.message)
                 this.skuList = res.data.result.skuList.skuDateList;
+                this.skuList.forEach((data) => {
+                  data.start = data.skuDate
+                })
               } else {
                 this.$message.error(res.data.message)
               }

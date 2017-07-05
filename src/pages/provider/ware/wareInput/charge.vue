@@ -12,7 +12,7 @@
 					<td><el-checkbox v-model="checked"></el-checkbox></td>
 					<td>商品介绍：</td>
 					<td>
-						<vue-html5-editor :content="notes" :height="200" :z-index="1" @change="updateServiceContent"></vue-html5-editor>
+						<vue-html5-editor :content="wareInfo" :height="200" :z-index="1" @change="updateWareInfo"></vue-html5-editor>
 					</td>
 				</tr>
 				<tr>
@@ -21,21 +21,21 @@
 					</td>
 					<td>费用说明：</td>
 					<td>
-						<vue-html5-editor :content="wareInfo" :height="200" :z-index="1" @change="updateTrafficContent"></vue-html5-editor>
+						<vue-html5-editor :content="charge" :height="200" :z-index="1" @change="updateCharge"></vue-html5-editor>
 					</td>
 				</tr>
 				<tr>
 					<td><el-checkbox v-model="checked"></el-checkbox></td>
 					<td>使用说明：</td>
 					<td>
-						<vue-html5-editor :content="charge" :height="200" :z-index="1" @change="updateAccommContent"></vue-html5-editor>
+						<vue-html5-editor :content="instructions" :height="200" :z-index="1" @change="updateInstructions"></vue-html5-editor>
 					</td>
 				</tr>
 				<tr>
 					<td><el-checkbox v-model="checked"></el-checkbox></td>
 					<td>购买须知：</td>
 					<td>
-						<vue-html5-editor :content="instructions" :height="200" :z-index="1" @change="updateMealsContent"></vue-html5-editor>
+						<vue-html5-editor :content="notes" :height="200" :z-index="1" @change="updateNotes"></vue-html5-editor>
 					</td>
 				</tr>
 				<tr>
@@ -86,17 +86,17 @@
       }
     },
     methods: {
-    	updateTrafficContent (content) {
+    	updateWareInfo (content) {
+    		this.notes= content
+    	},
+    	updateCharge (content) {
     		this.wareInfo = content
     	},
-    	updateAccommContent (content) {
+    	updateInstructions (content) {
     		this.charge = content
     	},
-    	updateMealsContent (content) {
+    	updateNotes (content) {
     		this.instructions = content
-    	},
-    	updateServiceContent (content) {
-    		this.notes= content
     	},
     	saveCostInfo () {
     		let data = {

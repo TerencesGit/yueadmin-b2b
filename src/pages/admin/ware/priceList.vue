@@ -62,14 +62,15 @@ export default {
   },
   methods: {
     getWareList () {
-      let data = {
+      let params = {
         currPage: this.currPage,
         pageSize: this.pageSize,
         wareName: this.filter.name,
         wareCode: this.filter.code,
+        verifyStatus: 1
       }
       // 商品列表
-      readWareList(data).then(res => {
+      readWareList(params).then(res => {
         if (res.data.code === '0001') {
           this.total = res.data.result.pageInfo.count;
           this.wareList = res.data.result.wareList

@@ -3,10 +3,10 @@
     <div v-title :data-title="this.$route.name"></div>
     <el-row class="toolbar">
       <el-form :inline="true" :model="filter">
-        <el-form-item label="">
+        <el-form-item label="商品编号">
           <el-input v-model="filter.code" placeholder="输入商品编号"></el-input>
         </el-form-item>
-        <el-form-item label="">
+        <el-form-item label="商品名称">
           <el-input v-model="filter.name" placeholder="输入商品名称"></el-input>
         </el-form-item>
         <el-form-item label="">
@@ -14,23 +14,17 @@
         </el-form-item>
       </el-form>
     </el-row>
-    <el-table 
-	    border 
-	    :data="wareList" 
-	    v-loading="loading" 
-	    highlight-current-row 
-	    style="width: 100%">
+    <el-table :data="wareList" v-loading="loading" border style="width: 100%">
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="wareCode" label="商品编号" sortable width="200"></el-table-column>
       <el-table-column prop="wareName" label="商品名称"></el-table-column>
       <!-- <el-table-column prop="wareKind" label="商品类别" width="150"></el-table-column> -->
-      <el-table-column prop="createTime" label="创建时间" sortable width="200"></el-table-column>
-      <el-table-column prop="status" label="状态" width="120" :formatter="formatStatus" >
       </el-table-column>
-      <el-table-column label="操作" width="120">
+      <el-table-column prop="createTime" label="创建时间" sortable width="200"></el-table-column>
+      <el-table-column label="操作" width="240">
         <template scope="scope">
-          <el-button v-if="scope.row.status === 0" size="small" @click="handleShelf(scope.row)">上架</el-button>
-          <el-button v-if="scope.row.status === 1" size="small" @click="handleShelf(scope.row)">下架</el-button>
+          <el-button size="small" @click="handlePriceSet(scope.row.wareId)">价格管理</el-button>
+          <el-button size="small" @click="handleShowDetail(scope.row.wareId)">商品详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -48,7 +42,7 @@
   </section>
 </template>
 <script>
-import { readWareList, updateWareUpDownStatus } from '@/api'
+import { readWareList } from '@/api'
 export default {
   data () {
     return {
@@ -57,17 +51,14 @@ export default {
         code: '',
       },
       currPage: 1,
-      pageSize: 10,
+      pageSize: 20,
       total: 0,
       loading: false,
       wareList: [],
     }
   },
   methods: {
-    formatStatus (row, column) {
-      return row.status === 1 ? '上架' : row.status === 0 ? '下架' : '未知'
-    },
-    // 获取商品列表
+    // 商品列表
     getWareList () {
       let params = {
         currPage: this.currPage,
@@ -79,7 +70,10 @@ export default {
       readWareList(params).then(res => {
         console.log(res)
         if (res.data.code === '0001') {
-          this.total = res.data.result.pageInfo.count;
+          let page = res.data.result.pageInfo;
+          this.currPage = page.currPage;
+          this.pageSize = page.pageSize;
+          this.total = page.count;
           this.wareList = res.data.result.wareList
         } else {
           this.$message.error(res.data.message)
@@ -91,36 +85,27 @@ export default {
       })
     },
     handleSizeChange (val) {
-    	this.pageSize = val;
-    	this.getWareList()
-    },
-    handleCurrentChange (val) {
-      this.currPage = val
+      this.pageSize = val;
       this.getWareList()
     },
-    // 上下架操作
-    handleShelf (row) {
-    	let statusInfo =  row.status === 1 ? '下架' : '上架';
-    	this.$confirm('确定'+statusInfo+'该商品？', '提示', {type: 'warning'}).then(() => {
-        updateWareUpDownStatus({wareId: row.wareId}).then(res => {
-	     	  console.log(res)
-	     	  if(res.data.code === '0001') {
-	     	  	this.$message.success(res.data.message)
-	     	  	this.getWareList()
-	     	  } else {
-	     	  	this.$message.error(res.data.message)
-	     	  }
-	      }).catch(err => {
-	      	console.log(err)
-	      })
-      }).catch(err => {
-      	console.log(err)
-        this.$message('取消操作')
+    handleCurrentChange (val) {
+      this.currPage = val;
+      this.getWareList()
+    },
+    // 编辑
+    handlePriceSet (wareId) {
+      this.$router.push({
+        path: '/admin/ware/priceSet?wareId=' + wareId
+      })
+    },
+    handleShowDetail (wareId) {
+      this.$router.push({
+        path: '/admin/ware/detail?wareId=' + wareId
       })
     }
   },
   mounted () {
     this.getWareList()
-  },
+  }
 }
 </script>

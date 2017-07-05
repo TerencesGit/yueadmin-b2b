@@ -17,17 +17,15 @@
     <el-table :data="wareList" v-loading="loading" border style="width: 100%">
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="wareCode" label="商品编号" sortable width="200"></el-table-column>
-      <el-table-column prop="wareName" label="商品名称" width="200"></el-table-column>
+      <el-table-column prop="wareName" label="商品名称"></el-table-column>
       <!-- <el-table-column prop="wareKind" label="商品类别" width="150"></el-table-column> -->
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" sortable></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" sortable width="200"></el-table-column>
       <el-table-column label="操作" width="120">
         <template scope="scope">
-          <el-button
-            :plain="true"
-            size="small"
-            type="primary"
-            @click="handleEdit(scope.row.wareId)">编辑</el-button>
+          <el-button size="small" @click="handleEdit(scope.row.wareId)">编辑</el-button>
+          <el-button size="small" @click="handleEdit(scope.row.wareId)">价格管理</el-button>
+          <el-button size="small" @click="handleEdit(scope.row.wareId)">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
