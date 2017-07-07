@@ -29,7 +29,6 @@
             </div>
           </div>
         </div> -->
-
         <!-- absolute so we can make dynamic td -->
         <div class="dates-events">
           <div class="events-week" v-for="week in currentDates">
@@ -68,11 +67,8 @@
             </ul>
           </div>
         </div>
-
         <slot name="body-card">
-
         </slot>
-
       </div>
     </div>
   </div>

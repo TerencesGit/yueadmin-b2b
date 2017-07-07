@@ -44,7 +44,7 @@
     	</el-table-column>
 		</el-table>
 		<el-row class="text-center m-t">
-			<el-button size="large" type="primary">下一步</el-button>
+			<el-button size="large" type="primary" @click="handleNext">下一步</el-button>
 		</el-row>
 		<!-- 本地上传 -->
 		<el-dialog title="本地上传" :visible.sync="uploadVisible" size="small">
@@ -90,33 +90,18 @@
 	export default{
 		data () {
 			return {
+				wareId: '',
 				maxLength: 10,
     		previewImgUrl: '',
 				uploadVisible: false,
     		previewVisible: false,
+    		fileList: [],
+				mediaList: [],
+    		fileIdList: [],
+    		sels: [],
     		uploadData: {
 	        fileUrlType: 1
 	      },
-    		mediaForm: {
-    			wareId: '',
-    			fileList: []
-    		},
-				mediaList: [{
-					fileId: 1,
-					filePath: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
-					status: 1,
-					isMainPic: 0,
-					createName: '上传者'
-				},{
-					fileId: 2,
-					filePath: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
-					status: 1,
-					isMainPic: 0,
-					createName: '上传者'
-				}],
-    		sels: [],
-    		fileIdList: [],
-    		value2: true
 			}
 		},
 		methods: {
@@ -128,7 +113,7 @@
 			},
 			// 获取图片列表
 			getWareFileList () {
-				readWareFileList({wareId: this.mediaForm.wareId}).then(res => {
+				readWareFileList({wareId: this.wareId}).then(res => {
 					// console.log(res)
 					if (res.data.code === '0001') {
 						this.mediaList = res.data.result.fileList;
@@ -159,7 +144,7 @@
     		if (res.code === '0001') {
     			let resFile = res.result.file;
 			    file.path = resFile.filePath;
-	    		this.mediaForm.fileList.push(resFile)
+	    		this.fileList.push(resFile)
     		} else {
     			this.$message.error(res.message)
     		}
@@ -171,10 +156,10 @@
     	// 上传图片删除
 			handleRemove (file) {
         if (!file) return;
-        let fileList = this.mediaForm.fileList;
+        let fileList = this.fileList;
         let filePath = file.path || '';
         fileList = fileList.filter(file => file.filePath !== filePath)
-        this.mediaForm.fileList = fileList
+        this.fileList = fileList
   		},
 			// 图片预览
 			handleImgPreview (file, fileList) {
@@ -183,9 +168,12 @@
     	},
  	    // 图片列表提交
 	    onSubmit () {
-	    	let data = JSON.stringify(Object.assign({}, this.mediaForm))
-	    	console.log(data)
-	    	createWareFile(data).then(res => {
+	    	let mediaForm = {
+	    		wareId: this.wareId,
+	    		fileList: this.fileList
+	    	}
+	    	console.log(mediaForm)
+	    	createWareFile(JSON.stringify(mediaForm)).then(res => {
 	    		if(res.data.code === '0001') {
 	    			this.$message.success('上传成功')
 	    			this.getWareFileList()
@@ -193,13 +181,13 @@
 	    			this.$message.error(res.data.message)
 	    		}
 	    		this.uploadVisible = false
-	    		this.mediaForm.fileList = []
+	    		this.fileList = []
 	    		this.$refs.uploadMedia.clearFiles()
 	    	})
 	    	.catch(error => {
 	    		this.catchError(error.response)
 	    		this.uploadVisible = false
-	    		this.mediaForm.fileList = []
+	    		this.fileList = []
 	    		this.$refs.uploadMedia.clearFiles()
 	    	})
 	    },
@@ -306,17 +294,22 @@
 					this.catchError(error.response)
 				})
 			},
+			handleNext () {
+				this.$router.push({
+					path: '/provider/ware/new/charge?wareId='+this.wareId
+				})
+			}
 		},
 		computed:{
 			mediaLength () {
-				return  this.maxLength - this.mediaList.length - this.mediaForm.fileList.length;
+				return  this.maxLength - this.mediaList.length - this.fileList.length;
 			}
 		},
 		mounted () {
 			this.$store.dispatch('setStepActive', 2)
 			let wareId = this.$route.query.wareId;
 			if(wareId) {
-				this.mediaForm.wareId = parseInt(wareId);
+				this.wareId = parseInt(wareId);
 				this.getWareFileList()
 			}
 		}

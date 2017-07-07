@@ -11,7 +11,7 @@
       @eventClick="dayClick">
     </full-calendar>
     <el-row class="toolbar text-center">
-      <el-button type="primary" @click="next">下一步</el-button>
+      <el-button type="primary" @click="handleNext">下一步</el-button>
     </el-row>
     <!-- 批量sku设置 -->
     <el-dialog title="库存价格设置（价格单位：元）" v-model="batchSkuFormVisible">
@@ -266,7 +266,7 @@
         })
       },
       // 下一步
-      next () {
+      handleNext () {
         this.$router.push('/provider/ware/new/service?wareId='+this.wareId)
       }
   	},

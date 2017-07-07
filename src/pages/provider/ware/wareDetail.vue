@@ -1,11 +1,7 @@
 <template>
 	<section>
-    <el-row class="toolbar">
-      <el-button type="primary" @click="setPrice">设置价格</el-button>
-      <el-button type="success" @click="verifyPass">通过</el-button>
-      <el-button type="warning" @click="verifyVisible = true">驳回</el-button>
-    </el-row>
-    <el-tabs type="border-card">
+    <!--  商品详情 -->
+    <el-tabs type="border-card" class="m-t">
       <el-tab-pane label="基本信息">
         <span slot="label"><i class="el-icon-date"></i> 基本信息</span>
         <el-row>
@@ -101,7 +97,7 @@
                         <td>{{item.programDetail}}</td>
                         <td>{{item.programIsFree === 0 ? '是' : '否'}}</td>
                       </tr>
-                      <tr v-if="tripList.length === 0">
+                      <tr v-else>
                         <td colspan="6" style="text-align: center; padding: 15px">暂无内容</td>
                       </tr>
                     </tbody>
@@ -161,18 +157,6 @@
         </el-table>
       </el-tab-pane>
     </el-tabs>
-    <!-- 审核驳回 -->
-    <el-dialog v-model="verifyVisible" title="商品驳回">
-      <el-form :model="verifyForm" ref="verifyForm" :rules="rules">
-        <el-form-item label="" prop="verifyInfo">
-          <el-input v-model="verifyForm.verifyInfo" type="textarea" :rows="4" placeholder="填写驳回原因"></el-input>
-        </el-form-item>
-        <el-form-item label="" class="text-right">
-          <el-button type="primary" @click="verifyFail">确定</el-button>
-          <el-button @click="verifyVisible = false">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
     <!-- 图片预览 -->
     <el-dialog v-model="previewVisible" size="tiny">
       <img width="100%" :src="previewImgUrl">
@@ -180,7 +164,7 @@
 	</section>
 </template>
 <script>
-  import { readWareInfo, readTripDetailList, readWareFileList, readSkuInfoList, readWareService, readWareActivity, verifyWareInfo } from '@/api'
+  import { readWareInfo, readTripDetailList, readWareFileList, readSkuInfoList, readWareService, readWareActivity } from '@/api'
 	export default {
     data () {
       return {
@@ -192,20 +176,8 @@
         fareInfo: {},
         serviceList: [],
         activityList: [],
-        verifyForm: {
-          wareId: '',
-          verifyStatus: '',
-          verifyInfo: '',
-        },
         previewImgUrl: '',
         previewVisible: false,
-        verifyVisible: false,
-        rules: {
-          verifyInfo: [
-            { required: true, message: '请填写驳回原因', trigger: 'blur' },
-            { minlength: 10, message: '驳回原因不少于10个字符', trigger: 'blur' },
-          ],
-        },
       };
     },
     methods: {
@@ -300,65 +272,6 @@
           console.log(err)
         })
       },
-      // 设置价格
-      setPrice () {
-        this.$router.push({
-          path: '/admin/ware/priceSet?wareId=' + this.wareId
-        })
-      },
-      // 审核通过
-      verifyPass () {
-        this.$confirm('确定该商品通过审核？', '商品审核', {type: 'warning'}).then(() => {
-          let data = {
-            wareId: this.verifyForm.wareId,
-            verifyInfo: '',
-            verifyStatus: 1
-          }
-          console.log(data)
-          verifyWareInfo(data).then(res => {
-            console.log(res)
-            if(res.data.code === '0001') {
-              this.$message.success(res.data.message)
-              this.$route.back()
-            } else {
-              this.$message.error(res.data.message)
-            }
-          }).catch(err => {
-            console.log(err)
-          })
-          this.$router.back()
-        }).catch(() => {
-          this.$message('取消操作')
-        })
-      },
-      // 审核不通过
-      verifyFail () {
-        this.$refs.verifyForm.validate((valid) => {
-          if(valid) {
-            let data = {
-              wareId: this.verifyForm.wareId,
-              verifyInfo: this.verifyForm.verifyInfo,
-              verifyStatus: 2,
-            }
-            console.log(data)
-            verifyWareInfo(data).then(res => {
-              console.log(res)
-              if(res.data.code === '0001') {
-                this.$message.success(res.data.message)
-              } else {
-                this.$message.error(res.data.message)
-              }
-              this.$router.back()
-            }).catch(err => {
-              console.log(err)
-            })
-            this.verifyVisible = false
-            this.verifyForm.verifyInfo = ''
-          } else{
-            console.log('error')
-          }
-        })
-      },
       changeMonth (start, end, current) {
         // console.log(current.format())
       },
@@ -366,7 +279,6 @@
     mounted () {
     	this.$store.dispatch('setStepActive', 1)
       this.wareId = parseInt(this.$route.query.wareId);
-      this.verifyForm.wareId = this.wareId;
       this.wareId && this.getWareDetail(this.wareId)
     }
   }

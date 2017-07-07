@@ -40,7 +40,7 @@
 				</tr>
 				<tr>
 					<td colspan="3">
-						<el-button type="primary" @click="saveCostInfo">保存</el-button>
+						<el-button type="primary" @click="saveChargeInfo">保存</el-button>
 					</td>
 				</tr>
 			</tbody>
@@ -77,6 +77,7 @@
 	export default {
     data () {
       return {
+      	wareId: '',
       	checked: true,
       	wareInfo: '输入商品介绍',
       	charge: '输入费用说明',
@@ -98,7 +99,7 @@
     	updateNotes (content) {
     		this.instructions = content
     	},
-    	saveCostInfo () {
+    	saveChargeInfo () {
     		let data = {
     			wareInfo: this.wareInfo,
     			charge: this.charge,
@@ -106,7 +107,10 @@
     			notes: this.notes,
     		}
     		console.log(data)
-    		// saveCostInfo(data).then(res => {
+    		this.$router.push({
+					path: '/provider/ware/new/storage?wareId='+this.wareId
+				})
+    		// saveChargeInfo(data).then(res => {
     		// 	console.log(res)
     		// 	if (res.data.code === '0001') {
     		// 		this.$message.success('保存成功')
@@ -122,6 +126,7 @@
     },
     mounted () {
     	this.$store.dispatch('setStepActive', 4)
+    	this.wareId = parseInt(this.$route.query.wareId)
     }
   }
 </script>

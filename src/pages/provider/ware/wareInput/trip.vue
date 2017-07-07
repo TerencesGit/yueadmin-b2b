@@ -305,8 +305,9 @@
 				})
 			},
 			handleNext () {
-				console.log(this.tripList)
-				console.log('next')
+				this.$router.push({
+					path: '/provider/ware/new/multimedia?wareId='+this.wareId
+				})
 			}
 		},
 		mounted () {

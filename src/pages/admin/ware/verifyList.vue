@@ -29,7 +29,7 @@
             :plain="true"
             size="small"
             type="primary"
-            @click="handleVerify(scope.$index, scope.row)">审核</el-button>
+            @click="handleVerify(scope.row)">审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -55,25 +55,11 @@ export default {
 				name: '',
 				code: '',
 			},
-      criteria: '',
       currPage: 1,
       pageSize: 20,
       total: 0,
       loading: false,
       wareList: [],
-      filteredWare: [
-        {
-          ware_code: '001',
-          ware_name: '',
-          provider_id: '',
-          create_time: '',
-          ware_kind: '',
-          suggested_price: '',
-          key_words: '',
-          status: '',
-          verify_status: ''
-        }
-      ]
     }
   },
   methods: {
@@ -83,9 +69,9 @@ export default {
     getWareList () {
       this.loading = true
       let params = {
-        page: this.currPage,
+        currpage: this.currPage,
         pageSize: this.pageSize,
-        verifyStatus: 0
+        // verifyStatus: 1
       }
       readWareList(params).then(res => {
         console.log(res)
@@ -103,9 +89,6 @@ export default {
         this.loading = false
       })
     },
-    handleIconClick () {
-      console.log(this.criteria)
-    },
     handleSizeChange (val) {
       this.pageSize = val;
       this.getWareList()
@@ -114,7 +97,7 @@ export default {
       this.currPage = val
       this.getWareList()
     },
-    handleVerify ($index, row) {
+    handleVerify (row) {
       this.$router.push({
         path: '/admin/ware/verifyDetail?wareId=' + row.wareId
       })
