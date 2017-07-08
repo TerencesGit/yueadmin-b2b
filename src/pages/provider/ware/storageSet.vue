@@ -1,129 +1,121 @@
 <template>
 	<section>
+    <!-- 工具栏 -->
     <el-row class="toolbar">
-      <el-button type="primary" @click="handleBatch">批量设置</el-button>
+      <el-button type="primary" @click="handleBatchInit">库存初始化</el-button>
+      <el-button type="primary" @click="handleBatchSet">批量操作</el-button>
       <back-button></back-button>
     </el-row>
+    <!-- 库存列表 -->
 		<full-calendar 
-      :events="storageList" 
+      :events="skuList" 
       first-day='0' 
       @changeMonth="changeMonth" 
-      @dayClick="dayClick">
+      @dayClick="dayClick"
+      @eventClick="dayClick">
     </full-calendar>
-     <!-- 批量库存设置 -->
-    <el-dialog title="库存价格设置（价格单位：元）" :visible.sync="batchSkuFormVisible">
-      <el-form :model="batchSkuForm" ref="batchSkuForm" :rules="rules" label-width="180px" class="input-width-control">
+    <!-- 批量库存初始化 -->
+    <el-dialog title="库存初始化" :visible.sync="batchInitVisible">
+      <el-form :model="batchForm" ref="batchForm" :rules="rules" label-width="180px" class="input-width-control">
         <el-form-item label="起止日期：" prop="skuDateRange">
           <el-date-picker
-            v-model="batchSkuForm.skuDateRange"
+            v-model="batchForm.skuDateRange"
             type="daterange"
             placeholder="选择日期范围"
             :picker-options="pickerOptions"
             @change="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="库存：" prop="storageNum">
-          <el-input v-model.number="batchSkuForm.storageNum" placeholder="输入库存数量"></el-input>
-        </el-form-item>
-        <el-form-item label="成人价：" prop="adultPrice">
-          <el-input v-model.number="batchSkuForm.adultPrice" placeholder="输入成人价"></el-input>
-        </el-form-item>
-        <el-form-item label="儿童价：" prop="childPrice">
-          <el-input v-model.number="batchSkuForm.childPrice" placeholder="输入儿童价"></el-input>
-        </el-form-item>
-        <el-form-item label="单人补差价：" prop="singlePrice">
-          <el-input v-model.number="batchSkuForm.singlePrice" placeholder="输入单人补差价"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">提交</el-button>
-          <el-button @click="batchSkuFormVisible = false">取消</el-button>
+        <el-form-item label="库存数量：">
+          <el-input-number v-model="batchForm.skuNum" :min="1" :step="50" style="width: 220px"></el-input-number>
         </el-form-item>
       </el-form>
+      <div slot="footer">
+        <el-button type="primary" @click="batchInitSubmit">确定</el-button>
+        <el-button @click="batchInitVisible = false">取消</el-button>
+      </div>
     </el-dialog>
-    <!-- 库存设置 -->
-    <el-dialog title="库存设置" :visible.sync="stockFormVisible">
-      <el-form :model="stockForm" label-width="220px" :rule="rules">
-        <el-form-item label="起止日期：">
-          <span>{{ stockForm.date }}</span> 
+    <!-- 批量库存设置 -->
+    <el-dialog title="库存设置" :visible.sync="batchSetVisible">
+      <el-form :model="batchForm" ref="batchForm" :rules="rules" label-width="180px" class="input-width-control">
+        <el-form-item label="起止日期：" prop="skuDateRange">
+          <el-date-picker
+            v-model="batchForm.skuDateRange"
+            type="daterange"
+            placeholder="选择日期范围"
+            :picker-options="pickerOptions"
+            @change="dateChange">
+          </el-date-picker>
         </el-form-item>
-        <!-- <el-form-item label="当前库存：">
-        <span>{{ stockForm.stock }}</span>
-        </el-form-item> -->
+        <el-form-item label="出库/入库数量：">
+          <el-input-number v-model="batchForm.skuNum" :min="1" :step="10" style="width: 220px"></el-input-number>
+        </el-form-item>
         <el-form-item label="操作类型：" prop="type">
-          <el-radio-group v-model="stockForm.type">
-            <el-radio class="radio" :label="0">出库</el-radio>
+          <el-radio-group v-model="batchForm.skuType">
             <el-radio class="radio" :label="1">入库</el-radio>
+            <el-radio class="radio" :label="2">出库</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="出库/入库数量：" prop="stockNum">
-          <el-input v-model.number="stockForm.stockNum" placeholder="输入数量" class="select-width"></el-input>
+      </el-form>
+      <div slot="footer">
+        <el-button type="primary" @click="batchSetSubmit">确定</el-button>
+        <el-button @click="batchSetVisible = false">取消</el-button>
+      </div>
+    </el-dialog>
+    <!-- 单条库存设置 -->
+    <el-dialog title="库存设置" :visible.sync="singleSetVisible">
+      <el-form :model="singleForm" label-width="220px" :rule="rules">
+        <el-form-item label="日期：">
+          <span style="font-size: 16px">{{ singleForm.skuDate }}</span> 
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">提交</el-button>
-          <el-button @click="stockFormVisible = false">取消</el-button>
+        <el-form-item label="当前库存：">
+            <span>{{ singleForm.storageNum }}</span>
+        </el-form-item>
+        <el-form-item label="出库/入库数量：" prop="stockNum">
+          <el-input-number v-model="singleForm.skuNum" :min="1" :step="10" style="width: 140px"></el-input-number>
+        </el-form-item>
+        <el-form-item label="操作类型：" prop="type">
+          <el-radio-group v-model="singleForm.skuType">
+            <el-radio class="radio" :label="1">入库</el-radio>
+            <el-radio class="radio" :label="2">出库</el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-form>
+      <div slot="footer">
+        <el-button type="primary" @click="singleSetSubmit">确定</el-button>
+        <el-button @click="singleSetVisible = false">取消</el-button>
+      </div>
     </el-dialog>
 	</section>
 </template>
 <script>
-  import { readSkuInfoList, saveSkuInfo } from '@/api'
+  import { readSkuInfoList, outOrInStock, outOrInStockList } from '@/api'
   export default {
   	data () {
   		return {
         wareId: '',
-  			storageList: [],
-        stockFormVisible: false,
-        batchSkuFormVisible: false,
-        stockForm: {
-          wareId: '',
-          date: '2017-07-04 - 2017-08-04',
-          stock: 100,
-          type: '',
-          stockNum: ''
-        },
-        batchSkuForm: {
-          wareId: '',
-          skuIdList: [],
-          stockId: '',
-          startDate: '',
-          endDate: '',
+        skuList: [],
+        batchInitVisible: false,
+        batchSetVisible: false,
+        singleSetVisible: false,
+        singleForm: {
+          skuId: '',
           skuDate: '',
-          storageNum: 100,
-          adultPrice: 8000,
-          childPrice: 7000,
-          singlePrice: 5000,
-          checkedWeeks: [],
+          storageNum: '',
+          skuNum: 100,
+          skuType: 1,
+        },
+        batchForm: {
+          skuNum: 100,
+          skuType: 1,
           skuDateRange: []
         },
         rules: {
-          type: [
-            {required: true, message: '操作类型不能为空'}
-          ],
-          stockNum: [
-            { required: true, message: '数量不能为空'},
-            { type: 'number', message: '数量必须为数字值'}
-          ],
-          type: [
-            {required: true, message: '操作类型不能为空', trigger: 'blur'}
-          ],
-          adultPrice: [
-            { type: 'number', required: true, message: '成人价不能为空', trigger: 'blur'},
-          ],
-          childPrice: [
-            { type: 'number', required: true, message: '儿童价不能为空', trigger: 'blur'},
-          ],
-          storageNum: [
+          skuNum: [
             { type: 'number', required: true, message: '库存数量不能为空', trigger: 'blur'},
           ],
           skuDateRange: [
             { type: 'array', required: true, message: '日期不能为空', trigger: 'change'},
-          ],
-          singlePrice: [
-            { type: 'number', required: true, message: '单人补差价不能为空', trigger: 'change'},
-          ],
-          checkedWeeks: [
-            { type: 'array', required: true, message: '至少勾选一项', trigger: 'change'},
           ],
         },
         pickerOptions: {
@@ -160,38 +152,130 @@
       getStockList () {
         readSkuInfoList({wareId: this.wareId}).then(res => {
           console.log(res)
-          // this.storageList = res.data.result
+          if (res.data.code === '0001') {
+            this.skuList = res.data.result.skuList;
+            this.skuList.forEach((data) => {
+              data.start = data.skuDate
+            })
+          } else {
+            this.$message.success(res.data.message)
+          }
         }).catch(err => {
           console.log(err)
         })
       },
       dateChange (val) {
-        this.batchSkuForm.skuDateRange = val.split(' - ')
+        this.batchForm.skuDateRange = val ? val.split(' - ') : []
       },
   		changeMonth (start, end, current) {
 	      // console.log(current.format())
 	    },
-      // 批量设置库存
-      handleBatch () {
-        this.batchSkuFormVisible = true
+      // 库存初始化
+      handleBatchInit () {
+        this.batchForm.skuNum = 100;
+        this.batchForm.skuDateRange = [];
+        this.batchInitVisible = true
       },
-      // 单条设置库存
+      // 库存批量设置
+      handleBatchSet () {
+        this.batchForm.skuNum = 100;
+        this.batchForm.skuDateRange = [];
+        this.batchSetVisible = true
+      },
+      // 库存单条设置
 	    dayClick (day, event) {
-        console.log(day, event)
         if (event) {
-          this.stockFormVisible = true
+          this.singleForm = Object.assign(this.singleForm, event)
+          this.singleForm.skuNum = 100;
+          this.singleSetVisible = true
         }
-        this.stockFormVisible = true
-        // this.stockForm.stock = event && event.stock || 0
 	    },
-      onSubmit () {
-        console.log(this.stockForm)
-        if(this.stockForm.type === 1) {
-          console.log('入库操作')
-        } else {
-          console.log('出库操作')
+      // 库存初始化提交
+      batchInitSubmit () {
+        this.$refs.batchForm.validate((valid) => {
+          if (valid) {
+            let data = {
+              wareId: this.wareId,
+              startDate: this.batchForm.skuDateRange[0],
+              endDate: this.batchForm.skuDateRange[1],
+              skuNum: this.batchForm.skuNum,
+              skuType: this.batchForm.skuType,
+            }
+            console.log(data)
+            outOrInStockList(data).then(res => {
+              console.log(res)
+              if (res.data.code === '0001') {
+                this.$message.success(res.data.message)
+                this.getStockList()
+              } else {
+                this.$message.error(res.data.message)
+              }
+              this.batchSetVisible = false
+            }).catch(err => {
+              console.log(err)
+              this.catchError(err.response)
+            })
+          } else {
+            console.log('err submit')
+          }
+        })
+      },
+      // 库存批量操作提交
+      batchSetSubmit () {
+        this.$refs.batchForm.validate((valid) => {
+          if (valid) {
+            let data = {
+              wareId: this.wareId,
+              startDate: this.batchForm.skuDateRange[0],
+              endDate: this.batchForm.skuDateRange[1],
+              skuNum: this.batchForm.skuNum,
+              skuType: this.batchForm.skuType,
+            }
+            console.log(data)
+            outOrInStockList(data).then(res => {
+              console.log(res)
+              if (res.data.code === '0001') {
+                this.$message.success(res.data.message)
+                this.getStockList()
+              } else {
+                this.$message.error(res.data.message)
+              }
+              this.batchSetVisible = false
+            }).catch(err => {
+              console.log(err)
+              this.catchError(err.response)
+            })
+          } else {
+            console.log('err submit')
+          }
+        })
+      },
+      // 单条出入库操作
+      singleSetSubmit () {
+        if (this.singleForm.skuType === 2 && this.singleForm.skuNum > this.singleForm.storageNum) {
+          this.$notify.error({
+            title: '错误',
+            message: '出库数量不得超过当前库存',
+          })
+          return false;
         }
-        this.stockFormVisible = false
+        let data = {
+          skuId: this.singleForm.skuId,
+          skuNum: this.singleForm.skuNum,
+          skuType: this.singleForm.skuType,
+        }
+        outOrInStock(data).then(res => {
+          console.log(res)
+          if (res.data.code === '0001') {
+            this.$message.success(res.data.message)
+            this.getStockList()
+          } else {
+            this.$message.error(res.data.message)
+          }
+          this.singleSetVisible = false
+        }).catch(err => {
+          console.log(err)
+        })
       }
   	},
   	mounted () {
@@ -200,3 +284,8 @@
 		}
   }
 </script>
+<style scoped>
+  .input-width-control .el-input {
+    width: 220px;
+  }
+</style>

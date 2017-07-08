@@ -5,7 +5,7 @@
       <el-button type="primary" @click="handleBatchAdd">批量新增</el-button>
       <el-button type="primary" v-if="skuList.length > 0" @click="handleBatchEdit">批量编辑</el-button>
     </el-row>
-    <!-- sku列表 -->
+    <!-- 价格Sku列表 -->
 		<full-calendar 
       :events="skuList" 
       first-day='0' 
@@ -17,8 +17,8 @@
     <el-row class="toolbar text-center">
       <el-button type="primary" @click="handleNext">下一步</el-button>
     </el-row>
-    <!-- 批量sku设置 -->
-    <el-dialog title="库存价格设置（价格单位：元）" v-model="batchSkuVisible">
+    <!-- 批量价格Sku设置 -->
+    <el-dialog title="价格设置（价格单位：元）" v-model="batchSkuVisible">
       <el-form :model="batchSkuForm" ref="batchSkuForm" :rules="rules" label-width="180px" class="input-width-control">
         <el-form-item label="起止日期：" prop="skuDateRange">
           <el-date-picker
@@ -44,17 +44,14 @@
         <el-form-item label="单人差：" prop="singlePrice">
           <el-input v-model.number="batchSkuForm.singlePrice" placeholder="输入单人差"></el-input>
         </el-form-item>
-        <el-form-item label="库存：" prop="storageNum">
-          <el-input v-model.number="batchSkuForm.storageNum" placeholder="输入库存数量"></el-input>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="batchSubmit">提交</el-button>
           <el-button @click="batchSkuVisible = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
-    <!-- 单条sku设置 -->
-    <el-dialog title="库存价格设置（价格单位：元）" :visible.sync="singleSkuVisible">
+    <!-- 单条价格Sku设置 -->
+    <el-dialog title="价格设置（价格单位：元）" :visible.sync="singleSkuVisible">
       <el-form :model="singleSkuForm" ref="singleSkuForm" :rules="rules" label-width="180px" class="input-width-control">
         <el-form-item label="日期：">
           <span v-text="singleSkuForm.skuDate" style="font-size:18px"></span>
@@ -67,9 +64,6 @@
         </el-form-item>
         <el-form-item label="单人差：" prop="singlePrice">
           <el-input v-model.number="singleSkuForm.singlePrice" placeholder="输入单人差"></el-input>
-        </el-form-item>
-        <el-form-item label="库存：" prop="storageNum">
-          <el-input v-model.number="singleSkuForm.storageNum" placeholder="输入库存数量"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="singleSubmit">提交</el-button>
@@ -92,11 +86,9 @@
         batchType: 1,
         batchSkuForm: {
           wareId: '',
-          stockId: '',
+          skuDate: '',
           startDate: '',
           endDate: '',
-          skuDate: '',
-          storageNum: '',
           adultPrice: '',
           childPrice: '',
           singlePrice: '',
@@ -106,15 +98,11 @@
           wareId: '',
           skuId: '',
           skuDate: '',
-          storageNum: 100,
           adultPrice: 8000,
           childPrice: 7000,
           singlePrice: 5000,
         },
         rules: {
-          storageNum: [
-            { type: 'number', required: true, message: '库存数量不能为空', trigger: 'blur'},
-          ],
           adultPrice: [
             { type: 'number', required: true, message: '成人价不能为空', trigger: 'blur'},
           ],
@@ -275,7 +263,6 @@
               adultPrice: this.singleSkuForm.adultPrice,
               childPrice: this.singleSkuForm.childPrice,
               singlePrice: this.singleSkuForm.singlePrice,
-              storageNum: this.singleSkuForm.storageNum,
             }
             console.log(data)
             saveSkuInfo(data).then(res => {

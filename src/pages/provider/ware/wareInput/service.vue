@@ -16,7 +16,7 @@
 					<el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
 					<!-- <el-button v-if="scope.row.status === 0" type="primary" size="small" @click="handleShelf(scope.row)">上架</el-button>
 					<el-button v-if="scope.row.status === 1" type="primary" size="small">下架</el-button> -->
-					<el-button type="primary" size="small" @click="setStorage(scope.row.wareId)">设置库存</el-button>
+					<el-button type="primary" size="small" @click="handleSkuSet(scope.row.wareId)">设置库存</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -201,9 +201,9 @@
       		console.log(err)
       	})
       },
-      setStorage (wareId) {
+      handleSkuSet (wareId) {
       	this.$router.push({
-      		path: '/provider/ware/new/priceStock?wareId=' + wareId
+      		path: '/provider/ware/serviceSkuSet?subWareId=' + wareId
       	})
       },
       // 下一步

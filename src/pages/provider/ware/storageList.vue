@@ -13,6 +13,12 @@
           <el-button type="primary" @click="getWareList">搜索</el-button>
         </el-form-item>
       </el-form>
+      <el-radio-group v-model="filter.status" @change="statusChange">
+        <el-radio-button :label="3">全部</el-radio-button>
+        <el-radio-button :label="0">未审核</el-radio-button>
+        <el-radio-button :label="1">审核通过</el-radio-button>
+        <el-radio-button :label="2">审核未通过</el-radio-button>
+      </el-radio-group>
     </el-row>
     <el-table 
       border 
@@ -21,9 +27,9 @@
       highlight-current-row 
       style="width: 100%">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="wareCode" label="商品编号" sortable width="200"></el-table-column>
+      <el-table-column prop="wareId" label="商品编号" sortable width="200"></el-table-column>
       <el-table-column prop="wareName" label="商品名称"></el-table-column>
-      <!-- <el-table-column prop="wareKind" label="商品类别" width="150"></el-table-column> -->
+      <el-table-column prop="wareKind" label="状态" width="150" :formatter="formatStatus"></el-table-column>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" sortable width="200"></el-table-column>
       <el-table-column label="操作" width="120">
@@ -32,7 +38,7 @@
             :plain="true"
             size="small"
             type="primary"
-            @click="handleStorageSet(scope.row.wareId)">库存设置</el-button>
+            @click="handleStorageSet(scope.row.wareId)">库存管理</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -41,6 +47,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currPage"
+        :page-size="pageSize"
         :page-sizes="[10, 20, 30, 40]"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -57,6 +64,7 @@ export default {
       filter: {
         name: '',
         code: '',
+        status: 3
       },
       currPage: 1,
       pageSize: 20,
@@ -66,22 +74,25 @@ export default {
     }
   },
   methods: {
+    formatStatus (row) {
+
+      return row.status === 0 ? '未审核' : row.status === 1 ? '已通过' : '未通过'
+    },
     // 商品列表
-    getWareList () {
+    getWareList (n) {
+      console.log(n)
       let params = {
         currPage: this.currPage,
         pageSize: this.pageSize,
         wareName: this.filter.name,
         wareCode: this.filter.code,
-        verifyStatus: 1
+        verifyStatus: this.filter.status
       }
+      console.log(params)
       readWareList(params).then(res => {
         console.log(res)
         if (res.data.code === '0001') {
-          let page = res.data.result.pageInfo;
-          this.currPage = page.currPage;
-          this.pageSize = page.pageSize;
-          this.total = page.count;
+          this.total = res.data.result.pageInfo.count;
           this.wareList = res.data.result.wareList
         } else {
           this.$message.error(res.data.message)
@@ -98,6 +109,10 @@ export default {
     },
     handleCurrentChange (val) {
       this.currPage = val;
+      this.getWareList()
+    },
+    statusChange (val) {
+      console.log(val)
       this.getWareList()
     },
     // 编辑

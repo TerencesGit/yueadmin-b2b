@@ -97,9 +97,9 @@
                         <td>{{item.programDetail}}</td>
                         <td>{{item.programIsFree === 0 ? '是' : '否'}}</td>
                       </tr>
-                      <tr v-else>
+                     <!--  <tr v-else>
                         <td colspan="6" style="text-align: center; padding: 15px">暂无内容</td>
-                      </tr>
+                      </tr> -->
                     </tbody>
                   </table>
                 </li>

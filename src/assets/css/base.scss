@@ -270,10 +270,10 @@ table {
 .el-input-number {
   width: 100%
 }
-.form-item-control .el-input,
-.input-width-control .el-input {
-  width: 217px;
-}
+// .form-item-control .el-input,
+// .input-width-control .el-input {
+//   width: 217px;
+// }
 .select-width {
   width: 217px;
 }
@@ -314,6 +314,6 @@ table {
 .vue-html5-editor > .content img {
   width: 80%;
 }
-.el-tabs--border-card>.el-tabs__content {
+.el-tabs--border-card > .el-tabs__content {
   min-height: 400px;
 }

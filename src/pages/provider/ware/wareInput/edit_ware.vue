@@ -20,7 +20,7 @@ import { mapGetters } from 'vuex'
 					{title: '行程介绍', link: '/trip'},
 					{title: '多媒体', link: '/multimedia'},
 					{title: '费用/预定限制', link: '/charge'},
-					{title: '价格库存', link: '/storage'},
+					{title: '价格设置', link: '/price'},
 					{title: '附加服务', link: '/service'},
 					{title: '推荐活动', link: '/activity'},
 				],

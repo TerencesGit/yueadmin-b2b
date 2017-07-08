@@ -72,7 +72,7 @@
 			handleConfirm () {
 				this.$refs.pickerForm.validate((valid) => {
 					if (valid) {
-						var pickerRegion = {};
+						var pickerRegion = [];
 						if (this.pickerForm.district) {
 							let regionId = this.pickerForm.district
 							pickerRegion = Region.filter(region => region.id === regionId && region.level === 3)
@@ -80,9 +80,9 @@
 							let regionId = this.pickerForm.city
 							pickerRegion = Region.filter(region => region.id === regionId && region.level === 2)
 						}
-						console.log(this.areaName)
+						// console.log(pickerRegion)
 						this.areaName = pickerRegion[0].name
-						this.areaCode = pickerRegion[0].areaCode
+						this.areaCode = pickerRegion[0].id + '';
 						this.$emit('change', this.areaCode)
 						this.pickerVisible = false
 						// this.$refs.pickerForm.resetFields()

@@ -204,13 +204,15 @@
     		this.wareForm.wareDesc = content
     	},
       // 获取商品详情
-      getWareDetail () {
+      getWareInfo () {
         readWareInfo({wareId: this.wareForm.wareId}).then(res => {
           console.log(res)
           if(res.data.code === '0001') {
             let wareInfo = res.data.result.wareInfo
             wareInfo.openDate = new Date(wareInfo.openDate)
             wareInfo.closeDate = new Date(wareInfo.closeDate)
+            wareInfo.srcCityCode = wareInfo.srcCityCode + ''
+            wareInfo.dstCityCode = wareInfo.dstCityCode + ''
             wareInfo.suggestedPrice = wareInfo.suggestedPrice / 100
             wareInfo.nocashReserveMinute = wareInfo.nocashReserveMinute / 60
             this.wareForm = wareInfo
@@ -286,7 +288,7 @@
       let wareId = parseInt(this.$route.query.wareId);
       if (wareId) {
         this.wareForm.wareId = wareId
-        this.getWareDetail()
+        this.getWareInfo()
       }
     }
   }

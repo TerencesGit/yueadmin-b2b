@@ -20,9 +20,14 @@
         <el-radio-button :label="2">审核未通过</el-radio-button>
       </el-radio-group>
     </el-row>
-    <el-table :data="wareList" v-loading="loading" border style="width: 100%">
+    <el-table 
+      border 
+      :data="wareList" 
+      v-loading="loading" 
+      highlight-current-row
+      style="width: 100%">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="wareCode" label="商品编号" sortable width="200"></el-table-column>
+      <el-table-column prop="wareId" label="商品编号" sortable width="200"></el-table-column>
       <el-table-column prop="wareName" label="商品名称"></el-table-column>
       <!-- <el-table-column prop="wareKind" label="商品类别" width="150"></el-table-column> -->
       <el-table-column prop="createTime" label="创建时间" sortable width="200"></el-table-column>
@@ -38,6 +43,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currPage"
+        :page-size="pageSize"
         :page-sizes="[10, 20, 30, 40]"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -109,7 +115,7 @@ export default {
       })
     },
     // 详情
-    handleDetail () {
+    handleDetail (wareId) {
       this.$router.push({
         path: '/provider/ware/wareDetail?wareId=' + wareId
       })
