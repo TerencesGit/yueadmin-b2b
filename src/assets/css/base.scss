@@ -122,6 +122,8 @@ input:focus {
 }
 .toolbar {
   margin: 10px 0px;
+  // padding: 10px 10px 0;
+  // background: #fff;
   .el-form-item {
     margin-bottom: 10px;
   }
@@ -129,10 +131,13 @@ input:focus {
     float: right
   }
 }
+.text-danger {
+  color: #f00
+}
 .bg-white {
   background: #fff
 }
-/** bootstrap style **/
+/** user-defined style **/
 .panel {
   margin-bottom: 20px;
   border-radius: 4px;
@@ -215,7 +220,8 @@ table {
 // .table-striped tbody tr:nth-of-type(odd) {
 //   background-color: #f9f9f9;
 // }
-/* element-ui style */
+// 
+/***** element-ui style *****/
 .uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -267,20 +273,23 @@ table {
   font-size: 20px; 
   font-weight: bold
 }
-.el-input-number {
-  width: 100%
+.el-tabs--border-card > .el-tabs__content {
+  min-height: 400px;
+}
+// .el-input-number {
+//   width: 100%
+// }
+.select-width {
+  width: 217px;
 }
 // .form-item-control .el-input,
 // .input-width-control .el-input {
 //   width: 217px;
 // }
-.select-width {
-  width: 217px;
-}
-.control .el-form-item .el-select,
-.control .el-form-item .el-input {
-  width: 160px;
-}
+// .control .el-form-item .el-select,
+// .control .el-form-item .el-input {
+//   width: 160px;
+// }
 .text-center .el-form-item__content {
   margin-left: 0!important
 }
@@ -293,11 +302,6 @@ table {
   height: 40px;
   line-height: 40px
 }
-.cell-img {
-  width: 100%;
-  margin-top: 7px;
-  cursor: pointer
-}
 .region-picker .el-form-item .el-input__inner {
   border-color: #bfcbd9;
 }
@@ -305,15 +309,14 @@ table {
   margin-left: 5px;
   vertical-align: top;
 }
-.text-danger {
-  color: #f00
+.cell-img {
+  width: 100%;
+  margin-top: 7px;
+  cursor: pointer
 }
 .vue-html5-editor > .content {
   padding: 20px
 }
 .vue-html5-editor > .content img {
   width: 80%;
-}
-.el-tabs--border-card > .el-tabs__content {
-  min-height: 400px;
 }
