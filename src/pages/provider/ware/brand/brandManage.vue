@@ -1,7 +1,7 @@
 <template>
   <section>
     <!-- 搜索栏 -->
-    <el-col :span="24" class="toolbar">
+    <el-row class="toolbar">
       <el-form :inline="true" :model="filters" @submit.prevent="getBrandList">
         <el-form-item>
           <el-input v-model="filters.name" placeholder="品牌名称" icon="search"></el-input>
@@ -13,7 +13,7 @@
           <el-button type="primary" @click="handleAdd">新增</el-button>
         </el-form-item>
       </el-form>
-    </el-col>
+    </el-row>
     <!-- 品牌列表 -->
     <el-table 
       border
@@ -73,7 +73,7 @@
     </el-row>
     <!-- 新增品牌 -->
     <el-dialog title="新增品牌" v-model="addFormVisible">
-      <el-form :model="addForm" :rules="brandRules" ref="addForm" label-width="120px" style="padding: 30px" v-loading="addLoading">
+      <el-form :model="addForm" :rules="brandRules" ref="addForm" label-width="120px" style="padding: 30px">
         <el-form-item label="品牌名称" prop="brandName">
           <el-input v-model="addForm.brandName" placeholder="品牌名称"></el-input>
         </el-form-item>
@@ -176,7 +176,6 @@ export default {
         name: ''
       },
       addFormVisible: false,
-      addLoading: false,
       addUploading: false,
       addForm: {
         brandName: '',
@@ -262,7 +261,6 @@ export default {
     },
     // 上传成功
     handleSuccess (res, file) {
-      console.log(res)
       if (res.code === '0001') {
         this.uploading = false
         let resFile = res.result.file;
@@ -283,17 +281,13 @@ export default {
     handleEdit (index, row) {
       this.editFormVisible = true
       this.editForm = Object.assign({}, row);
-      console.log(row)
-      console.log(Object.assign({}, row))
-      console.log(this.editForm)
     },
     // 编辑提交
     editSubmit () {
       this.$refs.editForm.validate((valid) => {
         if (valid) {
-          let data = Object.assign({}, this.editForm)
-          console.log(data)
-          saveBrandInfo(JSON.stringify(data)).then((res) => {
+          let data = JSON.stringify(Object.assign({}, this.editForm))
+          saveBrandInfo(data).then((res) => {
             console.log(res)
             if (res.data.code === '0001') {
               this.$message.success('编辑成功')
@@ -306,22 +300,30 @@ export default {
             this.catchError(err.response)
           })
           this.editFormVisible = false
+        } else {
+          console.log('err submit')
         }
       })
     },
     // 显示新增
     handleAdd () {
+      this.addForm = {
+        brandName: '',
+        content: '',
+        logoUrl: '',
+        brandPage: '',
+        status: true
+      }
       this.addFormVisible = true
     },
     // 新增提交
     addSubmit () {
       this.$refs.addForm.validate((valid) => {
         if(valid) {
-          this.addLoading = true
           this.addForm.status = this.addForm.status ? 1 : 0
           let data = JSON.stringify(Object.assign({}, this.addForm))
           console.log(data)
-          saveBrandInfo(JSON.stringify(data)).then(res => {
+          saveBrandInfo(data).then(res => {
             console.log(res)
             if(res.data.code === '0001') {
               this.$message.success(res.data.message)
@@ -333,14 +335,14 @@ export default {
             console.log(err)
             this.catchError(err.response)
           })
-          this.addLoading = false
           this.addFormVisible = false
+        } else {
+          console.log('err submit')
         }
       })
     },
     // 状态设置
     handleChange (row) {
-      console.log(row)
       updateBrandStatus({brandId: row.brandId}).then(res => {
         console.log(res)
         if (res.data.code === '0001') {

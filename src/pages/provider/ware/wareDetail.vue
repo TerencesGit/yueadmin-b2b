@@ -258,7 +258,7 @@
             readSkuInfoList({wareId: this.wareId}).then(res => {
               console.log(res)
               if(res.data.code === '0001') {
-                this.skuList = res.data.result.skuList;
+                this.skuList = res.data.result.skuList || [];
                 this.skuList.forEach((data) => {
                   data.start = data.skuDate
                 })

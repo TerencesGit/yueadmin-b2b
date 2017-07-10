@@ -118,8 +118,8 @@
           keyWords: '普吉岛',
           openDate: new Date(),
           closeDate:  new Date(),
-          srcCityCode: '110000',
-          dstCityCode: '310000',
+          srcCityCode: '5',
+          dstCityCode: '20',
           wareDesc: '普吉岛5日半自助游直飞随心DIY, 普吉岛5日半自助游直飞随心DIY',
           briefName: '普吉岛5日半自助',
           brandId: 1001,
@@ -302,9 +302,5 @@
 	}
 	.input-width .el-input {
 		width: 217px;
-	}
-	.input-unit {
-		margin-left: 5px;
-		vertical-align: top;
 	}
 </style>

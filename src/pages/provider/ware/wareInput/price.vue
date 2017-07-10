@@ -85,8 +85,6 @@
         singleSkuVisible: false,
         batchType: 1,
         batchSkuForm: {
-          wareId: '',
-          skuDate: '',
           startDate: '',
           endDate: '',
           adultPrice: '',
@@ -197,10 +195,14 @@
       batchSubmit () {
         this.$refs.batchSkuForm.validate((valid) => {
           if (valid) {
-            this.batchSkuForm.startDate = this.batchSkuForm.skuDateRange[0]
-            this.batchSkuForm.endDate = this.batchSkuForm.skuDateRange[1]
-            let data = Object.assign({}, this.batchSkuForm)
-            data.wareId = this.wareId;
+            let data = {
+              wareId: this.wareId,
+              startDate: this.batchSkuForm.skuDateRange[0],
+              endDate: this.batchSkuForm.skuDateRange[1],
+              adultPrice: this.batchSkuForm.adultPrice,
+              childPrice: this.batchSkuForm.childPrice,
+              singlePrice: this.batchSkuForm.singlePrice,
+            }
             console.log(data)
             if (this.batchType === 1) {
               createSkuInfoBatch(data).then(res => {
@@ -215,7 +217,6 @@
                 console.log(err)
               })
             } else if (this.batchType === 2) {
-              console.log('edit')
               updateSkuInfoBatch(data).then(res => {
                 console.log(res)
                 if(res.data.code === '0001'){
@@ -267,7 +268,7 @@
             console.log(data)
             saveSkuInfo(data).then(res => {
               console.log(res)
-              if(res.data.code === '0001') {
+              if (res.data.code === '0001') {
                 this.$message.success(res.data.message)
                 this.getSkuList()
               } else {

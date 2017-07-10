@@ -253,11 +253,8 @@
       // 单条设置
       dayClick (day, event) {
         day = this.$moment(day).format('YYYY-MM-DD')
-        console.log(day, event)
         if (event) {
-          console.log(Object.assign({}, event))
           this.singleSkuForm = Object.assign(this.singleSkuForm, event)
-          console.log(Object.assign({}, this.singleSkuForm))
         } else {
           this.singleSkuForm = {}
           this.singleSkuForm.skuDate = day
@@ -279,7 +276,6 @@
             }
             console.log(data)
             saveSkuInfo(data).then(res => {
-              console.log(res)
               if(res.data.code === '0001') {
                 this.$message.success(res.data.message)
                 this.getSkuList()

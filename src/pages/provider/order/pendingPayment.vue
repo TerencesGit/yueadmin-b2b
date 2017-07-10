@@ -13,7 +13,7 @@
 				     <el-date-picker v-model="searchForm.date" type="daterange" placeholder="选择日期范围" size="small"></el-date-picker>					    
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" size="small" class="search-button" @click="getOrders(searchForm.date)">查询</el-button>
+					<el-button type="primary" size="small" class="search-button" @click="getOrderList(searchForm.date)">查询</el-button>
 				</el-form-item>
 			</el-form>
 		</el-col>
@@ -50,7 +50,7 @@
 	</section>	
 </template>
 <script>
-	// import { getOrderList } from '@/api'
+	// import { readOrderList } from '@/api'
 	// import util from '../../assets/js/utils'
 	export default {
 		data () {
@@ -74,12 +74,12 @@
 			handleSizeChange (val) {
 				this.pageSize = val;
 				this.pageCur = 1;
-				this.getOrders();
+				this.getOrderList();
 			},
 			//当前页数改变的时候
 			handleCurrentChange (val) {
 				this.pageCur = val;
-				this.getOrders();
+				this.getOrderList();
 			},
 			// 查看
 			handleCheck (index,row) {
@@ -94,7 +94,7 @@
 				}
 			},
 			//获取订单列表
-			getOrders (data) {
+			getOrderList (data) {
 				if(data && data[0]!==null){
 					// this.searchForm.stDate = util.formatDate.format(this.searchForm.date[0])
 					// this.searchForm.edDate = util.formatDate.format(this.searchForm.date[1])
@@ -115,7 +115,7 @@
 				// this.listLoading = true;
 				 // console.log(para)
 				//调用获取订单列表接口				
-				// getOrderList(para).then((res) => {
+				// readOrderList(para).then((res) => {
 				// 	// console.log(res)
 				// 	if(res.data.code === "0001"){					 
 				// 		this.orderData = res.data.result.data;
@@ -133,7 +133,7 @@
 
 		},
 		created () {
-			this.getOrders();
+			this.getOrderList();
 		}
 	}
 </script>

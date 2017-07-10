@@ -3,7 +3,7 @@
     <el-row class="m-b">
       <el-button type="primary" @click="newKind">新建品类</el-button>
     </el-row>
-    <el-row>
+    <el-row :gutter="20">
       <el-col :span="12">
         <el-tree
           :data="data2"
@@ -16,6 +16,9 @@
           :expand-on-click-node="false"
           :render-content="renderContent">
         </el-tree>
+      </el-col>
+      <el-col :span="12">
+        <div class="detail">品类详情</div>
       </el-col>
     </el-row>
     <!-- 编辑品类 -->
@@ -158,3 +161,10 @@ import { getKindList, addKind, delKind } from '../../../api'
     }
   }
 </script>
+<style scoped>
+  .detail {
+    min-height: 200px;
+    padding: 15px;
+    background: #fff;
+  }
+</style>

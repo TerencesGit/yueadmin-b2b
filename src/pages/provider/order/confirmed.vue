@@ -30,21 +30,21 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="getOrderLists">查询</el-button>
+          <el-button type="primary" @click="getOrderList">查询</el-button>
         </el-form-item>
       </el-form>
     </el-row>
-    <el-table :data="orderList" border highlight-current-row>
-      <el-table-column prop="orderId" label="订单号"></el-table-column>
-      <el-table-column prop="wareId" label="产品ID"></el-table-column>
+    <el-table :data="orderList" border highlight-current-row v-loading="loading">
+      <el-table-column prop="orderId" label="订单号"  width="100" ></el-table-column>
+      <el-table-column prop="wareId" label="产品ID"  width="100" ></el-table-column>
       <el-table-column prop="wareName" label="产品名称"></el-table-column>
-      <el-table-column prop="orderStatus" label="订单状态"></el-table-column>
-      <el-table-column prop="orderTotal" label="订单总人数"></el-table-column>
-      <el-table-column prop="date" label="出发日期"></el-table-column>
-      <el-table-column prop="adultPrice" label="成人底价"></el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column prop="orderStatus" label="订单状态" width="100" :formatter="formatStatus"></el-table-column>
+      <el-table-column prop="childCount" label="订单总人数"  width="120" ></el-table-column>
+      <el-table-column prop="dateDepart" label="出发日期"  width="140" ></el-table-column>
+      <el-table-column prop="adultPrice" label="成人底价"  width="100" ></el-table-column>
+      <el-table-column label="操作" width="160">
         <template scope="scope">
-          <el-button type="primary" size="small">确认</el-button>
+          <el-button type="primary" size="small">支付</el-button>
           <el-button size="small">查看</el-button>
         </template>
       </el-table-column>
@@ -63,10 +63,11 @@
   </section>
 </template>
 <script>
-  import { getOrderList } from '@/api'
+  import { readOrderList } from '@/api'
   export default {
     data() {
       return {
+        loading: false,
         filter: {
           orderCode: '',
           wareName: '',
@@ -77,9 +78,9 @@
         pageSize: 10,
         total: 0,
         pickerOptions: {
-          disabledDate (time) {
-            return time.getTime() >= Date.now();
-          },
+          // disabledDate (time) {
+          //   return time.getTime() >= Date.now();
+          // },
           shortcuts: [{
             text: '今天',
             onClick(picker) {
@@ -120,6 +121,9 @@
       }
     },
     methods: {
+      formatStatus (row) {
+        return row.status === 2 ? '待确认' : '未知'
+      },
       startDateChange (val) {
         this.filter.startDate = val;
       },
@@ -128,14 +132,14 @@
       },
       handleSizeChange (val) {
         this.pageSize = val;
-        this.getOrderLists()
+        this.getOrderList()
       },
       handleCurrentChange (val) {
         this.pageNo = val;
-        this.getOrderLists()
+        this.getOrderList()
       },
       // 订单列表
-      getOrderLists() {
+      getOrderList() {
         if (this.filter.startDate > this.filter.endDate) {
           this.$notify.error({
             title: '提示',
@@ -153,21 +157,25 @@
           status: 2
         }
         console.log(params)
-        getOrderList(params).then(res => {
+        this.loading = true
+        readOrderList(params).then(res => {
           console.log(res)
           if(res.data.code === '0001') {
             this.orderList = res.data.result.orderList;
+            this.total = res.data.result.pageInfo.count;
           } else {
             this.$message.error(res.data.message)
           }
+          this.loading = false
         }).catch(err => {
           console.log(err)
           this.catchError(err.response)
+          this.loading = false
         })
       },
     },
     mounted () {
-      this.getOrderLists()
+      this.getOrderList()
     }
   }
 </script>

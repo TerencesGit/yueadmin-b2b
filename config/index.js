@@ -42,6 +42,13 @@ module.exports = {
           '^/baseUrl': ''
         }
       },
+      '/orderUrl': {
+        target: 'http://192.168.199.193:8080/yue_yb2b',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/orderUrl': ''
+        }
+      },
       '/imgUploadUrl': {
         target: 'http://192.168.199.211:8080/yue_yb2b/file/upload',
         changeOrigin: true,
