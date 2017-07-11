@@ -12,12 +12,12 @@
 					<td><el-checkbox v-model="checked"></el-checkbox></td>
 					<td>商品介绍：</td>
 					<td>
-						<vue-html5-editor :content="wareInfo" :height="200" :z-index="1" @change="updateWareInfo"></vue-html5-editor>
+						<vue-html5-editor :content="introduce" :height="200" :z-index="1" @change="updateIntroduce"></vue-html5-editor>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<el-checkbox checked disabled></el-checkbox>
+						<el-checkbox checked></el-checkbox>
 					</td>
 					<td>费用说明：</td>
 					<td>
@@ -28,14 +28,14 @@
 					<td><el-checkbox v-model="checked"></el-checkbox></td>
 					<td>使用说明：</td>
 					<td>
-						<vue-html5-editor :content="instructions" :height="200" :z-index="1" @change="updateInstructions"></vue-html5-editor>
+						<vue-html5-editor :content="explains" :height="200" :z-index="1" @change="updateExplain"></vue-html5-editor>
 					</td>
 				</tr>
 				<tr>
 					<td><el-checkbox v-model="checked"></el-checkbox></td>
 					<td>购买须知：</td>
 					<td>
-						<vue-html5-editor :content="notes" :height="200" :z-index="1" @change="updateNotes"></vue-html5-editor>
+						<vue-html5-editor :content="notice" :height="200" :z-index="1" @change="updateNotice"></vue-html5-editor>
 					</td>
 				</tr>
 				<tr>
@@ -50,7 +50,7 @@
 				<div slot="header" class="clearfix">
 			    <span class="title">商品介绍</span>
 			  </div>
-				<div v-html="wareInfo"></div>
+				<div v-html="introduce"></div>
 			</el-card>
 			<el-card>
 				<div slot="header" class="clearfix">
@@ -62,66 +62,68 @@
 				<div slot="header" class="clearfix">
 			    <span class="title">使用说明</span>
 			  </div>
-				<div v-html="instructions"></div>
+				<div v-html="explains"></div>
 			</el-card>
 			<el-card>
 				<div slot="header" class="clearfix">
 			    <span class="title">购买须知</span>
 			  </div>
-				<div v-html="notes"></div>
+				<div v-html="notice"></div>
 			</el-card>
 		</el-dialog>
 	</section>
 </template>
 <script>
+	import { saveAttribute } from '@/api'
 	export default {
     data () {
       return {
       	wareId: '',
       	checked: true,
-      	wareInfo: '输入商品介绍',
+      	introduce: '输入商品介绍',
       	charge: '输入费用说明',
-      	instructions: '输入使用说明',
-      	notes: '输入购买须知',
+      	explains: '输入使用说明',
+      	notice: '输入购买须知',
       	editorVisible: false
       }
     },
     methods: {
-    	updateWareInfo (content) {
-    		this.notes= content
+    	updateIntroduce (content) {
+    		this.introduce = content
     	},
     	updateCharge (content) {
-    		this.wareInfo = content
-    	},
-    	updateInstructions (content) {
     		this.charge = content
     	},
-    	updateNotes (content) {
-    		this.instructions = content
+    	updateExplain (content) {
+    		this.explains = content
+    	},
+    	updateNotice (content) {
+    		this.notice = content
     	},
     	saveChargeInfo () {
     		let data = {
-    			wareInfo: this.wareInfo,
+    			id: '',
+    			wareId: this.wareId,
+    			introduce: this.introduce,
     			charge: this.charge,
-    			instructions: this.instructions,
-    			notes: this.notes,
+    			explains: this.explains,
+    			notice: this.notice,
     		}
-    		console.log(data)
-    		this.$router.push({
-					path: '/provider/ware/new/storage?wareId='+this.wareId
-				})
-    		// saveChargeInfo(data).then(res => {
-    		// 	console.log(res)
-    		// 	if (res.data.code === '0001') {
-    		// 		this.$message.success('保存成功')
-    		// 		this.$router.push('/provider/ware/new/price_stock')
-    		// 	} else {
-    		// 		this.$message.error(res.data.message)
-    		// 	}
-    		// }).catch(err => {
-    		// 	console.log(err)
-    		// 	this.catchError(err.response)
-    		// })
+    		console.log(JSON.stringify(data))
+    		saveAttribute(JSON.stringify(data)).then(res => {
+    			console.log(res)
+    			if (res.data.code === '0001') {
+    				this.$message.success(res.data.message)
+		    		this.$router.push({
+							path: '/provider/ware/new/storage?wareId=' + this.wareId
+						})
+    			} else {
+    				this.$message.error(res.data.message)
+    			}
+    		}).catch(err => {
+    			console.log(err)
+    			this.catchError(err.response)
+    		})
     	},
     },
     mounted () {

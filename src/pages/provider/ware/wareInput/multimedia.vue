@@ -14,13 +14,13 @@
 			@selection-change="selsChange"> 
 	    <el-table-column type="selection" width="55"></el-table-column>
 	    <el-table-column type="index" width="60"></el-table-column>
-	    <el-table-column label="图片缩略图" width="120">
+	    <el-table-column label="图片缩略图" width="140">
 	    	<template scope="scope">
-		    	<img :src="scope.row.filePath" height="50px" class="cell-img" @click="viewImage(scope.row.filePath)">
+		    	<img :src="scope.row.filePath" height="60px" class="cell-img" @click="viewImage(scope.row.filePath)">
 	    	</template>
 	    </el-table-column>
-	    <el-table-column label="更新者" prop="createName" width="150"></el-table-column>
-	    <el-table-column label="更新时间" prop="createTime" width="200" :formatter="formatCreateTime" sortable></el-table-column>
+	    <el-table-column label="更新者" prop="createName" width="180"></el-table-column>
+	    <el-table-column label="更新时间" prop="createTime" :formatter="formatCreateTime" sortable></el-table-column>
 	    <el-table-column label="是否为主图" prop="isMainPic" width="120" :formatter="formatIsMainPic"></el-table-column>
 	    <el-table-column label="是否显示" width="120">
 	    	<template scope="scope">
@@ -36,10 +36,10 @@
 					</el-switch>
 	    	</template>
 	    </el-table-column>
-		  <el-table-column label="操作">
+		  <el-table-column label="操作" width="180">
 	        <template scope="scope">
-	        	<el-button v-if="scope.row.isMainPic === 0" size="small" type="primary" @click="handleSetMainImg(scope.$index, scope.row)">设为主图</el-button>
-	        	<el-button size="small" type="danger" @click="handleSingleDelete(scope.$index, scope.row)">删除</el-button>
+	        	<el-button v-if="scope.row.isMainPic === 0" size="small" type="primary" @click="handleSetMainImg(scope.row)">设为主图</el-button>
+	        	<el-button size="small" type="danger" @click="handleSingleDelete(scope.row)">删除</el-button>
 	        </template>
     	</el-table-column>
 		</el-table>
@@ -218,7 +218,7 @@
 				})
 			},
 			// 单张图片删除
-			handleSingleDelete (index, row) {
+			handleSingleDelete (row) {
 				let _fileIdList = [];
 				_fileIdList[0] = { fileId: row.fileId }
 				this.$confirm('确认删除该图片？', '提示', {type: 'warning'})
@@ -276,11 +276,11 @@
 				})
 			},
 			// 设为主图
-			handleSetMainImg (index, row) {	
+			handleSetMainImg (row) {	
 				let data = {
+					wareId: this.wareId,
 					fileId: row.fileId,
 					isMainPic: 1,
-					wareId: 10001
 				}	
 				updateWareFileIsMainPic(data).then(res => {
 					if(res.data.code === '0001') {

@@ -47,7 +47,7 @@
             @change="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="出库/入库数量：">
+        <el-form-item label="出/入库数量：">
           <el-input-number v-model="batchForm.skuNum" :min="1" :step="10" style="width: 220px"></el-input-number>
         </el-form-item>
         <el-form-item label="操作类型：" prop="type">
@@ -71,7 +71,7 @@
         <el-form-item label="当前库存：">
             <span>{{ singleForm.storageNum }}</span>
         </el-form-item>
-        <el-form-item label="出库/入库数量：" prop="stockNum">
+        <el-form-item label="出/入库数量：" prop="stockNum">
           <el-input-number v-model="singleForm.skuNum" :min="1" :step="10" style="width: 140px"></el-input-number>
         </el-form-item>
         <el-form-item label="操作类型：" prop="type">
@@ -153,7 +153,7 @@
         readSkuInfoList({wareId: this.wareId}).then(res => {
           console.log(res)
           if (res.data.code === '0001') {
-            this.skuList = res.data.result.skuList;
+            this.skuList = res.data.result.skuList || [];
             this.skuList.forEach((data) => {
               data.start = data.skuDate
             })

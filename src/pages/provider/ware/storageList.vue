@@ -32,17 +32,15 @@
       <el-table-column prop="wareKind" label="状态" width="150" :formatter="formatStatus"></el-table-column>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" sortable width="200"></el-table-column>
-      <el-table-column label="操作" width="120">
+      <el-table-column label="操作" width="280">
         <template scope="scope">
-          <el-button
-            :plain="true"
-            size="small"
-            type="primary"
-            @click="handleStorageSet(scope.row.wareId)">库存管理</el-button>
+          <el-button size="small" @click="handleStorageSet(scope.row.wareId)">库存管理</el-button>
+          <el-button size="small" @click="handleServiceSet(scope.row.wareId)">附加服务</el-button>
+          <el-button size="small" @click="handleActivitySet(scope.row.wareId)">推荐活动</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-row class="m-t">
+    <el-row class="toolbar">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -79,8 +77,7 @@ export default {
       return row.status === 0 ? '未审核' : row.status === 1 ? '已通过' : '未通过'
     },
     // 商品列表
-    getWareList (n) {
-      console.log(n)
+    getWareList () {
       let params = {
         currPage: this.currPage,
         pageSize: this.pageSize,
@@ -115,12 +112,24 @@ export default {
       console.log(val)
       this.getWareList()
     },
-    // 编辑
+    // 库存设置
     handleStorageSet (wareId) {
       this.$router.push({
         path: '/provider/ware/storageSet?wareId=' + wareId
       })
-    }
+    },
+    // 附加服务
+    handleServiceSet (wareId) {
+      this.$router.push({
+        path: '/provider/ware/serviceList?wareId=' + wareId
+      })
+    },
+    // 推荐活动
+    handleActivitySet (wareId) {
+      this.$router.push({
+        path: '/provider/ware/activityList?wareId=' + wareId
+      })
+    },
   },
   mounted () {
     this.getWareList()

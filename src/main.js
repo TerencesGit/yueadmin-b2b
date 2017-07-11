@@ -135,13 +135,13 @@ axios.interceptors.request.use((config) => {
 })
 // response interceptors
 axios.interceptors.response.use((res) => {
-  if (res.data.code ===  999) {
+  if (res.data.code ===  '0000') {
   	localStorage.clear()
     ElementUI.Message({
    	  message: '长时间未操作，请重新登录'
     })
     return router.push('/login')
-  } else if (res.data.code === 403) {
+  } else if (res.data.code === '9999') {
   	return router.push('/NoPermission')
   }
   return res;

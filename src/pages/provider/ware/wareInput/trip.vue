@@ -121,7 +121,7 @@
 	</section>
 </template>
 <script>
-	import { readWareInfo, saveWareTripDetail, deletTripDetail, readTripDetailList } from '@/api'
+	import { readWareInfo, saveWareTripDetail, deleteTripDetail, readTripDetailList } from '@/api'
  	export default {
 		data(){
 			return {
@@ -154,7 +154,6 @@
 					programDuration: 1,
 					programDetail: ''
 				},
-				submitType: 1,
 				tripTypes: [
 					{ label: '航班', value: 1 },
 					{ label: '交通', value: 2 },
@@ -224,14 +223,12 @@
 					programDuration: 1,
 					programDetail: ''
 				}
-				this.submitType = 1;
 				this.dialogTitle = '添加行程';
 				this.tripFormVisible = true;
 			},
 			// 编辑行程
 			handleEdit (item) {
 				this.tripForm = Object.assign({}, item);
-				this.submitType = 2;
 				this.dialogTitle = '编辑行程'
 				this.tripFormVisible = true
 			},
@@ -242,34 +239,32 @@
 						let data = Object.assign({}, this.tripForm)
 						data.wareId = this.wareId;
 						console.log(data)
-						data.programTime = new Date(data.programTime)
-						saveWareTripDetail(JSON.stringify(data))
-						.then(res => {
+						saveWareTripDetail(JSON.stringify(data)).then(res => {
 							console.log(res)
 							if (res.data.code === '0001') {
 								this.$message.success(res.data.message)
-								let tripDetail = res.data.result.tripDetail;
-								if (this.submitType === 1) {
-									tripDetail.programTime = new Date(tripDetail.programTime)
-									this.tripList.push(tripDetail)
-								} else {
-									this.tripList.some(trip => {
-										if (trip.id === tripDetail.id) {
-											trip.programTitle = tripDetail.programTitle;
-											trip.programTime = tripDetail.programTime;
-											trip.programDuration = tripDetail.programDuration;
-											trip.programDetail = tripDetail.programDetail;
-											trip.programIsFree = tripDetail.programIsFree;
-										}
-									})
-								}
+								this.getTripList()
+								// let tripDetail = res.data.result.tripDetail;
+								// if (this.submitType === 1) {
+								// 	tripDetail.programTime = new Date(tripDetail.programTime)
+								// 	this.tripList.push(tripDetail)
+								// } else {
+								// 	this.tripList.some(trip => {
+								// 		if (trip.id === tripDetail.id) {
+								// 			trip.programTitle = tripDetail.programTitle;
+								// 			trip.programTime = tripDetail.programTime;
+								// 			trip.programDuration = tripDetail.programDuration;
+								// 			trip.programDetail = tripDetail.programDetail;
+								// 			trip.programIsFree = tripDetail.programIsFree;
+								// 		}
+								// 	})
+								// }
 							} else {
 								this.$message.error(res.data.message)
 							}
-						})
-						.catch(err => {
+						}).catch(err => {
 							console.log(err)
-							this.$message.error(this.GLOBAL.resError)
+							this.catchError(err.response)
 						})
 						this.tripFormVisible = false
 					} else {
@@ -279,25 +274,25 @@
 			},
 			// 删除行程
 			handleDelete (item) {
-				console.log(item)
-				console.log(this.tripList.indexOf(item))
 				this.$confirm('确定删除该条行程', '提示', {type: 'warning'})
 				.then(() => {
 					let data = {
 						id: item.id
 					}
-					deletTripDetail(data).then(res => {
+					deleteTripDetail(data).then(res => {
 						console.log(res)
 						if (res.data.code === '0001') {
-							let index = this.tripList.indexOf(item)
-							this.tripList.splice(index, 1)
+							// let index = this.tripList.indexOf(item)
+							// this.tripList.splice(index, 1)
+							this.$message.success(res.data.message)
+							this.getTripList()
 						} else {
 							this.$message.error(res.data.message)
 						}
 					}).catch(err => {
 						console.log(err)
+						this.catchError(err.response)
 					})
-					
 				})
 				.catch(err => {
 					console.log(err)

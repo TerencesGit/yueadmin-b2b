@@ -1,6 +1,6 @@
 <template>
 	<section>
-	<!-- 订单明细 -->
+		<!-- 订单明细 -->
 		<el-card>
 			<div slot="header">
 				<h4>订单明细</h4>
@@ -9,7 +9,7 @@
 			<p>订单号：<span v-text="orderInfo.orderCode"></span><span style="color:red" v-text="state"></span></p>
 			<p>悦视觉产品名称：<span style="color:#009dda" v-text="orderInfo.wareName"></span></p>
 		</el-card>
-	<!-- 备注 -->
+		<!-- 备注 -->
 	  <el-card>
 	    <div slot="header">
 				<h4>备注</h4>
@@ -17,7 +17,7 @@
 		    <p>预定备注:<span v-text="orderInfo.remarks"></span></p>
 		    <p>商家备注:<span v-text="orderInfo.premarks"></span></p>
 		</el-card>
-	<!-- 预定项目 -->
+		<!-- 预定项目 -->
 		<el-card>
 	    <div slot="header">
 				<h4>预定项目</h4>
@@ -69,7 +69,7 @@
 			    </el-table-column>
 			</el-table>
 		</el-card>
-	<!-- 金额汇总	 -->
+		<!-- 金额汇总	 -->
 		<el-card>
 	    <div slot="header">
 				<h4>金额汇总</h4>
@@ -97,7 +97,7 @@
 		    </el-table-column>
 			</el-table>
 		</el-card>
-	<!-- 出行人 -->
+		<!-- 出行人 -->
 		<el-card>
 	    <div slot="header">
 				<h4>出行人</h4>
@@ -191,7 +191,7 @@
 			    </el-table-column>
 			</el-table>
 	  </el-card>
-	<!-- 联系人 -->
+		<!-- 联系人 -->
 		<el-card>
 	    <div slot="header">
 				<h4>联系人</h4>
@@ -218,7 +218,7 @@
 			    </el-table-column>
 			</el-table>
 		</el-card>
-	<!-- 发票信息 -->
+		<!-- 发票信息 -->
 		<el-card>
 	    <div slot="header">
 				<h4>发票信息</h4>
@@ -267,10 +267,11 @@
 	</section>
 </template>
 <script>
-	import { getOrderDetail } from '@/api'
+	import { readOrderDetail } from '@/api'
 	export default {
 		data () {
-			return {				
+			return {
+				orderId: '',			
 				orderInfo:{
 					wareName: '',
 					orderCode: '',
@@ -346,6 +347,49 @@
 					  return '其他'
 					  break;
 				}
+			},
+			getOrderDetail () {
+				let params = {
+					orderId: this.orderId
+				}
+				readOrderDetail(params).then((res) => {	
+					console.log(res)		
+					var data = res.data.result.data;
+				  if(res.data.code === "0001"){
+					 	this.orderInfo.wareName = data.item.wareName;
+						this.orderInfo.orderCode = data.info.orderCode;
+					 	this.orderInfo.status = data.info.status;
+						this.orderInfo.remarks = data.item.remarks;
+						this.orderInfo.premarks = data.info.premarks;
+					//预定项目信息
+						this.orderInfo.reserveWare[0].wareName = data.item.wareName;
+						this.orderInfo.reserveWare[0].status = data.info.status;
+						this.orderInfo.reserveWare[0].adultCount = data.item.adultCount;
+						this.orderInfo.reserveWare[0].childCount = data.item.childCount;
+				 		this.orderInfo.reserveWare[0].dateDepart = data.item.dateDepart;
+				 		this.orderInfo.reserveWare[0].dateReturn = data.item.dateReturn;
+						this.orderInfo.reserveWare[0].adultPrice = data.item.adultPrice;
+						this.orderInfo.reserveWare[0].childPrice = data.item.childPrice;
+						this.orderInfo.reserveWare[0].amountAll = data.pay.amountAll;
+					//金额汇总
+		    			this.orderInfo.amountSummary.wareName = data.item.wareName;
+		    			this.orderInfo.amountSummary.createTime = data.info.createTime;
+		    			this.orderInfo.amountSummary.amountAll = data.pay.amountAll;
+					//出行人
+						this.orderInfo.traveler = data.custom;
+				 	//发票信息
+						this.orderInfo.invoiceInfo[0] = data.invoice;
+						console.log(this.orderInfo.invoiceInfo[0])
+				 }else if(res.data.code === "2012"){
+					this.$message({
+						message: '查询订单详情失败',
+				    type: 'error'
+					})
+				 }
+				}).catch((err) => {
+					console.log(err);
+					this.catchError(err.response)
+				})
 			}
 		},
 		computed:{
@@ -373,52 +417,8 @@
 			}
 		},
 		created(){
-			var para = this.$route.query;
-			 console.log(para)
-			 // var para = {orderId:6}
-		
-			getOrderDetail(para).then((res) => {			
-				var data = res.data.result.data;
-			 if(res.data.code === "0001"){
-			 	console.log(data)
-				 	this.orderInfo.wareName = data.item.wareName;
-					this.orderInfo.orderCode = data.info.orderCode;
-				 	this.orderInfo.status = data.info.status;
-					this.orderInfo.remarks = data.item.remarks;
-					this.orderInfo.premarks = data.info.premarks;
-				//预定项目信息
-					this.orderInfo.reserveWare[0].wareName = data.item.wareName;
-					this.orderInfo.reserveWare[0].status = data.info.status;
-					this.orderInfo.reserveWare[0].adultCount = data.item.adultCount;
-					this.orderInfo.reserveWare[0].childCount = data.item.childCount;
-			 		this.orderInfo.reserveWare[0].dateDepart = data.item.dateDepart;
-			 		this.orderInfo.reserveWare[0].dateReturn = data.item.dateReturn;
-					this.orderInfo.reserveWare[0].adultPrice = data.item.adultPrice;
-					this.orderInfo.reserveWare[0].childPrice = data.item.childPrice;
-					this.orderInfo.reserveWare[0].amountAll = data.pay.amountAll;
-				//金额汇总
-	    			this.orderInfo.amountSummary.wareName = data.item.wareName;
-	    			this.orderInfo.amountSummary.createTime = data.info.createTime;
-	    			this.orderInfo.amountSummary.amountAll = data.pay.amountAll;
-				//出行人
-					this.orderInfo.traveler = data.custom;
-			 	//发票信息
-					this.orderInfo.invoiceInfo[0] = data.invoice;
-					console.log(this.orderInfo.invoiceInfo[0])
-			 }else if(res.data.code === "2012"){
-				this.$message({
-					message: '查询订单详情失败',
-			        type: 'error'
-				})
-			 }
-			}).catch((error) => {
-				console.log(error);
-				this.$message({
-			    type: 'error',
-					message: '服务器繁忙,请稍后再试',
-				})
-			})
-
+			this.orderId = this.$route.query.orderId;
+			this.getOrderDetail()
 		}
 	}
 </script>
@@ -427,7 +427,7 @@
 		margin: 15px 0;
 		padding: 0;
 	}
-	p {		
+	/*p {		
 		margin: 5px 0;
-	}
+	}*/
 </style>

@@ -42,14 +42,14 @@
 		<el-table :data="orderList" border style="width: 100%" v-loading="loading">
 	    <el-table-column prop="orderId" label="订单号" width="150"></el-table-column>   
 	    <el-table-column prop="wareId" label="产品编号" width="150"></el-table-column>   
-	    <el-table-column prop="wareName" label="产品名称" width="200"></el-table-column>   
+	    <el-table-column prop="wareName" label="产品名称"></el-table-column>   
 	    <el-table-column prop="status" label="订单状态" width="100" :formatter="formatStatus">
 	    </el-table-column>   
-	    <el-table-column prop="dateDepart" label="出发日期" width="150"></el-table-column>   
-	    <el-table-column prop="adultPrice" label="成人价" width="180"></el-table-column>
-	    <el-table-column label="操作">
+	    <el-table-column prop="dateDepart" label="出发日期" width="120"></el-table-column>   
+	    <el-table-column prop="adultPrice" label="成人价" width="100"></el-table-column>
+	    <el-table-column label="操作" width="100">
 	    	<template scope="scope">
-		        <el-button size="small" @click="handleCheck(scope.$index, scope.row)">查看</el-button>
+		      <el-button size="small" @click="handleDetail(scope.row.orderId)">查看</el-button>
 	    	</template>
   		</el-table-column>  
 		</el-table>
@@ -215,6 +215,11 @@
           this.loading = false
         })
       },
+      handleDetail (orderId) {
+        this.$router.push({
+          path: '/provider/order/detail?orderId=' + orderId
+        })
+      }
     },
     mounted () {
       this.getOrderList()

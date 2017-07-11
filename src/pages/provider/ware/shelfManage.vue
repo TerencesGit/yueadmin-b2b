@@ -27,10 +27,12 @@
       <el-table-column prop="createTime" label="创建时间" sortable width="200"></el-table-column>
       <el-table-column prop="status" label="状态" width="120" :formatter="formatStatus" >
       </el-table-column>
-      <el-table-column label="操作" width="120">
+      <el-table-column label="操作" width="260">
         <template scope="scope">
           <el-button v-if="scope.row.status === 0" size="small" @click="handleShelf(scope.row)">上架</el-button>
           <el-button v-if="scope.row.status === 1" size="small" @click="handleShelf(scope.row)">下架</el-button>
+          <el-button size="small" @click="handleServiceSet(scope.row.wareId)">附加服务</el-button>
+          <el-button size="small" @click="handleActivitySet(scope.row.wareId)">推荐活动</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -118,7 +120,19 @@ export default {
       	console.log(err)
         this.$message('取消操作')
       })
-    }
+    },
+    // 附加服务
+    handleServiceSet (wareId) {
+      this.$router.push({
+        path: '/provider/ware/serviceList?wareId=' + wareId
+      })
+    },
+    // 推荐活动
+    handleActivitySet (wareId) {
+      this.$router.push({
+        path: '/provider/ware/activityList?wareId=' + wareId
+      })
+    },
   },
   mounted () {
     this.getWareList()

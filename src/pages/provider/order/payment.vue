@@ -1,6 +1,6 @@
 <template>
-	<section>
-		<el-row class="toolbar">
+  <section>
+    <el-row class="toolbar">
     	<el-form :inline="true" :model="filter">
         <el-form-item label="">
           <el-input v-model="filter.orderCode" placeholder="输入订单号"></el-input>
@@ -33,26 +33,23 @@
           <el-button type="primary" @click="getOrderList">查询</el-button>
         </el-form-item>
       </el-form>
-      <el-radio-group v-model="filter.status" @change="statusChange">
-        <el-radio-button :label="6">未结算</el-radio-button>
-        <el-radio-button :label="7">已结算</el-radio-button>
-      </el-radio-group>
     </el-row>
-		<el-table :data="orderList" border style="width: 100%" v-loading="loading">
-	    <el-table-column prop="orderId" label="订单号" width="150"></el-table-column>   
-	    <el-table-column prop="wareId" label="产品编号" width="150"></el-table-column>   
-	    <el-table-column prop="wareName" label="产品名称" width="200"></el-table-column>   
-	    <el-table-column prop="status" label="订单状态" width="100" :formatter="formatStatus">
-	    </el-table-column>   
-	    <el-table-column prop="dateDepart" label="出发日期" width="150"></el-table-column>   
-	    <el-table-column prop="adultPrice" label="成人价" width="180"></el-table-column>
-	    <el-table-column label="操作">
-	    	<template scope="scope">
-		        <el-button size="small" @click="handleCheck(scope.$index, scope.row)">查看</el-button>
-	    	</template>
-  		</el-table-column>  
-		</el-table>
-		<el-row class="toolbar">
+    <el-table :data="orderList" border highlight-current-row v-loading="loading">
+      <el-table-column prop="orderId" label="订单号"  width="100" ></el-table-column>
+      <el-table-column prop="wareId" label="产品ID"  width="100" ></el-table-column>
+      <el-table-column prop="wareName" label="产品名称"></el-table-column>
+      <el-table-column prop="orderStatus" label="订单状态" width="100" :formatter="formatStatus"></el-table-column>
+      <el-table-column prop="childCount" label="订单总人数"  width="120" ></el-table-column>
+      <el-table-column prop="dateDepart" label="出发日期"  width="140" ></el-table-column>
+      <el-table-column prop="adultPrice" label="成人价"  width="100" ></el-table-column>
+      <el-table-column label="操作" width="160">
+        <template scope="scope">
+          <el-button type="primary" size="small">支付</el-button>
+          <el-button size="small">查看</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-row class="toolbar">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -63,7 +60,7 @@
         :total="total">
       </el-pagination>
     </el-row>
-	</section>
+  </section>
 </template>
 <script>
   import { readOrderList } from '@/api'
@@ -75,13 +72,15 @@
           orderCode: '',
           wareName: '',
           startDate: '',
-          endDate: '',
-          status: 6
+          endDate: ''
         },
         pageNo: 1,
         pageSize: 10,
         total: 0,
         pickerOptions: {
+          // disabledDate (time) {
+          //   return time.getTime() >= Date.now();
+          // },
           shortcuts: [{
             text: '今天',
             onClick(picker) {
@@ -95,17 +94,17 @@
               picker.$emit('pick', date);
             }
           }, {
-            text: '一周前',
+            text: '一周之前',
             onClick(picker) {
               const date = new Date();
               date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
               picker.$emit('pick', date);
             }
           }, {
-            text: '一月前',
+            text: '一周之后',
             onClick(picker) {
               const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 30);
+              date.setTime(date.getTime() + 3600 * 1000 * 24 * 7);
               picker.$emit('pick', date);
             }
           }]
@@ -123,44 +122,7 @@
     },
     methods: {
       formatStatus (row) {
-      	switch (row.status) {
-      		case 0:
-      			return '已取消'
-      			break;
-      		case 1:
-      			return '待确认'
-      			break;
-      		case 2:
-      			return '已完善'
-      			break;
-      		case 3:
-      			return '已确认'
-      			break;
-      		case 4:
-      			return '待发团'
-      			break;
-      		case 5:
-      			return '已发团'
-      			break;
-      		case 6:
-      			return '已回团'
-      			break;
-      		case 7:
-      			return '结算中'
-      			break;
-      		case 8:
-      			return '已结算'
-      			break;
-      		case 9:
-      			return '已完成'
-      			break;
-      		case 10:
-      			return '已退款'
-      			break;
-      		default:
-      		 return '未知'
-      		 break;
-      	}
+        return row.status === 3 ? '待支付' : '未知'
       },
       startDateChange (val) {
         this.filter.startDate = val;
@@ -176,9 +138,6 @@
         this.pageNo = val;
         this.getOrderList()
       },
-      statusChange (val) {
-	      this.getOrderList()
-	    },
       // 订单列表
       getOrderList() {
         if (this.filter.startDate > this.filter.endDate) {
@@ -195,7 +154,7 @@
           wareName: this.filter.wareName,
           startDate: this.filter.startDate,
           endDate: this.filter.endDate,
-          status: this.filter.status
+          status: 3
         }
         console.log(params)
         this.loading = true
