@@ -21,9 +21,8 @@
 	    highlight-current-row 
 	    style="width: 100%">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="wareCode" label="商品编号" sortable width="200"></el-table-column>
+      <el-table-column prop="wareId" label="商品编号" sortable width="200"></el-table-column>
       <el-table-column prop="wareName" label="商品名称"></el-table-column>
-      <!-- <el-table-column prop="wareKind" label="商品类别" width="150"></el-table-column> -->
       <el-table-column prop="createTime" label="创建时间" sortable width="200"></el-table-column>
       <el-table-column prop="status" label="状态" width="120" :formatter="formatStatus" >
       </el-table-column>

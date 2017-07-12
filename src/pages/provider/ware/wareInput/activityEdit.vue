@@ -2,32 +2,30 @@
 	<section>
 		<!-- 工具栏 -->
 		<el-row class="toolbar">
-			<el-button type="primary" @click="handleAdd">新增附加服务</el-button>
+			<el-button type="primary" @click="handleAdd">新增推荐活动</el-button>
+			<el-button type="primary" @click="backList">返回商品列表</el-button>
 		</el-row>
-		<!-- 附加服务列表 -->
-		<el-table :data="serviceList" border highlight-current-row>
+		<!-- 推荐活动列表 -->
+		<el-table :data="activityList" border highlight-current-row>
 			<el-table-column type="index"></el-table-column>
-			<el-table-column prop="wareCode" label="服务ID" width="180px"></el-table-column>
-			<el-table-column prop="wareName" label="服务名称"></el-table-column>
-			<el-table-column prop="wareDesc" label="服务描述"></el-table-column>
+			<el-table-column prop="wareCode" label="活动ID" width="180px"></el-table-column>
+			<el-table-column prop="wareName" label="活动名称"></el-table-column>
+			<el-table-column prop="wareDesc" label="活动描述"></el-table-column>
 			<el-table-column prop="updateTime" label="更新时间" width="180px" :formatter="formatUpdateTime"></el-table-column>
-			<el-table-column label="操作" width="200px">
+			<el-table-column label="操作" width="180px">
 				<template scope="scope">
 					<el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
-					<el-button type="primary" size="small" @click="handleSkuSet(scope.row.wareId)">价格库存</el-button>
+					<el-button type="primary" size="small" @click="handleSkuSet(scope.row.wareId)">库存价格</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
-		<el-row class="toolbar text-center">
-			<el-button type="primary" @click="handleNext" class="m-t">下一步</el-button>
-		</el-row>
-		<!-- 附加服务表单 -->
-		<el-dialog :visible.sync="serviceFormVisible" title="新增附加服务">
+		<!-- 新增活动 -->
+		<el-dialog :visible.sync="serviceFormVisible" title="新增推荐活动">
 			<el-form :model="wareForm" :rules="rules" ref="wareForm" label-width="110px" class="form-item-width">
 					<el-row>
 				  	<el-col :span="12">
-				  		<el-form-item label="服务名称" prop="wareName">
-					    	<el-input v-model="wareForm.wareName" placeholder="服务名称"></el-input>
+				  		<el-form-item label="活动名称" prop="wareName">
+					    	<el-input v-model="wareForm.wareName" placeholder="活动名称"></el-input>
 						  </el-form-item>
 				  	</el-col>
             <el-col :span="12">
@@ -49,7 +47,7 @@
 				  	</el-col>
 				  </el-row>
 				  <el-row>
-						<el-form-item label="服务描述：" prop="wareDesc">
+						<el-form-item label="活动描述：" prop="wareDesc">
 						 <el-input v-model="wareForm.wareDesc" type="textarea" :rows="5"></el-input>
 						</el-form-item>
 					</el-row>
@@ -62,23 +60,13 @@
 	</section>
 </template>
 <script>
-	import { readWareService, saveWareServiceInfo, updateWareUpDownStatus } from '@/api'
+	import { readWareActivity, saveWareActivityInfo, updateVerifyStatus, updateWareUpDownStatus } from '@/api'
 	export default {
 		data () {
 			return {
 				wareId: '',
 				serviceFormVisible: false,
-				serviceList: [
-					{
-	          wareId: 10001,
-	          wareCode: 111110001,
-	        	wareName: '普吉岛5日半自助游直飞随心DIY',
-	        	briefName: '普吉岛5日半自助',
-          	keyWords: '普吉岛',
-	        	wareDesc: '普吉岛5日半自助游直飞随心DIY',
-	          status: 0
-	        }
-	      ],
+				activityList: [],
 	      wareForm: {
           wareId: '',
         	wareName: '',
@@ -90,13 +78,13 @@
         },
         rules: {
         	wareName: [
-        		{required: true, message: '请输入服务名称', trigger: 'blur'}
+        		{required: true, message: '请输入活动名称', trigger: 'blur'}
         	],
         	briefName: [
-        		{required: true, message: '请输入服务缩略名', trigger: 'blur'}
+        		{required: true, message: '请输入活动缩略名', trigger: 'blur'}
         	],
         	wareDesc: [
-        		{required: true, message: '请输入服务描述', trigger: 'blur'}
+        		{required: true, message: '请输入活动描述', trigger: 'blur'}
         	],
           // suggestedPrice: [
           //   {type: 'number', message: '请输入建议售价', trigger: 'blur'}
@@ -108,15 +96,15 @@
 			formatUpdateTime (row) {
 				return row.updateTime && this.$moment(row.updateTime).format('YYYY-MM-DD HH:mm:ss')
 			},
-			// 获取附加服务列表
-			getServiceList () {
+			// 获取推荐活动列表
+			getActivityList () {
 				let params = {
 					parentId: this.wareId
 				}
-				readWareService(params).then(res => {
+				readWareActivity(params).then(res => {
 					console.log(res)
 					if (res.data.code === '0001') {
-						this.serviceList = res.data.result.wareServiceList;
+						this.activityList = res.data.result.wareActivityList;
 					} else {
 						this.$message.error(res.data.message)
 					}
@@ -124,17 +112,17 @@
 					console.log(err)
 				})
 			},
-			// 新增附加服务
+			// 新增推荐活动
 			handleAdd () {
 				this.wareForm = {}
 				this.serviceFormVisible = true
 			},
-			// 编辑附加服务
+			// 编辑推荐活动
 			handleEdit (row) {
 				this.wareForm = Object.assign({}, row);
 				this.serviceFormVisible = true
 			},
-      // 保存附加服务
+      // 保存推荐活动
       onSubmit() {
         this.$refs.wareForm.validate((valid) => {
           if (valid) {
@@ -158,12 +146,12 @@
           	let data = Object.assign(form, this.wareForm)
           	data.parentId = this.wareId;
             console.log(data)
-            saveWareServiceInfo(JSON.stringify(data))
+            saveWareActivityInfo(JSON.stringify(data))
             .then(res => {
             	console.log(res)
             	if (res.data.code === '0001') {
                 this.$message.success(res.data.message)
-                this.getServiceList()
+                this.getActivityList()
             	} else {
             		this.$message.error(res.data.message)
             	}
@@ -179,7 +167,7 @@
           }
         })
       },
-      // 附加服务上下架
+      // 推荐活动上下架
       handleShelf (row) {
       	console.log(Object.assign({}, row))
       	let params = {
@@ -191,16 +179,32 @@
       		console.log(err)
       	})
       },
+      // 设置sku
       handleSkuSet (wareId) {
       	this.$router.push({
       		path: '/provider/ware/serviceSkuSet?wareId=' + wareId
       	})
       },
-      // 下一步
-      handleNext () {
-      	this.$confirm('确定已设置价格库存？', '提示', {type: 'warning'})
+      // 返回商品列表
+      backList () {
+        this.$router.push('/provider/ware/wareManage')
+      },
+      // 提交审核
+      submit () {
+      	this.$confirm('确定将该商品提交审核？', '提示', {type: 'warning'})
 				.then(() => {
-        	this.$router.push('activity?wareId='+this.wareId)
+        	updateVerifyStatus({wareId: this.wareId}).then(res => {
+        		console.log(res)
+        		if (res.data.code === '0001') {
+        			this.$message.success(res.data.message)
+        			this.$router.push('/provider/ware/wareManage')
+        		} else {
+        			this.$message.error(res.data.message)
+        		}
+        	}).catch(err => {
+        		console.log(err)
+        		this.catchError(err.response)
+        	})
 				})
 				.catch(err => {
 					console.log(err)
@@ -209,11 +213,11 @@
       }
 		},
 		mounted () {
-			this.$store.dispatch('setStepActive', 5)
+			this.$store.dispatch('setStepActive', 6)
 			let wareId = parseInt(this.$route.query.wareId)
 			if (wareId) {
 				this.wareForm.parentId = this.wareId = wareId;
-				this.getServiceList()
+				this.getActivityList()
 			} else {
 				this.$router.push('base')
 			}

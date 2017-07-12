@@ -10,18 +10,17 @@
 			<el-table-column prop="wareCode" label="活动ID" width="180px"></el-table-column>
 			<el-table-column prop="wareName" label="活动名称"></el-table-column>
 			<el-table-column prop="wareDesc" label="活动描述"></el-table-column>
-			<el-table-column prop="status" label="状态" width="100px" :formatter="formatStatus"></el-table-column>
-			<el-table-column label="操作" width="220px">
+			<el-table-column prop="updateTime" label="更新时间" width="180px" :formatter="formatUpdateTime"></el-table-column>
+			<el-table-column label="操作" width="180px">
 				<template scope="scope">
 					<el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
-					<!-- <el-button v-if="scope.row.status === 0" type="primary" size="small" @click="handleShelf(scope.row)">上架</el-button>
-					<el-button v-if="scope.row.status === 1" type="primary" size="small">下架</el-button> -->
-					<el-button type="primary" size="small" @click="setStorage(scope.row.wareId)">设置库存</el-button>
+					<el-button type="primary" size="small" @click="handleSkuSet(scope.row.wareId)">库存价格</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
 		<el-row class="toolbar text-center">
-			<el-button type="primary" @click="next">下一步</el-button>
+			<el-button type="primary" @click="save" class="m-t">完成</el-button>
+			<el-button type="primary" @click="submit" class="m-t">提交审核</el-button>
 		</el-row>
 		<!-- 新增活动 -->
 		<el-dialog :visible.sync="serviceFormVisible" title="新增推荐活动">
@@ -64,31 +63,13 @@
 	</section>
 </template>
 <script>
-	import { readWareActivity, saveWareActivityInfo, updateWareUpDownStatus } from '@/api'
+	import { readWareActivity, saveWareActivityInfo, updateVerifyStatus, updateWareUpDownStatus } from '@/api'
 	export default {
 		data () {
 			return {
 				wareId: '',
 				serviceFormVisible: false,
-				activityList: [
-					{
-	          wareId: 10001,
-	          wareCode: 111110001,
-	        	wareName: '普吉岛5日半自助游直飞随心DIY',
-	        	briefName: '普吉岛5日半自助',
-          	keyWords: '普吉岛',
-	        	wareDesc: '普吉岛5日半自助游直飞随心DIY',
-	          status: 0
-	        },{
-	          wareId: 10002,
-	          wareCode: 111110002,
-	        	wareName: '普吉岛5日半自助游直飞随心DIY',
-	        	briefName: '普吉岛5日半自助',
-          	keyWords: '普吉岛',
-	        	wareDesc: '普吉岛5日半自助游直飞随心DIY',
-	          status: 1
-	        }
-	      ],
+				activityList: [],
 	      wareForm: {
           wareId: '',
         	wareName: '',
@@ -115,8 +96,8 @@
 			}
 		},
 		methods: {
-			formatStatus (row) {
-				return row.status === 0 ? '下架' : '上架'
+			formatUpdateTime (row) {
+				return row.updateTime && this.$moment(row.updateTime).format('YYYY-MM-DD HH:mm:ss')
 			},
 			// 获取推荐活动列表
 			getActivityList () {
@@ -201,14 +182,37 @@
       		console.log(err)
       	})
       },
-      setStorage (wareId) {
+      // 设置sku
+      handleSkuSet (wareId) {
       	this.$router.push({
-      		path: '/provider/ware/new/priceStock?wareId=' + wareId
+      		path: '/provider/ware/serviceSkuSet?wareId=' + wareId
       	})
       },
-      // 下一步
-      next () {
-        this.$router.push('/provider/ware/new/activity?wareId='+this.wareId)
+      // 保存
+      save () {
+        this.$router.push('/provider/ware/wareManage')
+      },
+      // 提交审核
+      submit () {
+      	this.$confirm('确定将该商品提交审核？', '提示', {type: 'warning'})
+				.then(() => {
+        	updateVerifyStatus({wareId: this.wareId}).then(res => {
+        		console.log(res)
+        		if (res.data.code === '0001') {
+        			this.$message.success(res.data.message)
+        			this.$router.push('/provider/ware/wareManage')
+        		} else {
+        			this.$message.error(res.data.message)
+        		}
+        	}).catch(err => {
+        		console.log(err)
+        		this.catchError(err.response)
+        	})
+				})
+				.catch(err => {
+					console.log(err)
+					// this.$message('已取消操作')
+				})
       }
 		},
 		mounted () {
@@ -218,7 +222,7 @@
 				this.wareForm.parentId = this.wareId = wareId;
 				this.getActivityList()
 			} else {
-				this.$router.push('/provider/ware/new/base')
+				this.$router.push('base')
 			}
 		}
 	}

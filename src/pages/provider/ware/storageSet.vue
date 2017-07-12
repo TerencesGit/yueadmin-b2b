@@ -2,8 +2,8 @@
 	<section>
     <!-- 工具栏 -->
     <el-row class="toolbar">
-      <el-button type="primary" @click="handleBatchInit">库存初始化</el-button>
-      <el-button type="primary" @click="handleBatchSet">批量操作</el-button>
+      <!-- <el-button type="primary" @click="handleBatchInit">库存初始化</el-button> -->
+      <el-button type="primary" @click="handleBatchSet" :disabled="skuList.length === 0">批量操作</el-button>
       <back-button></back-button>
     </el-row>
     <!-- 库存列表 -->
@@ -153,12 +153,16 @@
         readSkuInfoList({wareId: this.wareId}).then(res => {
           console.log(res)
           if (res.data.code === '0001') {
-            this.skuList = res.data.result.skuList || [];
+            this.skuList = res.data.result.skuList;
+            if (this.skuList.length === 0) {
+              this.$message.warning('暂无库存，无法操作')
+              return;
+            }
             this.skuList.forEach((data) => {
               data.start = data.skuDate
             })
           } else {
-            this.$message.success(res.data.message)
+            this.$message.error(res.data.message)
           }
         }).catch(err => {
           console.log(err)

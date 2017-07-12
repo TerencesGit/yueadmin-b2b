@@ -16,20 +16,16 @@
 		</el-row>
     <el-table :data="wareList" v-loading="loading" border style="width: 100%">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="wareCode" label="商品编号" sortable width="200"></el-table-column>
-      <el-table-column prop="wareName" label="商品名称" width="200"></el-table-column>
-      <el-table-column prop="srcCityName" label="供应商" width="120"></el-table-column>
-      <!-- <el-table-column prop="dstCityName" label="目的城市" width="120"></el-table-column> -->
-      <!-- <el-table-column prop="verifyStatus" label="审核状态" width="100" :formatter="formatStatus" > -->
+      <el-table-column prop="wareCode" label="商品编号" sortable width="170"></el-table-column>
+      <el-table-column prop="wareName" label="商品名称"></el-table-column>
+      <el-table-column prop="providerName" label="供应商" width="120"></el-table-column>
+      <el-table-column prop="srcCityName" label="出发城市" width="120"></el-table-column>
+      <el-table-column prop="verifyStatus" label="状态" width="100" :formatter="formatStatus" >
       </el-table-column>
-      <el-table-column prop="createTime" label="提交时间" sortable></el-table-column>
-      <el-table-column label="操作" width="120">
+      <el-table-column prop="createTime" label="提交时间" sortable width="170"></el-table-column>
+      <el-table-column label="操作" width="100">
         <template scope="scope">
-          <el-button
-            :plain="true"
-            size="small"
-            type="primary"
-            @click="handleVerify(scope.row)">审核</el-button>
+          <el-button size="small" @click="handleVerify(scope.row)">审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -64,15 +60,31 @@ export default {
     }
   },
   methods: {
-    formatStatus (row, column) {
-      return row.verifyStatus === 1 ? '审核通过' : row.verifyStatus === 0 ? '未审核' : row.verifyStatus === 2 ? '审核未通过' : '未知'
+    formatStatus (row) {
+      switch (row.verifyStatus) {
+        case 0 :
+          return '待完善'
+          break;
+        case 1 :
+          return '待审核'
+          break;
+        case 2 :
+          return '通过'
+          break;
+        case 3 :
+          return '未通过'
+          break;
+        default:
+         return '未知'
+         break;
+      }
     },
     getWareList () {
       this.loading = true
       let params = {
         currpage: this.currPage,
         pageSize: this.pageSize,
-        // verifyStatus: 1
+        verifyStatus: 1
       }
       readWareList(params).then(res => {
         console.log(res)

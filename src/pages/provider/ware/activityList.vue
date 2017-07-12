@@ -21,16 +21,14 @@
 			<el-table-column prop="wareCode" label="活动ID" width="180px"></el-table-column>
 			<el-table-column prop="wareName" label="活动名称"></el-table-column>
 			<el-table-column prop="wareDesc" label="活动描述"></el-table-column>
-			<el-table-column prop="status" label="状态" width="100px" :formatter="formatStatus"></el-table-column>
-			<el-table-column label="操作" width="180px">
+			<el-table-column prop="updateTime" label="更新时间" width="180px" :formatter="formatUpdateTime"></el-table-column>
+			<el-table-column label="操作" width="120px">
 				<template scope="scope">
-					<el-button v-if="scope.row.status === 0" size="small" @click="handleShelf(scope.row)">上架</el-button>
-					<el-button v-if="scope.row.status === 1" size="small" @click="handleShelf(scope.row)">下架</el-button>
-					<el-button type="primary" size="small" @click="setStorage(scope.row.wareId)">设置库存</el-button>
+					<el-button type="primary" size="small" @click="setStorage(scope.row.wareId)">出入库</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
-		<el-row class="toolbar">
+		<!-- <el-row class="toolbar">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -40,7 +38,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
-    </el-row>
+    </el-row> -->
 	</section>
 </template>
 <script>
@@ -60,14 +58,14 @@
 			}
 		},
 		methods: {
+			formatUpdateTime (row) {
+				return row.updateTime && this.$moment(row.updateTime).format('YYYY-MM-DD HH:mm:ss')
+			},
 			handleSizeChange (val) {
 				this.pageSize = val
 			},
 			handleCurrentChange (val) {
 				this.currPage = val
-			},
-			formatStatus (row) {
-				return row.status === 0 ? '下架' : '上架'
 			},
 			// 获取推荐活动列表
 			getActivityList () {

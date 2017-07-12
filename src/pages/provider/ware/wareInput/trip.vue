@@ -4,7 +4,7 @@
 			<el-col :span="18">
 				<div class="trip-title">
 					<span v-text="wareInfo.wareName"></span>
-					<span v-text="'产品ID:' + wareInfo.wareId"></span>
+					<span v-text="'商品ID：' + wareInfo.wareCode"></span>
 				</div>
 				<ul class="trip-content">
 					<li v-for="num in wareInfo.tripDays" :key="num">
@@ -14,18 +14,18 @@
 								<li v-for="item in tripList" v-if="item.tripDayNum === num">
 									<div class="trip-detail clearfix">
 										<p class="pull-left">
-											<span v-if="item.programType == 1"><i class="fa fa-plane"></i></span>
-											<span v-else-if="item.programType == 2"><i class="fa fa-car"></i></span>
-											<span v-else-if="item.programType == 10"><i class="fa fa-hotel"></i></span>
-											<span v-else-if="item.programType == 20"><i class="fa fa-binoculars"></i></span>
-											<span v-else-if="item.programType == 30"><i class="fa fa-cutlery"></i></span>
-											<span v-else-if="item.programType == 31"><i class="fa fa-cutlery"></i></span>
-											<span v-else-if="item.programType == 32"><i class="fa fa-coffee"></i></span>
-											<span v-else-if="item.programType == 33"><i class="fa fa-cutlery"></i></span>
-											<span v-else-if="item.programType == 34"><i class="fa fa-cutlery"></i></span>
-											<span v-else-if="item.programType == 40"><i class="fa fa-shopping-bag"></i></span>
-											<span v-else-if="item.programType == 50"><i class="fa fa-child"></i></span>
-											<span v-else-if="item.programType == 60"><i class="fa fa-bell"></i></span>
+											<span v-if="item.programType == 1"><i class="fa fa-plane"></i>&nbsp;[航班]</span>
+											<span v-else-if="item.programType == 2"><i class="fa fa-car"></i>&nbsp;[交通]</span>
+											<span v-else-if="item.programType == 10"><i class="fa fa-hotel"></i>&nbsp;[酒店]</span>
+											<span v-else-if="item.programType == 20"><i class="fa fa-binoculars"></i>&nbsp;[景点]</span>
+											<span v-else-if="item.programType == 30"><i class="fa fa-cutlery"></i>&nbsp;[早餐]</span>
+											<span v-else-if="item.programType == 31"><i class="fa fa-cutlery"></i>&nbsp;[午餐]</span>
+											<span v-else-if="item.programType == 32"><i class="fa fa-coffee"></i>&nbsp;[下午茶]</span>
+											<span v-else-if="item.programType == 33"><i class="fa fa-cutlery"></i>&nbsp;[晚餐]</span>
+											<span v-else-if="item.programType == 34"><i class="fa fa-cutlery"></i>&nbsp;[宵夜]</span>
+											<span v-else-if="item.programType == 40"><i class="fa fa-shopping-bag"></i>&nbsp;[购物]</span>
+											<span v-else-if="item.programType == 50"><i class="fa fa-child"></i>&nbsp;[自由活动]</span>
+											<span v-else-if="item.programType == 60"><i class="fa fa-bell"></i>&nbsp;[主题活动]</span>
 											<span v-else>&nbsp;</span>
 											<span>{{item.programTime | TimeFormat}}</span>
 											<span>{{item.programTitle}}</span>
@@ -126,21 +126,8 @@
 		data(){
 			return {
 				wareId: '',
-				wareInfo: {
-					wareName: '普吉岛',
-					tripDays: 1
-				},
-				tripList: [
-					{tripDayNum: 1, 
-						programTime: new Date(), 
-						programTitle: '早餐',
-						programType: 33,
-						programDuration: 1,
-						programIsFree: 1,
-						programDetail: '普吉岛7日5晚半自助游直飞随心DIY普吉岛7日5晚半自助游直飞随心DIY普吉岛7日5晚半自助游直飞随心DIY'
-					}, 
-					{tripDayNum: 2, programType: 1, programTime: new Date(), programTitle: '旅行'},
-				],
+				wareInfo: {},
+				tripList: [],
 				tripFormVisible: false,
 				dialogTitle: '',
 				tripForm: {
@@ -197,7 +184,6 @@
 			// 获取商品行程信息
 			getTripList () {
 				readTripDetailList({wareId: this.wareId}).then(res => {
-					console.log(res)
 					if(res.data.code === '0001') {
 						this.tripList = res.data.result.tripDetailList;
 						this.tripList.forEach((trip) => {
@@ -208,6 +194,7 @@
 					}
 				}).catch(err => {
 					console.log(err)
+					this.catchError(err.response)
 				})
 			},
 			// 新增行程
@@ -238,27 +225,10 @@
 					if (valid) {
 						let data = Object.assign({}, this.tripForm)
 						data.wareId = this.wareId;
-						console.log(data)
 						saveWareTripDetail(JSON.stringify(data)).then(res => {
-							console.log(res)
 							if (res.data.code === '0001') {
 								this.$message.success(res.data.message)
 								this.getTripList()
-								// let tripDetail = res.data.result.tripDetail;
-								// if (this.submitType === 1) {
-								// 	tripDetail.programTime = new Date(tripDetail.programTime)
-								// 	this.tripList.push(tripDetail)
-								// } else {
-								// 	this.tripList.some(trip => {
-								// 		if (trip.id === tripDetail.id) {
-								// 			trip.programTitle = tripDetail.programTitle;
-								// 			trip.programTime = tripDetail.programTime;
-								// 			trip.programDuration = tripDetail.programDuration;
-								// 			trip.programDetail = tripDetail.programDetail;
-								// 			trip.programIsFree = tripDetail.programIsFree;
-								// 		}
-								// 	})
-								// }
 							} else {
 								this.$message.error(res.data.message)
 							}
@@ -276,14 +246,9 @@
 			handleDelete (item) {
 				this.$confirm('确定删除该条行程', '提示', {type: 'warning'})
 				.then(() => {
-					let data = {
-						id: item.id
-					}
-					deleteTripDetail(data).then(res => {
+					deleteTripDetail({id: item.id}).then(res => {
 						console.log(res)
 						if (res.data.code === '0001') {
-							// let index = this.tripList.indexOf(item)
-							// this.tripList.splice(index, 1)
 							this.$message.success(res.data.message)
 							this.getTripList()
 						} else {
@@ -299,22 +264,18 @@
 					this.$message('已取消操作')
 				})
 			},
+			// 下一步
 			handleNext () {
 				this.$router.push({
-					path: '/provider/ware/new/multimedia?wareId='+this.wareId
+					path: 'multimedia?wareId='+this.wareId
 				})
 			}
 		},
 		mounted () {
 			this.$store.dispatch('setStepActive', 1)
-			let wareId = this.$route.query.wareId;
-			if(wareId) {
-				this.wareId = parseInt(wareId);
-				this.getWareInfo()
-	      this.getTripList()
-			}else {
-				this.$router.push('/provider/ware/new/base')
-			}
+			this.wareId = parseInt(this.$route.query.wareId)
+			this.wareId && this.getWareInfo()
+			this.wareId && this.getTripList()
 		}
 	}
 </script>

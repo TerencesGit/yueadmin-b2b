@@ -106,10 +106,10 @@
           wareId: '',
           skuId: '',
           skuDate: '',
-          storageNum: '',
-          adultPrice: '',
-          childPrice: '',
-          singlePrice: '' ,
+          storageNum: 100,
+          adultPrice: 8000,
+          childPrice: 7000,
+          singlePrice: 5000,
         },
         rules: {
           storageNum: [
@@ -213,7 +213,7 @@
             this.batchSkuForm.endDate = this.batchSkuForm.skuDateRange[1]
             let data = Object.assign({}, this.batchSkuForm)
             data.wareId = this.wareId;
-            // console.log(data)
+            console.log(data)
             if (this.batchType === 1) {
               createSkuInfoBatch(data).then(res => {
                 console.log(res)
@@ -229,7 +229,7 @@
             } else if (this.batchType === 2) {
               console.log('edit')
               updateSkuInfoBatch(data).then(res => {
-                // console.log(res)
+                console.log(res)
                 if(res.data.code === '0001'){
                   this.$message.success(res.data.message)
                   this.getSkuList()
@@ -274,7 +274,7 @@
               singlePrice: this.singleSkuForm.singlePrice,
               storageNum: this.singleSkuForm.storageNum,
             }
-            // console.log(data)
+            console.log(data)
             saveSkuInfo(data).then(res => {
               if(res.data.code === '0001') {
                 this.$message.success(res.data.message)
@@ -293,7 +293,7 @@
       },
       // 下一步
       handleNext () {
-        this.$router.push('service?wareId='+this.wareId)
+        this.$router.push('/provider/ware/new/service?wareId='+this.wareId)
       }
   	},
   	mounted () {

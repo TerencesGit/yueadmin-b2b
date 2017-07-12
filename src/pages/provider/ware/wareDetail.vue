@@ -53,7 +53,7 @@
               </li>
               <li>
                 <label>建议售价：</label>
-                <span>{{wareInfo.suggestedPrice | currency}}</span>
+                <span>{{wareInfo.suggestedPrice}}</span>
               </li>
               <li>
                 <label>至少提前多少天购买：</label>
@@ -129,7 +129,32 @@
       </el-tab-pane>
       <el-tab-pane label="费用/预定限制">
         <span slot="label"><i class="fa fa-money"></i> 费用/预定限制</span>
-        费用/预定限制
+        <div class="pane-content">
+          <el-card>
+            <div slot="header" class="clearfix">
+              <span class="title">商品介绍</span>
+            </div>
+            <div v-html="attributeInfo.introduce"></div>
+          </el-card>
+          <el-card>
+            <div slot="header" class="clearfix">
+              <span class="title">费用说明</span>
+            </div>
+            <div v-html="attributeInfo.charge"></div>
+          </el-card>
+          <el-card>
+            <div slot="header" class="clearfix">
+              <span class="title">使用说明</span>
+            </div>
+            <div v-html="attributeInfo.explains"></div>
+          </el-card>
+          <el-card>
+            <div slot="header" class="clearfix">
+              <span class="title">购买须知</span>
+            </div>
+            <div v-html="attributeInfo.notice"></div>
+          </el-card>
+        </div>
       </el-tab-pane>
       <el-tab-pane label="价格库存">
         <full-calendar 
@@ -164,7 +189,7 @@
 	</section>
 </template>
 <script>
-  import { readWareInfo, readTripDetailList, readWareFileList, readSkuInfoList, readWareService, readWareActivity } from '@/api'
+  import { readWareInfo, readTripDetailList, readWareFileList, readAttribute, readSkuInfoList, readWareService, readWareActivity } from '@/api'
 	export default {
     data () {
       return {
@@ -173,7 +198,7 @@
         tripList: [],
         mediaList: [],
         skuList: [],
-        chargeInfo: {},
+        attributeInfo: {},
         serviceList: [],
         activityList: [],
         previewImgUrl: '',
@@ -245,9 +270,19 @@
             })
           }
         } else if (tab.index == 3) {
-          if (JSON.stringify(this.chargeInfo) !== "{}") {
+          if (JSON.stringify(this.attributeInfo) !== "{}") {
             this.loading = false;
           } else {
+            readAttribute({wareId: this.wareId}).then(res => {
+              console.log(res)
+              if (res.data.code === '0001') {
+                this.attributeInfo = res.data.result.AttributeInfo
+              } else {
+                this.$message.error(res.data.message)
+              }
+            }).catch(err => {
+              console.log(err)
+            })
             this.loading = false;
           }
         } else if (tab.index == 4) {
@@ -322,7 +357,6 @@
             let wareInfo = res.data.result.wareInfo
             wareInfo.openDate = new Date(wareInfo.openDate)
             wareInfo.closeDate = new Date(wareInfo.closeDate)
-            wareInfo.suggestedPrice = wareInfo.suggestedPrice / 100;
             this.wareInfo = wareInfo
           } else {
             this.$message.error(res.data.message)

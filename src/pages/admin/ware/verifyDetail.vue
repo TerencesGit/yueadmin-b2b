@@ -1,11 +1,7 @@
 <template>
-	<section>
-    <el-row class="toolbar">
-      <el-button type="primary" @click="setPrice">设置价格</el-button>
-      <el-button type="success" @click="verifyPass">通过</el-button>
-      <el-button type="warning" @click="verifyVisible = true">驳回</el-button>
-    </el-row>
-    <el-tabs type="border-card">
+  <section>
+    <!--  商品详情 -->
+    <el-tabs type="border-card" class="m-t" @tab-click="handleClick" v-loading="loading">
       <el-tab-pane label="基本信息">
         <span slot="label"><i class="el-icon-date"></i> 基本信息</span>
         <el-row>
@@ -57,7 +53,7 @@
               </li>
               <li>
                 <label>建议售价：</label>
-                <span>{{wareInfo.suggestedPrice | currency}}</span>
+                <span>{{wareInfo.suggestedPrice}}</span>
               </li>
               <li>
                 <label>至少提前多少天购买：</label>
@@ -101,9 +97,9 @@
                         <td>{{item.programDetail}}</td>
                         <td>{{item.programIsFree === 0 ? '是' : '否'}}</td>
                       </tr>
-                      <tr v-if="tripList.length === 0">
+                     <!--  <tr v-else>
                         <td colspan="6" style="text-align: center; padding: 15px">暂无内容</td>
-                      </tr>
+                      </tr> -->
                     </tbody>
                   </table>
                 </li>
@@ -133,7 +129,32 @@
       </el-tab-pane>
       <el-tab-pane label="费用/预定限制">
         <span slot="label"><i class="fa fa-money"></i> 费用/预定限制</span>
-        费用/预定限制
+        <div class="pane-content">
+          <el-card>
+            <div slot="header" class="clearfix">
+              <span class="title">商品介绍</span>
+            </div>
+            <div v-html="attributeInfo.introduce"></div>
+          </el-card>
+          <el-card>
+            <div slot="header" class="clearfix">
+              <span class="title">费用说明</span>
+            </div>
+            <div v-html="attributeInfo.charge"></div>
+          </el-card>
+          <el-card>
+            <div slot="header" class="clearfix">
+              <span class="title">使用说明</span>
+            </div>
+            <div v-html="attributeInfo.explains"></div>
+          </el-card>
+          <el-card>
+            <div slot="header" class="clearfix">
+              <span class="title">购买须知</span>
+            </div>
+            <div v-html="attributeInfo.notice"></div>
+          </el-card>
+        </div>
       </el-tab-pane>
       <el-tab-pane label="价格库存">
         <full-calendar 
@@ -148,7 +169,13 @@
           <el-table-column prop="wareCode" label="服务ID" width="180px"></el-table-column>
           <el-table-column prop="wareName" label="服务名称"></el-table-column>
           <el-table-column prop="wareDesc" label="服务描述"></el-table-column>
-          <el-table-column prop="status" label="状态" width="100px"></el-table-column>
+          <!-- <el-table-column prop="status" label="状态" width="100px"></el-table-column> -->
+          <el-table-column label="详情" width="180px">
+            <template scope="scope">
+              <el-button type="primary" size="small" @click="showDetail(scope.row)">查看</el-button>
+              <el-button type="primary" size="small" @click="showStorage(scope.row.wareId)">价格库存</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="推荐活动">
@@ -161,27 +188,52 @@
         </el-table>
       </el-tab-pane>
     </el-tabs>
-    <!-- 审核驳回 -->
-    <el-dialog v-model="verifyVisible" title="商品驳回">
-      <el-form :model="verifyForm" ref="verifyForm" :rules="rules">
-        <el-form-item label="" prop="verifyInfo">
-          <el-input v-model="verifyForm.verifyInfo" type="textarea" :rows="4" placeholder="填写驳回原因"></el-input>
-        </el-form-item>
-        <el-form-item label="" class="text-right">
-          <el-button type="primary" @click="verifyFail">确定</el-button>
-          <el-button @click="verifyVisible = false">取消</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
     <!-- 图片预览 -->
     <el-dialog v-model="previewVisible" size="tiny">
       <img width="100%" :src="previewImgUrl">
     </el-dialog>
-	</section>
+    <!-- 附加服务信息 -->
+    <el-dialog :visible.sync="serviceInfoVisible" title="附加服务">
+      <el-form :model="serviceInfo" label-width="120px">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="服务名称：">
+                <span>{{serviceInfo.wareName}}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="缩略名：">
+                <span>{{serviceInfo.briefName}}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="建议售价：">
+                <span>{{serviceInfo.suggestedPrice}}</span>
+              </el-form-item>
+            </el-col> 
+            <el-col :span="12">
+              <el-form-item label="关键字：">
+                <span>{{serviceInfo.keyWords}}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-form-item label="服务描述：">
+              <span>{{serviceInfo.wareDesc}}</span>
+            </el-form-item>
+          </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="serviceInfoVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+  </section>
 </template>
 <script>
-  import { readWareInfo, readTripDetailList, readWareFileList, readSkuInfoList, readWareService, readWareActivity, verifyWareInfo } from '@/api'
-	export default {
+  import { readWareInfo, readTripDetailList, readWareFileList, readAttribute, readSkuInfoList, readWareService, readWareActivity } from '@/api'
+  export default {
     data () {
       return {
         wareId: '',
@@ -189,29 +241,19 @@
         tripList: [],
         mediaList: [],
         skuList: [],
-        fareInfo: {},
+        attributeInfo: {},
         serviceList: [],
+        serviceInfo: {},
         activityList: [],
-        verifyForm: {
-          wareId: '',
-          verifyStatus: '',
-          verifyInfo: '',
-        },
+        activityInfo: {},
         previewImgUrl: '',
         previewVisible: false,
-        verifyVisible: false,
-        rules: {
-          verifyInfo: [
-            { required: true, message: '请填写驳回原因', trigger: 'blur' },
-            { minlength: 10, message: '驳回原因不少于10个字符', trigger: 'blur' },
-          ],
-        },
+        loading: false,
+        serviceInfoVisible: false,
+        activityInfoVisible: false,
       };
     },
     methods: {
-      handleClick(tab, event) {
-        console.log(tab, event);
-      },
       formatStatus (row) {
         return row.status === 1 ? '是' : '否'
       },
@@ -225,15 +267,143 @@
         this.previewImgUrl = filePath;
         this.previewVisible = true;
       },
-      // 获取商品详情
-      getWareDetail (id) {
-        readWareInfo({wareId: id}).then(res => {
+      // tab切换
+      handleClick(tab, event) {
+        console.log(tab.index)
+        this.loading = true
+        if (tab.index == 0) {
+          this.loading = false;
+          return;
+        }
+        if (tab.index == 1) {
+          // 行程介绍
+          if (this.tripList.length !== 0) {
+            this.loading = false;
+          } else {
+            readTripDetailList({wareId: this.wareId}).then(res => {
+              console.log(res)
+              if( res.data.code === '0001') {
+                this.tripList = res.data.result.tripDetailList
+              } else {
+                console.log(res.data.message)
+              }
+              this.loading = false
+            }).catch(err => {
+              console.log(err)
+              this.catchError(err.response)
+              this.loading = false
+            })
+          }
+        } else if (tab.index == 2) {
+          // 多媒体
+          if (this.mediaList.length !== 0) {
+            this.loading = false;
+          } else {
+            readWareFileList({wareId: this.wareId}).then(res => {
+              console.log(res)
+              if( res.data.code === '0001') {
+                this.mediaList = res.data.result.fileList
+                this.mediaList.forEach((media) => {
+                  media.filePath = 'http://192.168.199.211:8080' + media.filePath
+                })
+              } else {
+                console.log(res.data.message)
+              }
+              this.loading = false
+            }).catch(err => {
+              console.log(err)
+              this.catchError(err.response)
+              this.loading = false
+            })
+          }
+        } else if (tab.index == 3) {
+          if (JSON.stringify(this.attributeInfo) !== "{}") {
+            this.loading = false;
+          } else {
+            readAttribute({wareId: this.wareId}).then(res => {
+              console.log(res)
+              if (res.data.code === '0001') {
+                this.attributeInfo = res.data.result.AttributeInfo
+              } else {
+                this.$message.error(res.data.message)
+              }
+            }).catch(err => {
+              console.log(err)
+            })
+            this.loading = false;
+          }
+        } else if (tab.index == 4) {
+          // 价格库存
+          if (this.skuList.length !== 0) {
+            this.loading = false;
+          } else {
+            readSkuInfoList({wareId: this.wareId}).then(res => {
+              console.log(res)
+              if(res.data.code === '0001') {
+                this.skuList = res.data.result.skuList || [];
+                this.skuList.forEach((data) => {
+                  data.start = data.skuDate
+                })
+              } else {
+                this.$message.error(res.data.message)
+              }
+              this.loading = false
+            }).catch(err => {
+              console.log(err)
+              this.catchError(err.response)
+              this.loading = false
+            })
+          }
+        } else if (tab.index == 5) {
+          // 附加服务
+          if (this.serviceList.length !== 0) {
+            this.loading = false;
+          } else {
+            readWareService({parentId: this.wareId}).then(res => {
+              console.log(res)
+              if (res.data.code === '0001') {
+                this.serviceList = res.data.result.wareServiceList;
+              } else {
+                this.$message.error(res.data.message)
+              }
+              this.loading = false
+            }).catch(err => {
+              console.log(err)
+              this.catchError(err.response)
+              this.loading = false
+            })
+          }
+        } else if (tab.index == 6) {
+          // 推荐活动
+          if (this.activityList.length !== 0) {
+            this.loading = false;
+          } else {
+            readWareActivity({parentId: this.wareId}).then(res => {
+              console.log(res)
+              if (res.data.code === '0001') {
+                this.activityList = res.data.result.wareActivityList;
+              } else {
+                this.$message.error(res.data.message)
+              }
+              this.loading = false
+            }).catch(err => {
+              console.log(err)
+              this.catchError(err.response)
+              this.loading = false
+            }) 
+          }
+        } else {
+          return false;
+        }
+      },
+      // 获取商品信息
+      getWareInfo () {
+        readWareInfo({wareId: this.wareId}).then(res => {
           console.log(res)
           if(res.data.code === '0001') {
             let wareInfo = res.data.result.wareInfo
             wareInfo.openDate = new Date(wareInfo.openDate)
             wareInfo.closeDate = new Date(wareInfo.closeDate)
-            wareInfo.suggestedPrice = wareInfo.suggestedPrice / 100;
             this.wareInfo = wareInfo
           } else {
             this.$message.error(res.data.message)
@@ -242,132 +412,24 @@
           console.log(err)
           this.catchError(err.response)
         })
-        readTripDetailList({wareId: id}).then(res => {
-          console.log(res)
-          if( res.data.code === '0001') {
-            this.tripList = res.data.result.tripDetailList
-          } else {
-            console.log(res.data.message)
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-        readWareFileList({wareId: id}).then(res => {
-          console.log(res)
-          if( res.data.code === '0001') {
-            this.mediaList = res.data.result.fileList
-            this.mediaList.forEach((media) => {
-              media.filePath = 'http://192.168.199.211:8080' + media.filePath
-            })
-          } else {
-            console.log(res.data.message)
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-        readSkuInfoList({wareId: id}).then(res => {
-          console.log(res)
-          if(res.data.code === '0001') {
-            this.skuList = res.data.result.skuList;
-            this.skuList.forEach((data) => {
-              data.start = data.skuDate
-            })
-          } else {
-            this.$message.error(res.data.message)
-          }
-        }).catch(err => {
-          console.log(err)
-          this.catchError(err.response)
-        })
-        readWareService({parentId: id}).then(res => {
-          console.log(res)
-          if (res.data.code === '0001') {
-            this.serviceList = res.data.result.wareServiceList;
-          } else {
-            this.$message.error(res.data.message)
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-        readWareActivity({parentId: id}).then(res => {
-          console.log(res)
-          if (res.data.code === '0001') {
-            this.activityList = res.data.result.wareActivityList;
-          } else {
-            this.$message.error(res.data.message)
-          }
-        }).catch(err => {
-          console.log(err)
-        })
-      },
-      // 设置价格
-      setPrice () {
-        this.$router.push({
-          path: '/admin/ware/priceSet?wareId=' + this.wareId
-        })
-      },
-      // 审核通过
-      verifyPass () {
-        this.$confirm('确定该商品通过审核？', '商品审核', {type: 'warning'}).then(() => {
-          let data = {
-            wareId: this.verifyForm.wareId,
-            verifyInfo: '',
-            verifyStatus: 1
-          }
-          console.log(data)
-          verifyWareInfo(data).then(res => {
-            console.log(res)
-            if(res.data.code === '0001') {
-              this.$message.success(res.data.message)
-              this.$route.back()
-            } else {
-              this.$message.error(res.data.message)
-            }
-          }).catch(err => {
-            console.log(err)
-          })
-          this.$router.back()
-        }).catch(() => {
-          this.$message('取消操作')
-        })
-      },
-      // 审核不通过
-      verifyFail () {
-        this.$refs.verifyForm.validate((valid) => {
-          if(valid) {
-            let data = {
-              wareId: this.verifyForm.wareId,
-              verifyInfo: this.verifyForm.verifyInfo,
-              verifyStatus: 2,
-            }
-            console.log(data)
-            verifyWareInfo(data).then(res => {
-              console.log(res)
-              if(res.data.code === '0001') {
-                this.$message.success(res.data.message)
-              } else {
-                this.$message.error(res.data.message)
-              }
-              this.$router.back()
-            }).catch(err => {
-              console.log(err)
-            })
-            this.verifyVisible = false
-            this.verifyForm.verifyInfo = ''
-          } else{
-            console.log('error')
-          }
-        })
       },
       changeMonth (start, end, current) {
         // console.log(current.format())
       },
+      showDetail (item) {
+        console.log(item)
+        this.serviceInfo = Object.assign({}, item)
+        this.serviceInfoVisible = true
+      },
+      showStorage (wareId) {
+        this.$router.push({
+          path: 'skuShow?wareId='+ wareId
+        })
+      }
     },
     mounted () {
-    	this.$store.dispatch('setStepActive', 1)
       this.wareId = parseInt(this.$route.query.wareId);
-      this.verifyForm.wareId = this.wareId;
-      this.wareId && this.getWareDetail(this.wareId)
+      this.wareId && this.getWareInfo()
     }
   }
 </script>

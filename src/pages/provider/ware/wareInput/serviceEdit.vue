@@ -3,6 +3,7 @@
 		<!-- 工具栏 -->
 		<el-row class="toolbar">
 			<el-button type="primary" @click="handleAdd">新增附加服务</el-button>
+			<el-button type="primary" @click="backList">返回商品列表</el-button>
 		</el-row>
 		<!-- 附加服务列表 -->
 		<el-table :data="serviceList" border highlight-current-row>
@@ -14,7 +15,7 @@
 			<el-table-column label="操作" width="200px">
 				<template scope="scope">
 					<el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
-					<el-button type="primary" size="small" @click="handleSkuSet(scope.row.wareId)">价格库存</el-button>
+					<el-button type="primary" size="small" @click="handleSkuSet(scope.row.wareId)">价格设置 </el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -196,16 +197,13 @@
       		path: '/provider/ware/serviceSkuSet?wareId=' + wareId
       	})
       },
+      // 返回商品列表
+      backList () {
+        this.$router.push('/provider/ware/wareManage')
+      },
       // 下一步
       handleNext () {
-      	this.$confirm('确定已设置价格库存？', '提示', {type: 'warning'})
-				.then(() => {
-        	this.$router.push('activity?wareId='+this.wareId)
-				})
-				.catch(err => {
-					console.log(err)
-					// this.$message('已取消操作')
-				})
+      	this.$router.push('activity?wareId='+this.wareId)
       }
 		},
 		mounted () {

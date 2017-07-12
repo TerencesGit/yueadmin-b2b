@@ -14,10 +14,11 @@
         </el-form-item>
       </el-form>
       <el-radio-group v-model="filter.status" @change="statusChange">
-        <el-radio-button :label="3">全部</el-radio-button>
-        <el-radio-button :label="0">未审核</el-radio-button>
-        <el-radio-button :label="1">审核通过</el-radio-button>
-        <el-radio-button :label="2">审核未通过</el-radio-button>
+        <el-radio-button :label="4">全部</el-radio-button>
+        <el-radio-button :label="0">待完善</el-radio-button>
+        <el-radio-button :label="1">待审核</el-radio-button>
+        <el-radio-button :label="2">审核通过</el-radio-button>
+        <el-radio-button :label="3">审核未通过</el-radio-button>
       </el-radio-group>
     </el-row>
     <el-table 
@@ -27,11 +28,13 @@
       highlight-current-row
       style="width: 100%">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="wareId" label="商品编号" sortable width="200"></el-table-column>
+      <el-table-column prop="wareId" label="商品编号" sortable width="140"></el-table-column>
       <el-table-column prop="wareName" label="商品名称"></el-table-column>
-      <!-- <el-table-column prop="wareKind" label="商品类别" width="150"></el-table-column> -->
-      <el-table-column prop="createTime" label="创建时间" sortable width="200"></el-table-column>
-      <el-table-column label="操作" width="180">
+      <el-table-column prop="srcCityName" label="出发城市" width="120"></el-table-column>
+      <el-table-column prop="dstCityName" label="目的城市" width="120"></el-table-column>
+      <el-table-column prop="status" label="状态" width="80" :formatter="formatStatus"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" sortable width="170"></el-table-column>
+      <el-table-column label="操作" width="140">
         <template scope="scope">
           <el-button size="small" @click="handleEdit(scope.row.wareId)">编辑</el-button>
           <el-button size="small" @click="handleDetail(scope.row.wareId)">详情</el-button>
@@ -60,7 +63,7 @@ export default {
       filter: {
         name: '',
         code: '',
-        status: 3,
+        status: 4,
       },
       currPage: 1,
       pageSize: 20,
@@ -70,6 +73,25 @@ export default {
     }
   },
   methods: {
+    formatStatus (row) {
+      switch (row.verifyStatus) {
+        case 0 :
+          return '待完善'
+          break;
+        case 1 :
+          return '待审核'
+          break;
+        case 2 :
+          return '通过'
+          break;
+        case 3 :
+          return '未通过'
+          break;
+        default:
+         return '未知'
+         break;
+      }
+    }, 
     // 商品列表
     getWareList () {
       this.loading = true

@@ -21,4 +21,4 @@ let dateFunc = {
   }
 };
 
-module.exports = dateFunc;
+export default dateFunc;

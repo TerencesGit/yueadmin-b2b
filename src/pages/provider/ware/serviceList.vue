@@ -10,22 +10,22 @@
           <el-input v-model="filter.name" placeholder="输入服务名称"></el-input>
         </el-form-item>
         <el-form-item label="">
-          <el-button type="primary" @click="getActivityList">搜索</el-button>
+          <el-button type="primary" @click="getServiceList">搜索</el-button>
 					<back-button></back-button>
         </el-form-item>
       </el-form>
 		</el-row>
 		<!-- 推荐服务列表 -->
-		<el-table :data="activityList" border highlight-current-row>
+		<el-table :data="serviceList" border highlight-current-row>
 			<el-table-column type="index"></el-table-column>
 			<el-table-column prop="wareCode" label="服务ID" width="180px"></el-table-column>
 			<el-table-column prop="wareName" label="服务名称"></el-table-column>
 			<el-table-column prop="wareDesc" label="服务描述"></el-table-column>
-			<el-table-column prop="status" label="状态" width="100px" :formatter="formatStatus"></el-table-column>
+			<el-table-column prop="updateTime" label="更新时间" width="180px" :formatter="formatUpdateTime"></el-table-column>
 			<el-table-column label="操作" width="180px">
 				<template scope="scope">
-					<el-button v-if="scope.row.status === 0" size="small" @click="handleShelf(scope.row)">上架</el-button>
-					<el-button v-if="scope.row.status === 1" size="small" @click="handleShelf(scope.row)">下架</el-button>
+					<!-- <el-button v-if="scope.row.status === 0" size="small" @click="handleShelf(scope.row)">上架</el-button>
+					<el-button v-if="scope.row.status === 1" size="small" @click="handleShelf(scope.row)">下架</el-button> -->
 					<el-button type="primary" size="small" @click="setStorage(scope.row.wareId)">设置库存</el-button>
 				</template>
 			</el-table-column>
@@ -52,7 +52,7 @@
 				currPage: 1,
 				pageSize: 10,
 				total: 0,
-				activityList: [],
+				serviceList: [],
 				filter: {
 					code: '',
 					name: ''
@@ -60,24 +60,24 @@
 			}
 		},
 		methods: {
+			formatUpdateTime (row) {
+				return row.updateTime && this.$moment(row.updateTime).format('YYYY-MM-DD HH:mm:ss')
+			},
 			handleSizeChange (val) {
 				this.pageSize = val
 			},
 			handleCurrentChange (val) {
 				this.currPage = val
 			},
-			formatStatus (row) {
-				return row.status === 0 ? '下架' : '上架'
-			},
 			// 获取附加服务列表
-			getActivityList () {
+			getServiceList () {
 				let params = {
 					parentId: this.wareId
 				}
 				readWareService(params).then(res => {
 					console.log(res)
 					if (res.data.code === '0001') {
-						this.activityList = res.data.result.wareActivityList;
+						this.serviceList = res.data.result.wareServiceList;
 					} else {
 						this.$message.error(res.data.message)
 					}
@@ -114,7 +114,7 @@
 		},
 		mounted () {
 			this.wareId = parseInt(this.$route.query.wareId)
-			this.wareId && this.getActivityList()
+			this.wareId && this.getServiceList()
 		}
 	}
 </script>

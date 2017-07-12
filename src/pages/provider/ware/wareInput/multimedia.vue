@@ -246,7 +246,7 @@
 			},
 			// 批量删除
 			batchRemove () { 				
-				this.$confirm('确认删除选中记录吗？', '提示', {type: 'warning'})
+				this.$confirm('确认删除选中的图片吗？', '提示', {type: 'warning'})
 				.then(() => {
 					let fileIds = this.sels.map(sel => sel.fileId);
 					let _fileIdList = [];
@@ -294,9 +294,10 @@
 					this.catchError(error.response)
 				})
 			},
+			// 下一步
 			handleNext () {
 				this.$router.push({
-					path: '/provider/ware/new/charge?wareId='+this.wareId
+					path: 'charge?wareId='+this.wareId
 				})
 			}
 		},
@@ -307,11 +308,8 @@
 		},
 		mounted () {
 			this.$store.dispatch('setStepActive', 2)
-			let wareId = this.$route.query.wareId;
-			if(wareId) {
-				this.wareId = parseInt(wareId);
-				this.getWareFileList()
-			}
+			this.wareId = parseInt(this.$route.query.wareId);
+			this.wareId && this.getWareFileList()
 		}
 	}
 </script>
