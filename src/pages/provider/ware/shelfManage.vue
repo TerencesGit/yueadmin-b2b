@@ -76,7 +76,7 @@ export default {
         pageSize: this.pageSize,
         wareName: this.filter.name,
         wareCode: this.filter.code,
-        verifyStatus: 1
+        verifyStatus: 2
       }
       readWareList(params).then(res => {
         console.log(res)

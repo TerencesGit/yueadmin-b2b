@@ -44,7 +44,7 @@
         <el-form-item label="单人差：" prop="singlePrice">
           <el-input v-model.number="batchSkuForm.singlePrice" placeholder="输入单人差"></el-input>
         </el-form-item>
-        <el-form-item label="库存：" prop="storageNum">
+        <el-form-item v-show="batchType === 1" label="库存：" prop="storageNum">
           <el-input v-model.number="batchSkuForm.storageNum" placeholder="输入库存数量"></el-input>
         </el-form-item>
         <el-form-item>
@@ -69,7 +69,7 @@
           <el-input v-model.number="singleSkuForm.singlePrice" placeholder="输入单人差"></el-input>
         </el-form-item>
         <el-form-item label="库存：" prop="storageNum">
-          <el-input v-model.number="singleSkuForm.storageNum" placeholder="输入库存数量"></el-input>
+          <el-input v-model.number="singleSkuForm.storageNum" disabled placeholder="输入库存数量"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="singleSubmit">提交</el-button>
@@ -90,6 +90,7 @@
         batchSkuVisible: false,
         singleSkuVisible: false,
         batchType: 1,
+        singleType: 1,
         batchSkuForm: {
           wareId: '',
           stockId: '',
@@ -254,8 +255,10 @@
       dayClick (day, event) {
         day = this.$moment(day).format('YYYY-MM-DD')
         if (event) {
+          this.singleType = 2;
           this.singleSkuForm = Object.assign(this.singleSkuForm, event)
         } else {
+          this.singleType = 1;
           this.singleSkuForm = {}
           this.singleSkuForm.skuDate = day
         }

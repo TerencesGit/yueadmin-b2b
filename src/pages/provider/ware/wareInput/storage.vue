@@ -1,12 +1,12 @@
 <template>
-	<section>
+  <section>
     <!-- 工具栏 -->
     <el-row class="toolbar">
       <el-button type="primary" @click="handleBatchAdd">批量新增</el-button>
       <el-button type="primary" v-if="skuList.length > 0" @click="handleBatchEdit">批量编辑</el-button>
     </el-row>
     <!-- sku列表 -->
-		<full-calendar 
+    <full-calendar 
       :events="skuList" 
       first-day='0' 
       @changeMonth="changeMonth" 
@@ -18,8 +18,8 @@
       <el-button type="primary" @click="handleNext">下一步</el-button>
     </el-row>
     <!-- 批量sku设置 -->
-    <el-dialog title="库存价格设置（价格单位：元）" v-model="batchSkuVisible">
-      <el-form :model="batchSkuForm" ref="batchSkuForm" :rules="rules" label-width="180px" class="input-width-control">
+    <el-dialog title="库存价格批量设置（价格单位：元）" v-model="batchSkuVisible">
+      <el-form :model="batchSkuForm" ref="batchSkuForm" :rules="rules" label-width="220px" class="input-width-control">
         <el-form-item label="起止日期：" prop="skuDateRange">
           <el-date-picker
             v-model="batchSkuForm.skuDateRange"
@@ -44,18 +44,18 @@
         <el-form-item label="单人差：" prop="singlePrice">
           <el-input v-model.number="batchSkuForm.singlePrice" placeholder="输入单人差"></el-input>
         </el-form-item>
-        <el-form-item label="库存：" prop="storageNum">
+        <el-form-item v-if="batchType === 1" label="库存：" prop="storageNum">
           <el-input v-model.number="batchSkuForm.storageNum" placeholder="输入库存数量"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="batchSubmit">提交</el-button>
-          <el-button @click="batchSkuVisible = false">取消</el-button>
-        </el-form-item>
       </el-form>
+      <div slot="footer">
+        <el-button @click="batchSkuVisible = false">取消</el-button>
+        <el-button type="primary" @click="batchSubmit">提交</el-button>
+      </div>
     </el-dialog>
     <!-- 单条sku设置 -->
     <el-dialog title="库存价格设置（价格单位：元）" :visible.sync="singleSkuVisible">
-      <el-form :model="singleSkuForm" ref="singleSkuForm" :rules="rules" label-width="180px" class="input-width-control">
+      <el-form :model="singleSkuForm" ref="singleSkuForm" :rules="rules" label-width="220px" class="input-width-control">
         <el-form-item label="日期：">
           <span v-text="singleSkuForm.skuDate" style="font-size:18px"></span>
         </el-form-item>
@@ -68,28 +68,29 @@
         <el-form-item label="单人差：" prop="singlePrice">
           <el-input v-model.number="singleSkuForm.singlePrice" placeholder="输入单人差"></el-input>
         </el-form-item>
-        <el-form-item label="库存：" prop="storageNum">
+        <el-form-item v-if="singleType === 1" label="库存：" prop="storageNum">
           <el-input v-model.number="singleSkuForm.storageNum" placeholder="输入库存数量"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="singleSubmit">提交</el-button>
-          <el-button @click="singleSkuVisible = false">取消</el-button>
-        </el-form-item>
       </el-form>
+      <div slot="footer">
+        <el-button @click="singleSkuVisible = false">取消</el-button>
+        <el-button type="primary" @click="singleSubmit">提交</el-button>
+      </div>
     </el-dialog>
-	</section>
+  </section>
 </template>
 <script>
   import { saveSkuInfo, readSkuInfoList, createSkuInfoBatch, updateSkuInfoBatch } from '@/api'
   const weekOptions = ['每周日', '每周一', '每周二', '每周三', '每周四', '每周五', '每周六'];
   export default {
-  	data () {
-  		return {
+    data () {
+      return {
         wareId: '',
-  			skuList : [],
+        skuList : [],
         batchSkuVisible: false,
         singleSkuVisible: false,
         batchType: 1,
+        singleType: 1,
         batchSkuForm: {
           wareId: '',
           stockId: '',
@@ -106,10 +107,10 @@
           wareId: '',
           skuId: '',
           skuDate: '',
-          storageNum: '',
-          adultPrice: '',
-          childPrice: '',
-          singlePrice: '' ,
+          storageNum: 100,
+          adultPrice: 8000,
+          childPrice: 7000,
+          singlePrice: 5000,
         },
         rules: {
           storageNum: [
@@ -159,9 +160,9 @@
           }]
         },
         weeks: weekOptions,
-  		}
-  	},
-  	methods: {
+      }
+    },
+    methods: {
       // 获取sku列表
       getSkuList () {
         readSkuInfoList({wareId: this.wareId}).then(res => {
@@ -192,9 +193,9 @@
         weekStr = weekStr === '0000000' ? '1111111' : weekStr
         console.log(weekStr)
       },
-  		changeMonth (start, end, current) {
-	      // console.log(current.format())
-	    },
+      changeMonth (start, end, current) {
+        // console.log(current.format())
+      },
       // 批量新增
       handleBatchAdd () {
         this.batchType = 1;
@@ -213,7 +214,7 @@
             this.batchSkuForm.endDate = this.batchSkuForm.skuDateRange[1]
             let data = Object.assign({}, this.batchSkuForm)
             data.wareId = this.wareId;
-            // console.log(data)
+            console.log(data)
             if (this.batchType === 1) {
               createSkuInfoBatch(data).then(res => {
                 console.log(res)
@@ -229,7 +230,7 @@
             } else if (this.batchType === 2) {
               console.log('edit')
               updateSkuInfoBatch(data).then(res => {
-                // console.log(res)
+                console.log(res)
                 if(res.data.code === '0001'){
                   this.$message.success(res.data.message)
                   this.getSkuList()
@@ -254,8 +255,10 @@
       dayClick (day, event) {
         day = this.$moment(day).format('YYYY-MM-DD')
         if (event) {
+          this.singleType = 2;
           this.singleSkuForm = Object.assign(this.singleSkuForm, event)
         } else {
+          this.singleType = 1;
           this.singleSkuForm = {}
           this.singleSkuForm.skuDate = day
         }
@@ -274,7 +277,7 @@
               singlePrice: this.singleSkuForm.singlePrice,
               storageNum: this.singleSkuForm.storageNum,
             }
-            // console.log(data)
+            console.log(data)
             saveSkuInfo(data).then(res => {
               if(res.data.code === '0001') {
                 this.$message.success(res.data.message)
@@ -295,12 +298,12 @@
       handleNext () {
         this.$router.push('service?wareId='+this.wareId)
       }
-  	},
-  	mounted () {
-			this.$store.dispatch('setStepActive', 4)
+    },
+    mounted () {
+      this.$store.dispatch('setStepActive', 4)
       this.wareId = parseInt(this.$route.query.wareId)
       this.wareId && this.getSkuList()
-		}
+    }
   }
 </script>
 <style scoped>

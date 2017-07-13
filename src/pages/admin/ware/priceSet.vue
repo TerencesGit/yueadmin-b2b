@@ -53,11 +53,11 @@
       </el-form>
     </el-dialog>
     <!-- 单条价格设置 -->
-    <el-dialog :visible.sync="singleFormVisible" :title="'设置价格'+singlePriceForm.skuDate">
+    <el-dialog :visible.sync="singleFormVisible" title="设置价格">
       <el-form :model="singlePriceForm" label-width="240px" class="sku-form">
-        <!-- <el-form-item label="日期：">
-          <span>{{singlePriceForm.skuDate}}</span>
-        </el-form-item> -->
+        <el-form-item label="当前日期：">
+          <span style="font-size: 16px">{{singlePriceForm.skuDate}}</span>
+        </el-form-item>
         <el-form-item label="成人价1：" prop="price1">
           <el-input v-model.number="singlePriceForm.price1" placeholder="输入成人价1"></el-input>
         </el-form-item>
@@ -88,7 +88,7 @@
 	</section>
 </template>
 <script>
-  import { saveSkuPrice, readWareSkuInfo } from '@/api'
+  import { saveSkuPrice, readSkuInfoList } from '@/api'
   export default {
   	data () {
   		return {
@@ -97,18 +97,24 @@
         batchFormVisible: false,
         singleFormVisible: false,
         batchPriceForm: {
-          startDate: '',
-          endDate: '',
-          skuDateRange: [],
           price1: '',
           price2: '',
           price3: '',
           price4: '',
           price5: '',
           priceChild: '',
-          priceSingle: ''
+          priceSingle: '',
+          skuDateRange: [],
         },
-        singlePriceForm: {},
+        singlePriceForm: {
+          price1: '',
+          price2: '',
+          price3: '',
+          price4: '',
+          price5: '',
+          priceChild: '',
+          priceSingle: '',
+        },
         rules: {
           skuDateRange: [
             { type: 'array', required: true, message: '请选择时间范围', trigger: 'blur'},
@@ -163,12 +169,13 @@
       getSkuList () {
         let params = {
           wareId: this.wareId,
-          busType: 2
+          type: 2
         }
-        readWareSkuInfo(params).then(res => {
+        readSkuInfoList(params).then(res => {
           console.log(res)
           if(res.data.code === '0001') {
-            this.skuList = res.data.result.skuList;
+            this.skuList = res.data.result.skuList || [];
+            console.log(this.skuList)
             this.skuList.forEach((data) => {
               data.start = data.skuDate
             })
@@ -181,46 +188,14 @@
         })
       },
       dateChange (val) {
-        this.batchPriceForm.skuDateRange = val.split(' - ')
-      },
-      // 选择每周几
-      handleCheckedChange(value) {
-        let weeks = [0, 0, 0, 0, 0, 0, 0];
-        value.forEach((v, i) => {
-            weeks[v] = 1
-        })
-        let weekStr = weeks.join('')
-        weekStr = weekStr === '0000000' ? '1111111' : weekStr
-        console.log(weekStr)
+        this.batchPriceForm.skuDateRange = val ? val.split(' - ') : []
       },
   		changeMonth (start, end, current) {
 	      // console.log(current.format())
 	    },
-      // 单条价格设置
-	    dayClick (day, event) {
-        day = this.$moment(day).format('YYYY-MM-DD')
-	      console.log(day, event)
-        if(event){
-          this.singlePriceForm = {
-            skuId: event.skuId || 1,
-            skuDate: event.start,
-            price1: event.price1 || '',
-            price2: event.price2 || '',
-            price3: event.price3 || '',
-            price4: event.price4 || '',
-            price5: event.price5 || '',
-            priceChild: event.priceChild || '',
-            priceSingle: event.priceSingle || '',
-          }
-          console.log(Object.assign({}, this.singlePriceForm))
-          this.singleFormVisible = true
-        }
-	    },
       // 批量价格设置
       handleBatch () {
         this.batchPriceForm = {
-          startDate: '',
-          endDate: '',
           skuDateRange: [],
           price1: '',
           price2: '',
@@ -244,10 +219,17 @@
       },
       // 批量提交
       batchSubmit () {
-        let dateRange = this.batchPriceForm.skuDateRange
-        this.batchPriceForm.startDate = dateRange[0]
-        this.batchPriceForm.endDate = dateRange[1]
-        let data = Object.assign({}, this.batchPriceForm)
+        let data = {
+          startDate:  this.batchPriceForm.skuDateRange[0],
+          endDate:  this.batchPriceForm.skuDateRange[1],
+          price1: this.batchPriceForm.price1,
+          price2: this.batchPriceForm.price2,
+          price3: this.batchPriceForm.price3,
+          price4: this.batchPriceForm.price4,
+          price5: this.batchPriceForm.price5,
+          priceChild: this.batchPriceForm.priceChild,
+          priceSingle: this.batchPriceForm.priceSingle,
+        }
         console.log(data)
         if (!this.validateForm(data)){
           this.$notify.warning({
@@ -256,110 +238,68 @@
           })
         } else {
           data.wareId = this.wareId;
-          data.skuDate = '';
-          saveSkuPrice(JSON.stringify(data)).then(res => {
+          console.log(data)
+          saveSkuPrice(data).then(res => {
             console.log(res)
             if(res.data.code === '0001') {
               this.$message.success(res.data.message)
-              // this.skuList = res.data.result.priceList; 
-              this.singleFormVisible = false
+              this.getSkuList()
             } else {
               this.$message.error(res.data.message)
             }
           }).catch(err => {
             console.log(err)
           })
+          this.batchFormVisible = false
+        }
+      },
+      // 单条价格设置
+      dayClick (day, event) {
+        if(event){
+          console.log(event)
+          this.singlePriceForm = Object.assign({}, event)
+          this.singleFormVisible = true
         }
       },
       // 单条提交
       singleSubmit () {
-        if (!this.validateForm(this.singlePriceForm)) {
+        let data = {
+          skuId: this.singlePriceForm.skuId,
+          skuDate: this.singlePriceForm.skuDate,
+          price1: this.singlePriceForm.price1,
+          price2: this.singlePriceForm.price2,
+          price3: this.singlePriceForm.price3,
+          price4: this.singlePriceForm.price4,
+          price5: this.singlePriceForm.price5,
+          priceChild: this.singlePriceForm.priceChild,
+          priceSingle: this.singlePriceForm.priceSingle,
+        }
+        if (!this.validateForm(data)) {
           this.$notify.warning({
             title: '提示',
             message: '请将表单输入完整',
           })
         } else {
-          let data = Object.assign({}, this.singlePriceForm)
           data.wareId = this.wareId;
-          data.startDate = '';
-          data.endDate = '';
-          console.log(data)
-          saveSkuPrice(JSON.stringify(data)).then(res => {
+          // console.log(data)
+          saveSkuPrice(data).then(res => {
             console.log(res)
             if(res.data.code === '0001') {
               this.$message.success(res.data.message)
-              this.skuList = res.data.result.priceList;
-              this.skuList.forEach((data) => {
-                data.start = data.skuDate
-              })
-              this.singleFormVisible = false
+              this.getSkuList()
             } else {
               this.$message.error(res.data.message)
             }
           }).catch(err => {
             console.log(err)
           })
+          this.singleFormVisible = false
         }
       },
   	},
   	mounted () {
 			this.$store.dispatch('setStepActive', 4)
       this.wareId = parseInt(this.$route.query.wareId)
-      let demoEvents = [
-        {
-          start: '2017-06-06',
-          adultPrice: '18000.00',
-          childPrice: '12000.00',
-          storageNum: '100',
-          singlePrice: 5000,
-          skuId: 10001,
-          price1: 10000,
-          price2: 20000,
-          price3: 30000,
-          price4: 40000,
-          price5: 50000,
-        },
-        {
-          start: '2017-06-07',
-          adultPrice: '18000.00',
-          // childPrice: '12000.00',
-          storageNum: '100',
-          price1: 10000
-        },
-        {
-          start: '2017-06-28',
-          adultPrice: 18000.00,
-          childPrice: 12000.00,
-          singlePrice: 3000,
-          storageNum: 0,
-          // price1: 6000,
-          // price2: 6000,
-          // price3: 6000,
-          // price4: 6000,
-          // price5: 6000,
-          // priceChild: 6000,
-          // priceSingle: 0,
-        },
-        {
-          start: '2017-06-09',
-          adultPrice: '18000.00',
-          childPrice: '12000.00',
-          storageNum: '100'
-        },
-        {
-          start: '2017-06-10',
-          adultPrice: '18000.00',
-          childPrice: '12000.00',
-          storageNum: '100'
-        },
-        {
-          start: '2017-05-30',
-          adultPrice: '18000.00',
-          childPrice: '12000.00',
-          storageNum: '100'
-        },
-      ]
-      this.skuList = demoEvents
       this.wareId && this.getSkuList()
 		}
   }

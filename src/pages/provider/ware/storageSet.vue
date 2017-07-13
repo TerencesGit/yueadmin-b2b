@@ -150,7 +150,11 @@
   	methods: {
       // 库存列表
       getStockList () {
-        readSkuInfoList({wareId: this.wareId}).then(res => {
+        let params = {
+          wareId: this.wareId,
+          skuType: 2
+        }
+        readSkuInfoList(params).then(res => {
           console.log(res)
           if (res.data.code === '0001') {
             this.skuList = res.data.result.skuList;

@@ -41,14 +41,14 @@
         <el-form-item label="单人差：" prop="singlePrice">
           <el-input v-model.number="batchSkuForm.singlePrice" placeholder="输入单人差"></el-input>
         </el-form-item>
-        <el-form-item label="库存：" prop="storageNum">
+        <el-form-item v-if="batchType === 1" label="库存：" prop="storageNum">
           <el-input v-model.number="batchSkuForm.storageNum" placeholder="输入库存数量"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="batchSubmit">提交</el-button>
-          <el-button @click="batchSkuVisible = false">取消</el-button>
-        </el-form-item>
       </el-form>
+      <div slot="footer">
+        <el-button type="primary" @click="batchSubmit">提交</el-button>
+        <el-button @click="batchSkuVisible = false">取消</el-button>
+      </div>
     </el-dialog>
     <!-- 单条sku设置 -->
     <el-dialog title="库存价格设置（价格单位：元）" :visible.sync="singleSkuVisible">
@@ -65,14 +65,14 @@
         <el-form-item label="单人差：" prop="singlePrice">
           <el-input v-model.number="singleSkuForm.singlePrice" placeholder="输入单人差"></el-input>
         </el-form-item>
-        <el-form-item label="库存：" prop="storageNum">
+        <el-form-item v-if="singleType === 1" label="库存：" prop="storageNum">
           <el-input v-model.number="singleSkuForm.storageNum" placeholder="输入库存数量"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="singleSubmit">提交</el-button>
-          <el-button @click="singleSkuVisible = false">取消</el-button>
-        </el-form-item>
       </el-form>
+      <div slot="footer">
+        <el-button type="primary" @click="singleSubmit">提交</el-button>
+        <el-button @click="singleSkuVisible = false">取消</el-button>
+      </div>
     </el-dialog>
   </section>
 </template>
@@ -87,6 +87,7 @@
         batchSkuVisible: false,
         singleSkuVisible: false,
         batchType: 1,
+        singleType: 1,
         batchSkuForm: {
           wareId: '',
           stockId: '',
@@ -251,8 +252,10 @@
       dayClick (day, event) {
         day = this.$moment(day).format('YYYY-MM-DD')
         if (event) {
+          this.singleType = 2
           this.singleSkuForm = Object.assign(this.singleSkuForm, event)
         } else {
+          this.singleType = 1
           this.singleSkuForm = {}
           this.singleSkuForm.skuDate = day
         }

@@ -13,7 +13,7 @@
               </li>
               <li>
                 <label>商品品牌：</label>
-                <span>{{wareInfo.brandId}}</span>
+                <span>{{wareInfo.brandName}}</span>
               </li> 
               <li>
                 <label>商品缩略名：</label>

@@ -4,6 +4,7 @@
 		<el-row class="toolbar">
 			<el-button type="primary" @click="handleAdd">新增推荐活动</el-button>
 			<el-button type="primary" @click="backList">返回商品列表</el-button>
+			<el-button type="primary" @click="submitVerify">重新提交审核</el-button>
 		</el-row>
 		<!-- 推荐活动列表 -->
 		<el-table :data="activityList" border highlight-current-row>
@@ -190,7 +191,7 @@
         this.$router.push('/provider/ware/wareManage')
       },
       // 提交审核
-      submit () {
+      submitVerify () {
       	this.$confirm('确定将该商品提交审核？', '提示', {type: 'warning'})
 				.then(() => {
         	updateVerifyStatus({wareId: this.wareId}).then(res => {

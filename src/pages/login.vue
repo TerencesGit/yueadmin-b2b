@@ -103,7 +103,7 @@ export default {
             mobile: this.loginForm.username,
             pass: Md5.hex_md5(this.loginForm.password)
           }
-          console.log(form)
+          // console.log(form)
           requestLogin(form).then(res => {
             console.log(res)
             if (res.data.code === 0) {
@@ -123,7 +123,7 @@ export default {
                 type: 'success',
                 message: '登录成功'
               })
-              this.$router.push({ path: '/admin/system/home' })
+              this.$router.push({ path: '/provider/ware/wareManage' })
             } else {
               this.$message({
                 type: 'error',
