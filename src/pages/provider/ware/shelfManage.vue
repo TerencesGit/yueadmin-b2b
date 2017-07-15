@@ -66,7 +66,7 @@ export default {
     }
   },
   methods: {
-    formatStatus (row, column) {
+    formatStatus (row) {
       return row.status === 1 ? '上架' : row.status === 0 ? '下架' : '未知'
     },
     // 获取商品列表
@@ -122,15 +122,11 @@ export default {
     },
     // 附加服务
     handleServiceSet (wareId) {
-      this.$router.push({
-        path: '/provider/ware/serviceList?wareId=' + wareId
-      })
+      this.$router.push(`/provider/ware/serviceShelfList?wareId=${wareId}`)
     },
     // 推荐活动
     handleActivitySet (wareId) {
-      this.$router.push({
-        path: '/provider/ware/activityList?wareId=' + wareId
-      })
+      this.$router.push(`/provider/ware/activityShelfList?wareId=${wareId}`)
     },
   },
   mounted () {

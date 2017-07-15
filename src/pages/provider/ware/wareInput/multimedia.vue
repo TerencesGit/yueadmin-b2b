@@ -296,9 +296,7 @@
 			},
 			// 下一步
 			handleNext () {
-				this.$router.push({
-					path: 'charge?wareId='+this.wareId
-				})
+				this.$router.push(`charge?wareId=${this.wareId}`)
 			}
 		},
 		computed:{

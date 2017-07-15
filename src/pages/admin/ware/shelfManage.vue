@@ -14,7 +14,7 @@
 			</el-form>
 		</el-row>
 		<el-table :data="wareList" border highlight-current-row>
-			<el-table-column prop="wareCode" label="商品编号" srotable></el-table-column>
+			<el-table-column prop="wareId" label="商品编号" srotable></el-table-column>
 			<el-table-column prop="wareName" label="商品名称" srotable></el-table-column>
 			<el-table-column prop="srcCityName" label="出发城市"></el-table-column>
 			<!-- <el-table-column prop="dstCityName" label="目的城市"></el-table-column> -->
@@ -65,7 +65,7 @@
 					pageSize: this.pageSize,
 					wareName: this.filter.name,
 					wareCode: this.filter.code,
-					verifyStatus: 1
+					verifyStatus: 2
 				}
 				console.log(data)
 				readWareList(data).then(res => {

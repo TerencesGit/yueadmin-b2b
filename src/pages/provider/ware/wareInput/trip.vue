@@ -266,9 +266,7 @@
 			},
 			// 下一步
 			handleNext () {
-				this.$router.push({
-					path: 'multimedia?wareId='+this.wareId
-				})
+				this.$router.push(`multimedia?wareId=${this.wareId}`)
 			}
 		},
 		mounted () {

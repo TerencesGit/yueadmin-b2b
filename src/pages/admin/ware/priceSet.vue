@@ -169,13 +169,12 @@
       getSkuList () {
         let params = {
           wareId: this.wareId,
-          type: 2
+          // type: 2
         }
         readSkuInfoList(params).then(res => {
           console.log(res)
           if(res.data.code === '0001') {
             this.skuList = res.data.result.skuList || [];
-            console.log(this.skuList)
             this.skuList.forEach((data) => {
               data.start = data.skuDate
             })

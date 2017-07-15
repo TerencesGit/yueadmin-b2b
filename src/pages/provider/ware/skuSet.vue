@@ -41,7 +41,7 @@
         <el-form-item label="单人差：" prop="singlePrice">
           <el-input v-model.number="batchSkuForm.singlePrice" placeholder="输入单人差"></el-input>
         </el-form-item>
-        <el-form-item v-if="batchType === 1" label="库存：" prop="storageNum">
+        <el-form-item label="库存：" prop="storageNum">
           <el-input v-model.number="batchSkuForm.storageNum" placeholder="输入库存数量"></el-input>
         </el-form-item>
       </el-form>
@@ -89,11 +89,6 @@
         batchType: 1,
         singleType: 1,
         batchSkuForm: {
-          wareId: '',
-          stockId: '',
-          startDate: '',
-          endDate: '',
-          skuDate: '',
           storageNum: '',
           adultPrice: '',
           childPrice: '',
@@ -101,7 +96,6 @@
           skuDateRange: []
         },
         singleSkuForm: {
-          wareId: '',
           skuId: '',
           skuDate: '',
           storageNum: '',
@@ -165,7 +159,7 @@
         readSkuInfoList({wareId: this.wareId}).then(res => {
           console.log(res)
           if(res.data.code === '0001') {
-            this.skuList = res.data.result.skuList;
+            this.skuList = res.data.result.skuList || [];
             this.skuList.forEach((data) => {
               data.start = data.skuDate
             })
@@ -209,9 +203,16 @@
           if (valid) {
             this.batchSkuForm.startDate = this.batchSkuForm.skuDateRange[0]
             this.batchSkuForm.endDate = this.batchSkuForm.skuDateRange[1]
-            let data = Object.assign({}, this.batchSkuForm)
+            let data = {
+              startDate: this.batchSkuForm.skuDateRange[0],
+              endDate: this.batchSkuForm.skuDateRange[1],
+              storageNum:  this.batchSkuForm.storageNum,
+              adultPrice:  this.batchSkuForm.adultPrice,
+              childPrice:  this.batchSkuForm.childPrice,
+              singlePrice:  this.batchSkuForm.singlePrice,
+            }
             data.wareId = this.wareId;
-            // console.log(data)
+            console.log(data)
             if (this.batchType === 1) {
               createSkuInfoBatch(data).then(res => {
                 console.log(res)
@@ -225,9 +226,8 @@
                 console.log(err)
               })
             } else if (this.batchType === 2) {
-              console.log('edit')
               updateSkuInfoBatch(data).then(res => {
-                // console.log(res)
+                console.log(res)
                 if(res.data.code === '0001'){
                   this.$message.success(res.data.message)
                   this.getSkuList()

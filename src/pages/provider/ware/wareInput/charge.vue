@@ -136,9 +136,7 @@
     	handleNext () {
     		this.$confirm('确定已保存录入信息？', '提示', {type: 'warning'})
 				.then(() => {
-					this.$router.push({
-						path: 'storage?wareId=' + this.wareId
-					})
+					this.$router.push(`storage?wareId=${this.wareId}`)
 				}).catch(err => {
 					console.log(err)
 				})

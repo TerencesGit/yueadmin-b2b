@@ -220,25 +220,25 @@
         })
       },
       // 获取商品信息
-      // getWareInfo () {
-      //   readWareInfo({wareId: this.wareId}).then(res => {
-      //     console.log(res)
-      //     if(res.data.code === '0001') {
-      //       let wareInfo = res.data.result.wareInfo
-      //       wareInfo.openDate = new Date(wareInfo.openDate)
-      //       wareInfo.closeDate = new Date(wareInfo.closeDate)
-      //       wareInfo.srcCityCode = wareInfo.srcCityCode + ''
-      //       wareInfo.dstCityCode = wareInfo.dstCityCode + ''
-      //       wareInfo.nocashReserveMinute = wareInfo.nocashReserveMinute / 60
-      //       this.wareForm = wareInfo
-      //     } else {
-      //       this.$message.error(res.data.message)
-      //     }
-      //   }).catch(err => {
-      //     console.log(err)
-      //     this.catchError(err.response)
-      //   })
-      // },
+      getWareInfo () {
+        readWareInfo({wareId: this.wareId}).then(res => {
+          console.log(res)
+          if(res.data.code === '0001') {
+            let wareInfo = res.data.result.wareInfo
+            wareInfo.openDate = new Date(wareInfo.openDate)
+            wareInfo.closeDate = new Date(wareInfo.closeDate)
+            wareInfo.srcCityCode = wareInfo.srcCityCode + ''
+            wareInfo.dstCityCode = wareInfo.dstCityCode + ''
+            wareInfo.nocashReserveMinute = wareInfo.nocashReserveMinute / 60
+            this.wareForm = wareInfo
+          } else {
+            this.$message.error(res.data.message)
+          }
+        }).catch(err => {
+          console.log(err)
+          this.catchError(err.response)
+        })
+      },
       srcCityChange (code) {
         this.wareForm.srcCityCode = code
       },
@@ -248,24 +248,43 @@
       // 保存商品信息
       submitForm() {
         this.$refs.wareForm.validate((valid) => {
+          console.log(this.wareForm.verifyStatus)
           if (valid) {
             let data = Object.assign({}, this.wareForm)
             data.openDate = this.$moment(data.openDate).format('YYYY-MM-DD HH:mm:ss')
             data.closeDate = this.$moment(data.closeDate).format('YYYY-MM-DD HH:mm:ss')
             data.nocashReserveMinute = data.nocashReserveMinute * 60;
             console.log(data)
-            saveWareInfo(JSON.stringify(data)).then(res => {
-              if (res.data.code === '0001') {
-                let wareId = res.data.result.wareId;
-                this.$message.success(res.data.message)
-                this.$router.push(`trip?wareId=${wareId}`)
-              } else {
-                this.$message.error(res.data.message)
-              }
-            }).catch(err => {
-              console.log(err)
-              this.catchError(err.response)
-            })
+            if (this.wareForm.verifyStatus === 2) {
+              this.$confirm('编辑商品将会重新提交审核？', '提示', {type: 'warning'}).then(() => {
+                saveWareInfo(JSON.stringify(data)).then(res => {
+                  if (res.data.code === '0001') {
+                    let wareId = res.data.result.wareId;
+                    this.$message.success(res.data.message)
+                  } else {
+                    this.$message.error(res.data.message)
+                  }
+                }).catch(err => {
+                  console.log(err)
+                  this.catchError(err.response)
+                })
+              }).catch(err => {
+                console.log(err)
+                this.$message('已取消操作')
+              })
+            } else {
+                saveWareInfo(JSON.stringify(data)).then(res => {
+                  if (res.data.code === '0001') {
+                    let wareId = res.data.result.wareId;
+                    this.$message.success(res.data.message)
+                  } else {
+                    this.$message.error(res.data.message)
+                  }
+                }).catch(err => {
+                  console.log(err)
+                  this.catchError(err.response)
+                })
+            }
           } else {
             this.$message.error('表单输入有误')
             return false;
@@ -276,6 +295,8 @@
     mounted () {
       this.$store.dispatch('setStepActive', 0)
       this.getBrandList()
+      this.wareId = parseInt(this.$route.query.wareId)
+      this.wareId && this.getWareInfo()
     }
   }
 </script>

@@ -13,7 +13,6 @@
       @dayClick="dayClick"
       @eventClick="dayClick">
     </full-calendar>
-    <!-- 下一步 -->
     <el-row class="toolbar text-center">
       <el-button type="primary" @click="handleNext">下一步</el-button>
     </el-row>
@@ -296,7 +295,7 @@
       },
       // 下一步
       handleNext () {
-        this.$router.push('service?wareId='+this.wareId)
+        this.$router.push(`service?wareId=${this.wareId}`)
       }
     },
     mounted () {

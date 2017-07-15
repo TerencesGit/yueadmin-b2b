@@ -28,7 +28,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-row class="m-t">
+    <el-row class="toolbar">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -36,8 +36,7 @@
         :page-size="pageSize"
         :page-sizes="[10, 20, 30, 40]"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        class="pull-right">
+        :total="total">
       </el-pagination>
     </el-row>
   </section>
@@ -66,7 +65,7 @@ export default {
         pageSize: this.pageSize,
         wareName: this.filter.name,
         wareCode: this.filter.code,
-        verifyStatus: 1
+        verifyStatus: 2
       }
       readWareList(params).then(res => {
         console.log(res)
@@ -91,14 +90,15 @@ export default {
     },
     handleCurrentChange (val) {
       this.currPage = val;
-      this.getWareList()
+      // this.getWareList()
     },
-    // 编辑
+    // 价格管理
     handlePriceSet (wareId) {
       this.$router.push({
         path: '/admin/ware/priceSet?wareId=' + wareId
       })
     },
+    // 商品详情
     handleShowDetail (wareId) {
       this.$router.push({
         path: '/admin/ware/detail?wareId=' + wareId

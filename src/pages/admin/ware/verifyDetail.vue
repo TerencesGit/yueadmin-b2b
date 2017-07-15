@@ -74,7 +74,7 @@
         </el-row>
         <el-row>
           <h3>推荐概述</h3>
-          <div v-html="" style="margin: 15px">{{wareInfo.wareDesc}}</div>
+          <div v-html="wareInfo.wareDesc" style="margin: 15px"></div>
         </el-row>
       </el-tab-pane>
       <el-tab-pane label="行程介绍">

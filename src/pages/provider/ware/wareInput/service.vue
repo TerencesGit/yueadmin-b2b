@@ -200,7 +200,7 @@
       handleNext () {
       	this.$confirm('确定已设置价格库存？', '提示', {type: 'warning'})
 				.then(() => {
-        	this.$router.push('activity?wareId='+this.wareId)
+					this.$router.push(`activity?wareId=${this.wareId}`)
 				})
 				.catch(err => {
 					console.log(err)
