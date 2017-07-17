@@ -18,16 +18,14 @@
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="wareCode" label="商品编号" sortable width="200"></el-table-column>
       <el-table-column prop="wareName" label="商品名称"></el-table-column>
+      <el-table-column prop="providerName" label="供应商" width="150"></el-table-column>
       <!-- <el-table-column prop="wareKind" label="商品类别" width="150"></el-table-column> -->
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" sortable width="300"></el-table-column>
-      <el-table-column label="操作" width="120">
+      <el-table-column prop="srcCityName" label="出发城市" width="120"></el-table-column>
+      <el-table-column label="操作" width="220">
         <template scope="scope">
-          <el-button
-            :plain="true"
-            size="small"
-            type="primary"
-            @click="handleSetPrice(scope.row.wareId)">设置价格</el-button>
+          <el-button size="small" @click="handleSetPrice(scope.row.wareId)">设置价格</el-button>
+          <el-button size="small" @click="handleShowDetail(scope.row.wareId)">商品详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -68,7 +66,7 @@ export default {
         pageSize: this.pageSize,
         wareName: this.filter.name,
         wareCode: this.filter.code,
-        verifyStatus: 1
+        verifyStatus: 2
       }
       // 商品列表
       readWareList(params).then(res => {
@@ -96,6 +94,12 @@ export default {
     handleSetPrice (wareId) {
       this.$router.push({
         path: '/admin/ware/priceSet?wareId=' + wareId
+      })
+    },
+    // 商品详情
+    handleShowDetail (wareId) {
+      this.$router.push({
+        path: '/admin/ware/detail?wareId=' + wareId
       })
     }
   },

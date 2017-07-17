@@ -1,6 +1,7 @@
 <template>
   <section>
     <div v-title :data-title="this.$route.name"></div>
+    <!-- 搜索栏 -->
     <el-row class="toolbar">
       <el-form :inline="true" :model="filter">
         <el-form-item label="商品编号">
@@ -14,20 +15,23 @@
         </el-form-item>
       </el-form>
     </el-row>
+    <!-- 商品列表 -->
     <el-table :data="wareList" v-loading="loading" border style="width: 100%">
       <el-table-column type="index" width="60"></el-table-column>
-      <el-table-column prop="wareCode" label="商品编号" sortable width="200"></el-table-column>
+      <el-table-column prop="wareCode" label="商品编号" sortable width="170"></el-table-column>
       <el-table-column prop="wareName" label="商品名称"></el-table-column>
-      <!-- <el-table-column prop="wareKind" label="商品类别" width="150"></el-table-column> -->
+      <el-table-column prop="providerName" label="供应商" width="150"></el-table-column>
+      <el-table-column prop="srcCityName" label="出发城市" width="120"></el-table-column>
+      <el-table-column prop="dstCityName" label="目的城市" width="120"></el-table-column>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" sortable width="200"></el-table-column>
-      <el-table-column label="操作" width="240">
+      <el-table-column label="操作" width="200">
         <template scope="scope">
           <el-button size="small" @click="handlePriceSet(scope.row.wareId)">价格管理</el-button>
           <el-button size="small" @click="handleShowDetail(scope.row.wareId)">商品详情</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页 -->
     <el-row class="toolbar">
       <el-pagination
         @size-change="handleSizeChange"

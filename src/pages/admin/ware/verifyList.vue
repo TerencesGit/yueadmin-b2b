@@ -89,9 +89,7 @@ export default {
       readWareList(params).then(res => {
         console.log(res)
         if (res.data.code === '0001') {
-          let page = res.data.result.pageInfo;
-          this.total = page.count;
-          this.currPage = page.currPage;
+          this.total = res.data.result.pageInfo.count;
           this.wareList = res.data.result.wareList
         } else {
           tihs.$message.error(res.data.message)

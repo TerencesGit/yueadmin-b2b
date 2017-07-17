@@ -35,11 +35,18 @@ module.exports = {
           '^/loginUrl': ''
         }
       },
-      '/baseUrl': {
+      '/imgUploadUrl': {
+        target: 'http://192.168.199.211:8080/yue_yb2b/file/upload',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/imgUploadUrl': ''
+        }
+      },
+      '/wareUrl': {
         target: 'http://192.168.199.211:8080/yue_yb2b',
         changeOrigin: true,
         pathRewrite: {
-          '^/baseUrl': ''
+          '^/wareUrl': ''
         }
       },
       '/orderUrl': {
@@ -49,13 +56,13 @@ module.exports = {
           '^/orderUrl': ''
         }
       },
-      '/imgUploadUrl': {
-        target: 'http://192.168.199.211:8080/yue_yb2b/file/upload',
+      '/strategyUrl': {
+        target: 'http://192.168.199.169:8080/yue_yb2b',
         changeOrigin: true,
         pathRewrite: {
-          '^/imgUploadUrl': ''
+          '^/strategyUrl': ''
         }
-      }
+      },
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README

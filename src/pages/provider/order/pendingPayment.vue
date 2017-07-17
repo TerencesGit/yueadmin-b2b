@@ -1,7 +1,7 @@
 <template>
-	<section>
-		<el-row class="toolbar">
-    	    <el-form :inline="true" :model="filter">
+    <section>
+        <el-row class="toolbar">   
+            <el-form :inline="true" :model="filter">
                 <el-form-item label="">
                     <el-input v-model="filter.orderCode" placeholder="输入订单号"></el-input>
                 </el-form-item>
@@ -33,30 +33,26 @@
                     <el-button type="primary" @click="getOrderList">查询</el-button>
                 </el-form-item>
             </el-form>
-            <el-radio-group v-model="filter.status" @change="statusChange">
-                <el-radio-button :label="7">结算中</el-radio-button>
-                <el-radio-button :label="8">已结算</el-radio-button>
-            </el-radio-group>
         </el-row>
-		<el-table :data="orderList" border style="width: 100%" v-loading="loading">
-    	    <el-table-column prop="orderCode" label="订单编号"  width="180" ></el-table-column>
+        <el-table :data="orderList" border highlight-current-row v-loading="loading">
+            <el-table-column prop="orderCode" label="订单编号"  width="180" ></el-table-column>
             <el-table-column prop="wareId" label="产品编号"  width="100" ></el-table-column>
             <el-table-column prop="wareName" label="产品名称"></el-table-column>
             <el-table-column prop="status" label="订单状态" width="100" :formatter="formatStatus"></el-table-column>
-            <el-table-column label="订单总人数"  width="120" >
-          		<template scope="scope">
-    		    	{{parseInt(scope.row.adultCount != "" ? scope.row.adultCount:0) + parseInt(scope.row.childCount != "" ? scope.row.childCount:0)}}
-    		    </template>
-            </el-table-column> 
-	        <el-table-column prop="dateDepart" label="出发日期"  width="140" ></el-table-column>
+            <el-table-column prop="childCount" label="订单总人数"  width="120" >
+                <template scope="scope">
+                    {{parseInt(scope.row.adultCount != "" ? scope.row.adultCount:0) + parseInt(scope.row.childCount != "" ? scope.row.childCount:0)}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="dateDepart" label="出发日期"  width="140" ></el-table-column>
             <el-table-column prop="adultPrice" label="成人底价"  width="100" ></el-table-column>
             <el-table-column label="操作" width="160">
                 <template scope="scope">
                   <el-button size="small" @click="handleCheck(scope.$index, scope.row)">查看</el-button>
                 </template>
             </el-table-column>
-		</el-table>
-		<el-row class="toolbar">
+        </el-table>
+        <el-row class="toolbar">
             <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
@@ -67,10 +63,10 @@
                 :total="total">
             </el-pagination>
         </el-row>
-	</section>
+    </section>
 </template>
 <script>
-    import { readOrderList } from '@/api'
+import { readOrderList } from '@/api'
     export default {
         data() {
             return {
@@ -79,13 +75,15 @@
                   orderCode: '',
                   wareName: '',
                   startDate: '',
-                  endDate: '',
-                  status: 7
-                },
+                  endDate: ''
+                }, 
                 pageNo: 1,
                 pageSize: 10,
                 total: 0,
                 pickerOptions: {
+                  // disabledDate (time) {
+                  //   return time.getTime() >= Date.now();
+                  // },
                     shortcuts: [{
                         text: '今天',
                         onClick(picker) {
@@ -115,53 +113,19 @@
                     }]
                 },
                 orderList: [{
-                  orderId: '1001',
+                  orderCode: '1001',
                   wareId: '0001',
                   wareName: '产品1',
-                  orderStatus: 1,
+                  status: 2,
                   orderTotal: 20,
-                  date: '2017-06-10',
+                  dateDepart: '2017-06-10',
                   adultPrice: '12000'
                 }]
             }
         },
         methods: {
             formatStatus (row) {
-      	        switch (row.status) {
-              		case 0:
-                    return '已取消'
-                    break;
-                  case 1:
-                    return '下单成功'
-                    break;
-                  case 2:
-                    return '待支付'
-                    break;
-                  case 4:
-                    return '待发团'
-                    break;
-                  case 5:
-                    return '已发团'
-                    break;
-                  case 6:
-                    return '已回团'
-                    break;
-                  case 7:
-                    return '结算中'
-                    break;
-                  case 8:
-                    return '已结算'
-                    break;
-                  case 9:
-                    return '已完成'
-                    break;
-                  case 10:
-                    return '已退款'
-                    break;
-                  default:
-                   return '未知'
-                   break;
-      	         }
+                return row.status === 2? '待支付' : '未知'
             },
             startDateChange (val) {
                 this.filter.startDate = val;
@@ -177,15 +141,12 @@
                 this.pageNo = val;
                 this.getOrderList()
             },
-            statusChange (val) {
-        	      this.getOrderList()
-        	},
-        	handleCheck (index,row) {
-        		this.$router.push({
-        			path:'/provider/order/orderDetail',
-        			query: { orderId: row.orderId }
-        		})
-        	},
+            handleCheck (index,row) {
+                this.$router.push({
+                    path:'/provider/order/orderDetail',
+                    query: { orderId: row.orderId }
+                })
+            },
         // 订单列表
             getOrderList() {
                 if (this.filter.startDate > this.filter.endDate) {
@@ -202,7 +163,7 @@
                     wareName: this.filter.wareName,
                     startDate: this.filter.startDate,
                     endDate: this.filter.endDate,
-                    status: this.filter.status
+                    status: 2
                 }
                 console.log(params)
                 this.loading = true
@@ -213,14 +174,14 @@
                         this.total = res.data.result.pageInfo.count;
                     } else {
                         this.$message.error(res.data.message)
-                    }
-                    this.loading = false
+                    }       
+                        this.loading = false
                 }).catch(err => {
                     console.log(err)
                     this.catchError(err.response)
                     this.loading = false
                 })
-            },
+            }
         },
         mounted () {
             this.getOrderList()

@@ -5,25 +5,25 @@
 		<el-card>
 			<p>悦视觉产品名称：<span style="color:#009dda" v-text="orderInfo.wareName"></span></p>
 			<p>订单号：<span v-text="orderInfo.orderCode"></span><span style="color:red" v-text="state"></span></p>
-		    <el-button type="primary" @click="providerRemark">商家备注</el-button>
-		    <el-button type="primary">打印订单</el-button>
-		    <el-dialog title="商家备注" :visible.sync="dialogVisible" size="tiny">
-			    <el-form :model="remarkForm" :rules="remarkRules" ref="remarkForm" label-width="10px">
-		            <el-form-item prop="remark">
-						<el-input type="textarea" v-model="remarkForm.remark" placeholder="请输入备注内容" :rows="5"></el-input>
-					</el-form-item>
-				</el-form>    
-				<div slot="footer" class="dialog-footer">
-				    <el-button type="primary" @click="remarkConfirm('remarkForm')">确定</el-button>
-				    <el-button @click="dialogVisible = false">取 消</el-button>
-				</div>
-			</el-dialog>
+	    <el-button type="primary" @click="providerRemark">商家备注</el-button>
+	    <el-button type="primary">打印订单</el-button>
+	    <el-dialog title="商家备注" :visible.sync="dialogVisible" size="tiny">
+		    <el-form :model="remarkForm" :rules="remarkRules" ref="remarkForm" label-width="10px">
+	            <el-form-item prop="remark">
+					<el-input type="textarea" v-model="remarkForm.remark" placeholder="请输入备注内容" :rows="5"></el-input>
+				</el-form-item>
+			</el-form>    
+			<div slot="footer" class="dialog-footer">
+			    <el-button type="primary" @click="remarkConfirm('remarkForm')">确定</el-button>
+			    <el-button @click="dialogVisible = false">取 消</el-button>
+			</div>
+		</el-dialog>
 		</el-card>
 	<!-- 备注 -->
 		<h4>备注</h4>
 	    <el-card>
-		    <p>预定备注: <span v-text="orderInfo.remarks"></span></p>
-		    <p>商家备注: <span v-text="orderInfo.premarks"></span></p>
+		    <p>预定备注:<span v-text="orderInfo.remarks"></span></p>
+		    <p>商家备注:<span v-text="orderInfo.premarks"></span></p>
 		</el-card>
 	<!-- 预定项目 -->
 		<h4>预定项目</h4>
@@ -37,7 +37,7 @@
 		      label="商品名称">
 		    </el-table-column>
 		    <el-table-column
-		      prop="status"
+		      prop="statusComplain"
 		      align="center"
 		      label="订单状态"
 		      :formatter="format">
@@ -220,11 +220,11 @@
 				remarkForm:{
 					remark:''
 				},				
-				dialogVisible:false,			
+				dialogVisible:false,		
 				orderInfo:{
 					wareName: '',
 					orderCode: '',
-					status: '',
+					statusComplain: '',
 					remarks: '',
 					premarks: '',
 					reserveWare:[],
@@ -243,42 +243,18 @@
                 },
 			}
 		},
-		methods:{					
+		methods:{
 			format(row,col){
-				switch(row.status){
-					case 0:
-              			return '已取消'
-              			break;
-              		case 1:
-              			return '下单成功'
-              			break;
-              		case 2:
-              			return '待支付'
-              			break;
-              		case 4:
-              			return '待发团'
-              			break;
-              		case 5:
-              			return '已发团'
-              			break;
-              		case 6:
-              			return '已回团'
-              			break;
-              		case 7:
-              			return '结算中'
-              			break;
-              		case 8:
-              			return '已结算'
-              			break;
-              		case 9:
-              			return '已完成'
-              			break;
-              		case 10:
-              			return '已退款'
-              			break;
-              		default:
-              		 return '未知'
-              		 break;
+				switch(row.statusComplain){
+					case 1:
+					  return '改单申请中'
+					  break;
+					case 2:
+					  return '改单审核驳回'
+					  break;
+					default:
+					  return '未知'
+					  break;
 				}
 			},
 			formatSex(row,col){
@@ -347,41 +323,17 @@
 			}
 		},
 		computed:{
-			'state':function(){
-				switch(this.orderInfo.status){
-					case 0:
-					  return '【订单已取消】'
-					  break;
+			state:function(){
+				switch(this.orderInfo.statusComplain){
 					case 1:
-              			return '【下单成功】'
-              			break;
-              		case 2:
-              			return '【订单待支付，已占库存】'
-              			break;
-					case 4:
-						return '【订单待发团】'
-						break;
-					case 5:
-					  	return '【订单已发团】'
-					  	break;
-					case 6:
-					  	return '【订单已回团】'
-					  	break;
-              		case 7:
-              		  	return '【订单结算中】'
-              		  	break;
-              		case 8: 
-              		  	return '【订单已结算】'
-              		  	break;
-              		case 9:
-              		  	return '【订单已完成】'
-              		  	break;
-              		case 10:
-              		  	return '【订单已退款】'
-              		  	break;
-              		default:
-              		 	return '未知'
-              		 	break;					  					  
+					  return '【改单申请中，等待审核】'
+					  break;
+					case 2:
+					  return '【改单审核驳回】'
+					  break;
+					default:
+					  return '未知'
+					  break;	  					  
 				}
 			}
 		},
@@ -397,14 +349,14 @@
 			 		}
 			 	});
 				this.orderInfo.orderCode = data.info.orderCode;
-			 	this.orderInfo.status = data.info.status;
-				this.orderInfo.remarks = data.item.remarks;
+			 	this.orderInfo.statusComplain = data.info.statusComplain;
+				this.orderInfo.remarks = data.item.remarks
 				this.orderInfo.premarks = data.info.premarks;
 				data.item.forEach((value)=>{
 					//预定项目信息
 					let reserveWare = {
 						wareName : value.wareName,
-						status : data.info.status,
+						statusComplain : data.info.statusComplain,
 						adultCount : value.adultCount,
 						childCount : value.childCount,
 				 		dateDepart : value.dateDepart,
@@ -431,7 +383,6 @@
 				console.log(err);
                 this.catchError(err.response)
 			})
-
 		}
 	}
 </script>

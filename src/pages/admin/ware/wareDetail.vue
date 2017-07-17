@@ -1,5 +1,5 @@
 <template>
-	<section>
+  <section>
     <!--  商品详情 -->
     <el-tabs type="border-card" class="m-t" @tab-click="handleClick" v-loading="loading">
       <el-tab-pane label="基本信息">
@@ -53,7 +53,7 @@
               </li>
               <li>
                 <label>建议售价：</label>
-                <span>{{wareInfo.suggestedPrice}}</span>
+                <span>{{wareInfo.suggestedPrice | currency}}元</span>
               </li>
               <li>
                 <label>至少提前多少天购买：</label>
@@ -68,7 +68,7 @@
         </el-row>
         <el-row>
           <h3>推荐概述</h3>
-          <div v-html="" style="margin: 15px">{{wareInfo.wareDesc}}</div>
+          <div v-html="wareInfo.wareDesc" style="margin: 15px"></div>
         </el-row>
       </el-tab-pane>
       <el-tab-pane label="行程介绍">
@@ -169,7 +169,12 @@
           <el-table-column prop="wareCode" label="服务ID" width="180px"></el-table-column>
           <el-table-column prop="wareName" label="服务名称"></el-table-column>
           <el-table-column prop="wareDesc" label="服务描述"></el-table-column>
-          <el-table-column prop="status" label="状态" width="100px"></el-table-column>
+          <el-table-column label="详情" width="180px">
+            <template scope="scope">
+              <el-button type="primary" size="small" @click="showDetail(scope.row)">查看</el-button>
+              <el-button type="primary" size="small" @click="showStorage(scope.row.wareId)">价格库存</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="推荐活动">
@@ -178,19 +183,69 @@
           <el-table-column prop="wareCode" label="活动ID" width="180px"></el-table-column>
           <el-table-column prop="wareName" label="活动名称"></el-table-column>
           <el-table-column prop="wareDesc" label="活动描述"></el-table-column>
-          <el-table-column prop="status" label="状态" width="100px"></el-table-column>
+          <el-table-column label="详情" width="180px">
+            <template scope="scope">
+              <el-button type="primary" size="small" @click="showDetail(scope.row)">查看</el-button>
+              <el-button type="primary" size="small" @click="showStorage(scope.row.wareId)">价格库存</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-tab-pane>
     </el-tabs>
     <!-- 图片预览 -->
-    <el-dialog v-model="previewVisible" size="tiny">
+    <el-dialog :visible.sync="previewVisible" size="tiny">
       <img width="100%" :src="previewImgUrl">
     </el-dialog>
-	</section>
+    <!-- 附属商品详情 -->
+    <el-dialog :visible.sync="subInfoVisible" title="附加服务">
+      <el-form :model="serviceInfo" label-width="120px">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="服务名称：">
+                <span>{{serviceInfo.wareName}}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="缩略名：">
+                <span>{{serviceInfo.briefName}}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="建议售价：">
+                <span>{{serviceInfo.suggestedPrice}}</span>
+              </el-form-item>
+            </el-col> 
+            <el-col :span="12">
+              <el-form-item label="关键字：">
+                <span>{{serviceInfo.keyWords}}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-form-item label="服务描述：">
+              <span>{{serviceInfo.wareDesc}}</span>
+            </el-form-item>
+          </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="subInfoVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 附属商品sku查看 -->
+    <el-dialog :visible.sync="storageVisible" size="large">
+      <full-calendar 
+        :events="subWareSkuList" 
+        first-day='0'
+        @changeMonth="changeMonth">
+      </full-calendar>
+    </el-dialog>
+  </section>
 </template>
 <script>
-  import { readWareInfo, readTripDetailList, readWareFileList, readAttribute, readSkuInfoList, readWareService, readWareActivity } from '@/api'
-	export default {
+  import { readWareInfo, readTripDetailList, readWareFileList, readAttribute, readSkuInfoList, readWareService, readWareActivity, verifyWareInfo} from '@/api'
+  export default {
     data () {
       return {
         wareId: '',
@@ -200,10 +255,15 @@
         skuList: [],
         attributeInfo: {},
         serviceList: [],
+        serviceInfo: {},
         activityList: [],
+        activityInfo: {},
+        subWareSkuList: [],
+        loading: false,
         previewImgUrl: '',
         previewVisible: false,
-        loading: false
+        storageVisible: false,
+        subInfoVisible: false,
       };
     },
     methods: {
@@ -216,13 +276,13 @@
       formatCreateTime (row, column) {
         return this.$moment(row.createTime).format('YYYY-MM-DD HH:mm:ss')
       },
+      // 图片预览
       viewImage (filePath) {
         this.previewImgUrl = filePath;
         this.previewVisible = true;
       },
       // tab切换
       handleClick(tab, event) {
-        console.log(tab.index)
         this.loading = true
         if (tab.index == 0) {
           this.loading = false;
@@ -236,7 +296,50 @@
             readTripDetailList({wareId: this.wareId}).then(res => {
               console.log(res)
               if( res.data.code === '0001') {
-                this.tripList = res.data.result.tripDetailList
+                this.tripList = res.data.result.tripDetailList;
+                this.tripList.forEach((trip) => {
+                  switch (trip.programType) {
+                    case 1:
+                      trip.programType = '航班'
+                      break;
+                    case 2: 
+                      trip.programType = '交通'
+                      break;
+                    case 10: 
+                      trip.programType = '酒店'
+                      break;
+                    case 20: 
+                      trip.programType = '景点'
+                      break;
+                    case 30: 
+                      trip.programType = '早餐'
+                      break;
+                    case 31: 
+                      trip.programType = '午餐'
+                      break;
+                    case 32: 
+                      trip.programType = '下午茶'
+                      break;
+                    case 33: 
+                      trip.programType = '晚餐'
+                      break;
+                    case 34: 
+                      trip.programType = '宵夜'
+                      break;
+                    case 40: 
+                      trip.programType = '购物'
+                      break;
+                    case 50: 
+                      trip.programType = '自由活动'
+                      break;
+                    case 60: 
+                      trip.programType = '主题活动'
+                      break;
+                    default:
+                      trip.programType = '自定义'
+                      break;
+                  }
+                })
               } else {
                 console.log(res.data.message)
               }
@@ -369,9 +472,35 @@
       changeMonth (start, end, current) {
         // console.log(current.format())
       },
+      // 附属商品详情查看
+      showDetail (item) {
+        this.serviceInfo = Object.assign({}, item)
+        this.subInfoVisible = true
+      },
+      // 附属商品sku查看
+      showStorage (wareId) {
+        console.log(wareId)
+        readSkuInfoList({wareId: wareId}).then(res => {
+          console.log(res)
+          if(res.data.code === '0001') {
+            this.subWareSkuList = res.data.result.skuList || [];
+            this.subWareSkuList.forEach((data) => {
+              data.start = data.skuDate
+            })
+          } else {
+            this.$message.error(res.data.message)
+          }
+        }).catch(err => {
+          console.log(err)
+          this.catchError(err.response)
+        })
+        this.storageVisible = true
+        // this.$router.push({
+        //   path: 'skuShow?wareId='+ wareId
+        // })
+      },
     },
     mounted () {
-    	this.$store.dispatch('setStepActive', 1)
       this.wareId = parseInt(this.$route.query.wareId);
       this.wareId && this.getWareInfo()
     }
@@ -380,6 +509,7 @@
 <style scoped lang="scss">
   .el-card {
     margin: 15px;
+    padding: 0
   }
   .detail-list {
     margin-left: 15px;

@@ -1,12 +1,12 @@
 <template>
 	<section>
 		<el-row class="toolbar">
-    	    <el-form :inline="true" :model="filter">
+        	<el-form :inline="true" :model="filter">
                 <el-form-item label="">
-                    <el-input v-model="filter.orderCode" placeholder="输入订单号"></el-input>
+                  <el-input v-model="filter.orderCode" placeholder="输入订单号"></el-input>
                 </el-form-item>
                 <el-form-item label="">
-                    <el-input v-model="filter.wareName" placeholder="输入商品名称"></el-input>
+                  <el-input v-model="filter.wareName" placeholder="输入商品名称"></el-input>
                 </el-form-item>
                 <el-form-item label="出发日期：">
                     <el-date-picker
@@ -34,8 +34,9 @@
                 </el-form-item>
             </el-form>
             <el-radio-group v-model="filter.status" @change="statusChange">
-                <el-radio-button :label="7">结算中</el-radio-button>
-                <el-radio-button :label="8">已结算</el-radio-button>
+                <el-radio-button :label="4">待发团</el-radio-button>
+                <el-radio-button :label="5">已发团</el-radio-button>
+                <el-radio-button :label="6">已回团</el-radio-button>
             </el-radio-group>
         </el-row>
 		<el-table :data="orderList" border style="width: 100%" v-loading="loading">
@@ -50,12 +51,38 @@
             </el-table-column> 
 	        <el-table-column prop="dateDepart" label="出发日期"  width="140" ></el-table-column>
             <el-table-column prop="adultPrice" label="成人底价"  width="100" ></el-table-column>
-            <el-table-column label="操作" width="160">
+            <el-table-column label="操作" width="200">
                 <template scope="scope">
-                  <el-button size="small" @click="handleCheck(scope.$index, scope.row)">查看</el-button>
+                    <el-button size="small" @click="switchBill(scope.$index,scope.row)" v-if="scope.row.status==4">改单</el-button>
+                    <el-button size="small" @click="refund(scope.$index,scope.row)" v-if="scope.row.status==4">退款</el-button>
+                    <el-button size="small" @click="handleCheck(scope.$index, scope.row)">查看</el-button>
                 </template>
             </el-table-column>
 		</el-table>
+    <!-- 改单弹窗 -->
+        <el-dialog title="改单" :visible.sync="dialogVisible1" size="tiny">
+            <el-form :model="changeForm" :rules="changeRules" ref="changeForm" label-width="10px">
+                <el-form-item prop="changeInfo">
+                    <el-input type="textarea" v-model="changeForm.changeInfo" placeholder="请输入改单原因" :rows="5"></el-input> 
+                </el-form-item>
+            </el-form>      
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="switchBillSubmit('changeForm')">提交</el-button>
+                <el-button @click="dialogVisible1 = false">取 消</el-button>
+            </div>
+        </el-dialog>
+    <!-- 退款弹窗 -->
+        <el-dialog title="退款" :visible.sync="dialogVisible2" size="tiny">
+            <el-form :model="refundForm" :rules="refundRules" ref="refundForm" label-width="10px">
+                <el-form-item prop="cancelReason">      
+                    <el-input type="textarea" v-model="refundForm.cancelReason" placeholder="请输入退款原因" :rows="5"></el-input> 
+                </el-form-item>
+            </el-form>      
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="refundSubmit('refundForm')">提交</el-button>
+            <el-button @click="dialogVisible2 = false">取 消</el-button>
+        </div>
+        </el-dialog>
 		<el-row class="toolbar">
             <el-pagination
                 @size-change="handleSizeChange"
@@ -70,17 +97,36 @@
 	</section>
 </template>
 <script>
-    import { readOrderList } from '@/api'
+    import { readOrderList, switchBill, orderCancel } from '@/api'
     export default {
         data() {
             return {
                 loading: false,
+                dialogVisible1:false,
+                dialogVisible2:false,
+                id:'',
+                changeForm:{
+                    changeInfo:''
+                },
+                refundForm:{
+                    cancelReason:''
+                }, 
+                changeRules:{
+                    changeInfo:[
+                        { required: true, message: '请输入改单原因', trigger: 'blur' }
+                    ]
+                },
+                refundRules:{
+                    cancelReason:[
+                        { required: true, message: '请输入退款原因', trigger: 'blur' }
+                    ]
+                },  
                 filter: {
                   orderCode: '',
                   wareName: '',
                   startDate: '',
                   endDate: '',
-                  status: 7
+                  status: 4
                 },
                 pageNo: 1,
                 pageSize: 10,
@@ -118,10 +164,12 @@
                   orderId: '1001',
                   wareId: '0001',
                   wareName: '产品1',
-                  orderStatus: 1,
+                  status: 4,
                   orderTotal: 20,
                   date: '2017-06-10',
-                  adultPrice: '12000'
+                  adultPrice: '12000',
+                  adultCount: 1,
+                  childCount:''
                 }]
             }
         },
@@ -161,7 +209,7 @@
                   default:
                    return '未知'
                    break;
-      	         }
+      	        }
             },
             startDateChange (val) {
                 this.filter.startDate = val;
@@ -178,14 +226,86 @@
                 this.getOrderList()
             },
             statusChange (val) {
-        	      this.getOrderList()
-        	},
-        	handleCheck (index,row) {
+    	        this.getOrderList()
+    	    },
+  	        handleCheck (index,row) {
         		this.$router.push({
-        			path:'/provider/order/orderDetail',
+        			path:'/distributor/order/orderDetail',
         			query: { orderId: row.orderId }
         		})
-        	},
+	        },
+            switchBill(index,row){
+                this.changeForm.changeInfo = "";
+                this.dialogVisible1 = true;
+                this.id = row.orderId;
+            },
+            refund(index,row){
+                this.refundForm.cancelReason = "";
+                this.dialogVisible2 = true;
+                this.id = row.orderId;
+            },
+            switchBillSubmit(changeForm){     
+                //提交改单接口        
+                this.$refs[changeForm].validate((valid) => {
+                    if (valid) {
+                        var data = {
+                          oldOrderId:this.id,
+                          changeInfo:this.changeForm.changeInfo
+                        }
+                        console.log(data);
+                        switchBill(data).then((res) => {
+                            console.log(res)
+                            if(res.data.code === '0001') {
+                             this.$message({
+                                message: '改单申请提交成功',
+                                type: 'success'
+                              });
+                             this.getOrderList();
+                            } else {
+                              this.$message.error(res.data.message)
+                            }              
+                        }).catch((err)=>{
+                            console.log(err);
+                            this.catchError(err.response)
+                        });
+                        this.dialogVisible1 = false;
+                    }else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });   
+            },
+            refundSubmit(refundForm){
+                //提交退款接口
+                this.$refs[refundForm].validate((valid) => {
+                    if (valid) {
+                        var data = {
+                            orderId:this.id,
+                            cancelReason:this.refundForm.cancelReason
+                        }
+                        console.log(data);
+                        orderCancel(data).then((res) => {
+                            console.log(res)
+                            if(res.data.code === '0001') {
+                                this.$message({
+                                    message: '退款申请提交成功',
+                                    type: 'success'
+                                });
+                                this.getOrderList();
+                            } else {
+                                this.$message.error(res.data.message)
+                            }    
+                        }).catch((err)=>{
+                            console.log(err)
+                            this.catchError(err.response)
+                        });
+                        this.dialogVisible2 = false;
+                    }else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                })
+            },
         // 订单列表
             getOrderList() {
                 if (this.filter.startDate > this.filter.endDate) {

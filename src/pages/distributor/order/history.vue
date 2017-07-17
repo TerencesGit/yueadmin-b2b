@@ -1,12 +1,12 @@
 <template>
 	<section>
 		<el-row class="toolbar">
-    	    <el-form :inline="true" :model="filter">
+        	<el-form :inline="true" :model="filter">
                 <el-form-item label="">
-                    <el-input v-model="filter.orderCode" placeholder="输入订单号"></el-input>
+                  <el-input v-model="filter.orderCode" placeholder="输入订单号"></el-input>
                 </el-form-item>
                 <el-form-item label="">
-                    <el-input v-model="filter.wareName" placeholder="输入商品名称"></el-input>
+                  <el-input v-model="filter.wareName" placeholder="输入商品名称"></el-input>
                 </el-form-item>
                 <el-form-item label="出发日期：">
                     <el-date-picker
@@ -34,12 +34,13 @@
                 </el-form-item>
             </el-form>
             <el-radio-group v-model="filter.status" @change="statusChange">
-                <el-radio-button :label="7">结算中</el-radio-button>
-                <el-radio-button :label="8">已结算</el-radio-button>
+                <el-radio-button :label="9">已完成</el-radio-button>
+                <el-radio-button :label="0">已取消</el-radio-button>
+                <el-radio-button :label="10">已退款</el-radio-button>
             </el-radio-group>
         </el-row>
 		<el-table :data="orderList" border style="width: 100%" v-loading="loading">
-    	    <el-table-column prop="orderCode" label="订单编号"  width="180" ></el-table-column>
+	       <el-table-column prop="orderCode" label="订单编号"  width="180" ></el-table-column>
             <el-table-column prop="wareId" label="产品编号"  width="100" ></el-table-column>
             <el-table-column prop="wareName" label="产品名称"></el-table-column>
             <el-table-column prop="status" label="订单状态" width="100" :formatter="formatStatus"></el-table-column>
@@ -80,7 +81,7 @@
                   wareName: '',
                   startDate: '',
                   endDate: '',
-                  status: 7
+                  status: 9
                 },
                 pageNo: 1,
                 pageSize: 10,
@@ -121,7 +122,9 @@
                   orderStatus: 1,
                   orderTotal: 20,
                   date: '2017-06-10',
-                  adultPrice: '12000'
+                  adultPrice: '12000',
+                  adultCount: 1,
+                  childCount:''
                 }]
             }
         },
@@ -161,7 +164,7 @@
                   default:
                    return '未知'
                    break;
-      	         }
+      	        }
             },
             startDateChange (val) {
                 this.filter.startDate = val;
@@ -178,11 +181,11 @@
                 this.getOrderList()
             },
             statusChange (val) {
-        	      this.getOrderList()
+        	   this.getOrderList()
         	},
         	handleCheck (index,row) {
         		this.$router.push({
-        			path:'/provider/order/orderDetail',
+        			path:'/distributor/order/orderDetail',
         			query: { orderId: row.orderId }
         		})
         	},

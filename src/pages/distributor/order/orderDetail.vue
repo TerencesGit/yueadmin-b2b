@@ -5,25 +5,13 @@
 		<el-card>
 			<p>悦视觉产品名称：<span style="color:#009dda" v-text="orderInfo.wareName"></span></p>
 			<p>订单号：<span v-text="orderInfo.orderCode"></span><span style="color:red" v-text="state"></span></p>
-		    <el-button type="primary" @click="providerRemark">商家备注</el-button>
-		    <el-button type="primary">打印订单</el-button>
-		    <el-dialog title="商家备注" :visible.sync="dialogVisible" size="tiny">
-			    <el-form :model="remarkForm" :rules="remarkRules" ref="remarkForm" label-width="10px">
-		            <el-form-item prop="remark">
-						<el-input type="textarea" v-model="remarkForm.remark" placeholder="请输入备注内容" :rows="5"></el-input>
-					</el-form-item>
-				</el-form>    
-				<div slot="footer" class="dialog-footer">
-				    <el-button type="primary" @click="remarkConfirm('remarkForm')">确定</el-button>
-				    <el-button @click="dialogVisible = false">取 消</el-button>
-				</div>
-			</el-dialog>
+	    <el-button type="primary">打印订单</el-button>
 		</el-card>
 	<!-- 备注 -->
 		<h4>备注</h4>
 	    <el-card>
-		    <p>预定备注: <span v-text="orderInfo.remarks"></span></p>
-		    <p>商家备注: <span v-text="orderInfo.premarks"></span></p>
+		    <p>预定备注:<span v-text="orderInfo.remarks"></span></p>
+		    <p>商家备注:<span v-text="orderInfo.premarks"></span></p>
 		</el-card>
 	<!-- 预定项目 -->
 		<h4>预定项目</h4>
@@ -46,8 +34,8 @@
 		      align="center"
 		      label="份数/人数">
 		      <template scope="scope">
-		      	<p>{{parseInt(scope.row.adultCount ? scope.row.adultCount : 0) + parseInt(scope.row.childCount ? scope.row.childCount : 0)}}({{scope.row.adultCount}}大/{{scope.row.childCount}}小)</p>
-		      </template>
+				<p>{{parseInt(scope.row.adultCount ? scope.row.adultCount : 0) + parseInt(scope.row.childCount ? scope.row.childCount : 0)}}({{scope.row.adultCount}}大/{{scope.row.childCount}}小)</p>
+			</template>
 		    </el-table-column>
 		    <el-table-column
 		      prop="dateDepart"
@@ -63,9 +51,9 @@
 		      align="center"
 		      label="卖价">
 		      <template scope="scope">
-		      	<p>成人:{{parseInt(scope.row.adultPrice ? scope.row.adultPrice : 0).toFixed(2)}}</p>
-		      	<p>儿童:{{parseInt(scope.row.childPrice ? scope.row.childPrice : 0).toFixed(2)}}</p>
-		      </template>
+				<p>成人:{{parseInt(scope.row.adultPrice ? scope.row.adultPrice : 0).toFixed(2)}}</p>
+				<p>儿童:{{parseInt(scope.row.childPrice ? scope.row.childPrice : 0).toFixed(2)}}</p>
+			</template>
 		    </el-table-column>
 		    <el-table-column
 		      prop="amountAll"
@@ -213,14 +201,10 @@
 	</section>
 </template>
 <script>
-	import { getOrderDetail ,addRemark } from '@/api'
+	import { getOrderDetail } from '@/api'
 	export default {
 		data () {
-			return {
-				remarkForm:{
-					remark:''
-				},				
-				dialogVisible:false,			
+			return {			
 				orderInfo:{
 					wareName: '',
 					orderCode: '',
@@ -235,15 +219,10 @@
 						phone:'400123123',
 						email:'yueshijue@163.com'
 					}]
-				},
-				remarkRules:{
-                    remark:[
-                        { required: true, message: '请输入备注内容', trigger: 'blur' }
-                    ]
-                },
+				}
 			}
 		},
-		methods:{					
+		methods:{
 			format(row,col){
 				switch(row.status){
 					case 0:
@@ -312,42 +291,10 @@
 					  return '其他'
 					  break;
 				}
-			},
-			providerRemark(){
-				this.remarkForm.remark = '';
-				this.dialogVisible = true;
-			},
-			remarkConfirm(remarkForm){
-				this.$refs[remarkForm].validate((valid) => {
-                    if (valid) {
-						// 备注接口
-						let params = {
-							remark:this.remarkForm.remark,
-							orderId:this.$route.query.orderId
-		        		}
-		        		console.log(params)
-		        		addRemark(params).then(res => {
-				          console.log(res)
-				          if(res.data.code === '0001') {
-				            this.$message.success('提交成功');
-				            this.orderInfo.premarks = this.remarkForm.remark;
-				          } else {
-				            this.$message.error(res.data.message)
-				          }				          
-				        }).catch(err => {
-				          console.log(err)
-				          this.catchError(err.response)
-				        })
-						this.dialogVisible = false;	
-					}else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                })		
 			}
 		},
 		computed:{
-			'state':function(){
+			state:function(){
 				switch(this.orderInfo.status){
 					case 0:
 					  return '【订单已取消】'
@@ -381,7 +328,7 @@
               		  	break;
               		default:
               		 	return '未知'
-              		 	break;					  					  
+              		 	break;								  					  
 				}
 			}
 		},
@@ -400,6 +347,7 @@
 			 	this.orderInfo.status = data.info.status;
 				this.orderInfo.remarks = data.item.remarks;
 				this.orderInfo.premarks = data.info.premarks;
+				console.log(this.orderInfo.status,data.info.status);
 				data.item.forEach((value)=>{
 					//预定项目信息
 					let reserveWare = {

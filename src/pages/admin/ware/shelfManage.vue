@@ -16,14 +16,16 @@
 		<el-table :data="wareList" border highlight-current-row>
 			<el-table-column prop="wareId" label="商品编号" srotable></el-table-column>
 			<el-table-column prop="wareName" label="商品名称" srotable></el-table-column>
-			<el-table-column prop="srcCityName" label="出发城市"></el-table-column>
+			<el-table-column prop="providerName" label="供应商" width="150"></el-table-column>
+			<el-table-column prop="srcCityName" label="出发城市" width="120"></el-table-column>
 			<!-- <el-table-column prop="dstCityName" label="目的城市"></el-table-column> -->
-			<el-table-column prop="createName" label="联系人"></el-table-column>
-			<el-table-column prop="status" label="状态" :formatter="formatStatus"></el-table-column>
-			<el-table-column label="操作">
+			<el-table-column prop="createName" label="联系人" width="120"></el-table-column>
+			<el-table-column prop="status" label="状态" :formatter="formatStatus" width="100"></el-table-column>
+			<el-table-column label="操作" width="180">
 				<template scope="scope">
 					<el-button v-if="scope.row.status === 0" size="small" @click="handleShelf(scope.row)">上架</el-button>
 					<el-button v-else size="small" @click="handleShelf(scope.row)">下架</el-button>
+					<el-button size="small" @click="handleShowDetail(scope.row.wareId)">详情</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -59,6 +61,14 @@
 			formatStatus (row, column) {
 				return row.status === 0 ? '下架' : row.status === 1 ? '上架' : '未知'
 			},
+			handleSizeChange (val) {
+				this.pageSize = val;
+				this.getWareList()
+			},
+			handleCurrentChange (val) {
+				this.currPage = val;
+				this.getWareList()
+			},
 			getWareList () {
 				let data = {
 					currPage: this.currPage,
@@ -85,6 +95,7 @@
 					this.catchError(err.response)
 				})
 			},
+			// 商品上下架
 			handleShelf (row) {
 				let status = row.status === 1 ? 0 : 1
 				let text = row.status === 1 ? '下架' : '上架'
@@ -106,14 +117,12 @@
 					this.$message.info('已取消操作')
 				})
 			},
-			handleSizeChange (val) {
-				this.pageSize = val;
-				this.getWareList()
-			},
-			handleCurrentChange (val) {
-				this.currPage = val;
-				this.getWareList()
-			}
+			// 商品详情
+	    handleShowDetail (wareId) {
+	      this.$router.push({
+	        path: '/admin/ware/detail?wareId=' + wareId
+	      })
+	    },
 		},
 		mounted () {
 			this.getWareList()
