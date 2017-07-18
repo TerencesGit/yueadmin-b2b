@@ -52,8 +52,8 @@ export default {
     }
   },
   mounted () {
-   this.getUserInfo()
-   this.getMenu()
+   // this.getUserInfo()
+   // this.getMenu()
   }
 }
 </script>

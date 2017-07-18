@@ -330,9 +330,12 @@
 		created(){
 			this.loading = true;
 			console.log(this.$route.query);
-			let data = this.$route.query.data;
-			if(data){
-				retreatStrategyEdit(data).then((res)=>{
+			let groupId = this.$route.query.groupId;
+			if(groupId){
+				let data = {
+					groupId: groupId
+				}
+				retreatStrategyEdit(JSON.stringify(data)).then((res)=>{
 					if(res.data.code === "0001"){
 						this.loading = false;
 						this.data.reserve2 = res.data.result.reserve2;

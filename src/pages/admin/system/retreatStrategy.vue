@@ -18,16 +18,15 @@
 		},
 		methods:{
 			add(){
-				console.log('parentAdd',this);
+				// console.log('parentAdd',this);
 			},
 			addList(){
 				this.$router.push({ path: '/admin/system/retreatStrategy/retreatStrategyAdd'});
-				console.log(this);
+				// console.log(this);
 			}
 		},
 		created(){
 			this.$router.push({ path: '/admin/system/retreatStrategy/retreatStrategyList'});
-			console.log(this);
 		}
 	}
 </script>

@@ -42,6 +42,13 @@ module.exports = {
           '^/imgUploadUrl': ''
         }
       },
+      '/baseUrl': {
+        target: 'http://mall.yueshijue.com/b2b',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/baseUrl': ''
+        }
+      },
       '/wareUrl': {
         target: 'http://192.168.199.211:8080/yue_yb2b',
         changeOrigin: true,

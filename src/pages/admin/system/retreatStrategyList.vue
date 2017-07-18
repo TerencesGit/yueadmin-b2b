@@ -31,7 +31,7 @@
 </template>
 
 <script>
-    import { retreatStrategyList, retreatStrategyDelete } from '@/api'
+  import { retreatStrategyList, retreatStrategyDelete } from '@/api'
 	export default{
 		data(){
 			return{
@@ -67,8 +67,8 @@
 				}
 				data = JSON.stringify(data);
 				this.$router.push({ 
-					path: '/admin/system/retreatStrategy/retreatStrategyEdit',
-					query: { data: data}
+					path: '/admin/system/retreatStrategy/retreatStrategyEdit?groupId='+row.groupId
+					// query: { data: data}
 				})
 			},
 			handleDelete(index,row){
@@ -124,16 +124,16 @@
 						this.loading = false;
 						this.strategyList = res.data.result.list;
 						this.pageInfo = res.data.result.pageInfo;
-					}else{
+					} else {
 						this.$message({
 							message:'获取列表失败，请稍后重试',
 							type:'warning'
 						})
 						this.loading = false;
 					}
-				}).catch((error)=>{
-					this.catchError(error.response)
+				}).catch(error =>{
 					this.loading = false;
+					this.catchError(error.response)
 				})
 			}
 		},

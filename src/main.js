@@ -24,7 +24,7 @@ import LinkStep from '@/components/step'
 import LinkSteps from '@/components/steps'
 import RegionPicker from '@/components/region-picker'
 NProgress.configure({ ease: 'ease', speed: 500, minimum: 0.5, showSpinner: false})
-Mock.bootstrap()
+// Mock.bootstrap()
 Vue.prototype.$moment = moment
 const globalVariable = {
   resError: '服务器响应失败，请重试'

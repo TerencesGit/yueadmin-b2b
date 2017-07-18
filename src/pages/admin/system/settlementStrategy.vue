@@ -192,7 +192,6 @@
 </template>
 
 <script>
-	import axios from 'axios'
 	import {updateStrategy, sysSettleInfoList, deleteStrategy, insertStrategy} from '@/api'
 	export default{
 		data(){

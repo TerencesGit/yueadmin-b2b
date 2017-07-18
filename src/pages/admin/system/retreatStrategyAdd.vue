@@ -1,11 +1,5 @@
 <template>
 <div class="retreatStrategyAdd">
-	<!-- 新增策略star -->
-	<el-row type="flex" justify="end" style="margin-bottom:0px">
-		<el-col :span="4">
-			<el-button type="primary" @click="add">新增</el-button>
-		</el-col>
-	</el-row>
 	<!-- 选择策略类型 -->
 	<el-dialog top="30%" :close-on-click-modal="false" size="tiny" title="触发退改协议类型" :visible.sync="addStrategyDialog">
 		<el-form :model="submit" ref="submit" label-width="130px">
@@ -247,7 +241,6 @@
 		methods:{
 			add(){
 				this.addStrategyDialog = true;
-				this.$emit('add',123);
 			},
 			handleAdd(index,info){
 				// let data = Object.assign({},this.tempRetreatStrategy);
