@@ -61,6 +61,7 @@ export default {
   },
   methods: {
     getWareList () {
+      this.loading = true;
       let params = {
         currPage: this.currPage,
         pageSize: this.pageSize,
@@ -70,6 +71,7 @@ export default {
       }
       // 商品列表
       readWareList(params).then(res => {
+        this.loading = false;
         if (res.data.code === '0001') {
           this.total = res.data.result.pageInfo.count;
           this.wareList = res.data.result.wareList
@@ -78,6 +80,7 @@ export default {
         }
       })
       .catch(err => {
+        this.loading = false;
         console.log(err)
         this.catchError(err.response)
       })

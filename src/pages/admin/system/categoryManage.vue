@@ -127,8 +127,7 @@
       },
       // 节点详情
     	nodeClick (data) {
-        if (this.selectedKind.kindId === data.kindId) return;
-        this.selectedKind = Object.assign({}, data)
+        console.log(data)
     	},
       // 品类新增
       handleAdd () {

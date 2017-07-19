@@ -2,9 +2,9 @@
     <div class="event-item" :class="cssClasses"
        @click="$emit('click', event, $event)">
         <div class="provider">
-            <p class="adultPrice" v-if="event.adultPrice">成人：<i class="fa fa-rmb"></i> {{ event.adultPrice }}</p>
-            <p class="childPrice" v-if="event.childPrice">儿童：<i class="fa fa-rmb"></i> {{ event.childPrice }}</p>
-            <p class="singlePrice" v-if="event.singlePrice">单人差：<i class="fa fa-rmb"></i> {{ event.singlePrice }}</p>
+            <p class="adultPrice" v-if="event.adultPrice >= 0">成人：<i class="fa fa-rmb"></i> {{ event.adultPrice }}</p>
+            <p class="childPrice" v-if="event.childPrice >= 0">儿童：<i class="fa fa-rmb"></i> {{ event.childPrice }}</p>
+            <p class="singlePrice" v-if="event.singlePrice >= 0">单人差：<i class="fa fa-rmb"></i> {{ event.singlePrice }}</p>
         </div>
         <p class="stock" v-if="event.storageNum >= 0">库存：{{ event.storageNum }}</p>
         <div class="admin">

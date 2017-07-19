@@ -24,7 +24,7 @@
 			<el-table-column prop="updateTime" label="更新时间" width="180px" :formatter="formatUpdateTime"></el-table-column>
 			<el-table-column label="操作" width="120px">
 				<template scope="scope">
-					<el-button type="primary" size="small" @click="setStorage(scope.row.wareId)">出入库</el-button>
+					<el-button type="primary" size="small" @click="setStorage(scope.row.wareId)">库存设置</el-button>
 				</template>
 			</el-table-column>
 		</el-table>

@@ -60,7 +60,7 @@
 						:data="uploadData"
 						ref="uploadMedia"
 						class="multiple-uploader"
-			  		action="/imgUploadUrl"
+			  		action="/b2b/file/upload"
 			  		list-type="picture-card"
 			  		accept="image/jpeg, image/png"
 			  		:on-preview="handleImgPreview"
@@ -118,7 +118,7 @@
 					if (res.data.code === '0001') {
 						this.mediaList = res.data.result.fileList;
 						this.mediaList.forEach(function(media, index) {
-							media.filePath = 'http://192.168.199.211:8080/' + media.filePath;
+							media.filePath = media.filePath;
 						})
 					} else {
 						this.$message.error(res.data.message)

@@ -16,21 +16,23 @@
       </el-form>
 		</el-row>
 		<!-- 推荐服务列表 -->
-		<el-table :data="serviceList" border highlight-current-row>
+		<el-table 
+			border 
+			:data="serviceList" 
+			v-loading="loading"
+			highlight-current-row>
 			<el-table-column type="index"></el-table-column>
 			<el-table-column prop="wareCode" label="服务ID" width="180px"></el-table-column>
 			<el-table-column prop="wareName" label="服务名称"></el-table-column>
 			<el-table-column prop="wareDesc" label="服务描述"></el-table-column>
 			<el-table-column prop="updateTime" label="更新时间" width="180px" :formatter="formatUpdateTime"></el-table-column>
-			<el-table-column label="操作" width="180px">
+			<el-table-column label="操作" width="160px">
 				<template scope="scope">
-					<!-- <el-button v-if="scope.row.status === 0" size="small" @click="handleShelf(scope.row)">上架</el-button>
-					<el-button v-if="scope.row.status === 1" size="small" @click="handleShelf(scope.row)">下架</el-button> -->
 					<el-button type="primary" size="small" @click="setStorage(scope.row.wareId)">设置库存</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
-		<el-row class="toolbar">
+		<!-- <el-row class="toolbar">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -40,7 +42,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
-    </el-row>
+    </el-row> -->
 	</section>
 </template>
 <script>
@@ -56,7 +58,8 @@
 				filter: {
 					code: '',
 					name: ''
-				}
+				},
+				loading: false,
 			}
 		},
 		methods: {
@@ -71,6 +74,7 @@
 			},
 			// 获取附加服务列表
 			getServiceList () {
+				this.loading = true;
 				let params = {
 					parentId: this.wareId
 				}
@@ -81,8 +85,11 @@
 					} else {
 						this.$message.error(res.data.message)
 					}
+					this.loading = false;
 				}).catch(err => {
+					this.loading = false;
 					console.log(err)
+					this.catchError(err.response)
 				})
 			},
 			// 设置库存
@@ -91,26 +98,6 @@
       		path: '/provider/ware/storageSet?wareId=' + wareId
       	})
       },
-      // 上下架操作
-	    handleShelf (row) {
-	    	let statusInfo =  row.status === 1 ? '下架' : '上架';
-	    	this.$confirm('确定'+statusInfo+'该附加服务？', '提示', {type: 'warning'}).then(() => {
-	        updateWareUpDownStatus({wareId: row.wareId}).then(res => {
-		     	  console.log(res)
-		     	  if(res.data.code === '0001') {
-		     	  	this.$message.success(res.data.message)
-		     	  	this.getWareList()
-		     	  } else {
-		     	  	this.$message.error(res.data.message)
-		     	  }
-		      }).catch(err => {
-		      	console.log(err)
-		      })
-	      }).catch(err => {
-	      	console.log(err)
-	        this.$message('取消操作')
-	      })
-	    }
 		},
 		mounted () {
 			this.wareId = parseInt(this.$route.query.wareId)

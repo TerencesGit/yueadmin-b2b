@@ -70,6 +70,7 @@
 				this.getWareList()
 			},
 			getWareList () {
+				this.loading = true;
 				let data = {
 					currPage: this.currPage,
 					pageSize: this.pageSize,
@@ -80,6 +81,7 @@
 				console.log(data)
 				readWareList(data).then(res => {
 					console.log(res)
+					this.loading = false;
 					if (res.data.code === '0001') {
 						let page = res.data.result.pageInfo;
 						this.currPage = page.currPage;
@@ -91,6 +93,7 @@
 					}
 				})
 				.catch(err => {
+					this.loading = false;
 					console.log(err)
 					this.catchError(err.response)
 				})

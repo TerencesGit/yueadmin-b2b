@@ -71,6 +71,7 @@ export default {
     },
     // 获取商品列表
     getWareList () {
+      this.loading = true;
       let params = {
         currPage: this.currPage,
         pageSize: this.pageSize,
@@ -79,6 +80,7 @@ export default {
         verifyStatus: 2
       }
       readWareList(params).then(res => {
+        this.loading = false;
         console.log(res)
         if (res.data.code === '0001') {
           this.total = res.data.result.pageInfo.count;
@@ -88,6 +90,7 @@ export default {
         }
       })
       .catch(err => {
+        this.loading = false;
         console.log(err)
         this.catchError(err.response)
       })

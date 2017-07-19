@@ -104,39 +104,44 @@ export default {
             pass: Md5.hex_md5(this.loginForm.password)
           }
           // console.log(form)
-          requestLogin(form).then(res => {
-            console.log(res)
-            if (res.data.code === 0) {
-              let result = res.data.result;
-              console.log(result)
-              localStorage.setItem('sessionId', result.customerSessionId)
-              if (this.loginForm.remember) {
-                let name = btoa(escape(btoa(this.loginForm.username).split('').reverse().join()))
-                let pass = btoa(escape(btoa(this.loginForm.password).split('').reverse().join()))
-                utils.setCookie('uname', name, '7d')
-                utils.setCookie('ukey', pass, '7d')
-              } else {
-                utils.delCookie('uname')
-                utils.delCookie('ukey')
-              }
-              this.$message({
-                type: 'success',
-                message: '登录成功'
-              })
-              this.$router.push({ path: '/provider/ware/wareManage' })
-            } else {
-              this.$message({
-                type: 'error',
-                message: res.data.message
-              })
-              this.drawCode()
-            }
-            self.logging = false
+          this.$message({
+            type: 'success',
+            message: '登录成功'
           })
-          .catch(function (error) {
-            self.logging = false
-            console.log(error)
-          })
+          this.$router.push({ path: '/provider/ware/wareManage' })
+          // requestLogin(form).then(res => {
+          //   console.log(res)
+          //   if (res.data.code === 0) {
+          //     let result = res.data.result;
+          //     console.log(result)
+          //     localStorage.setItem('sessionId', result.customerSessionId)
+          //     if (this.loginForm.remember) {
+          //       let name = btoa(escape(btoa(this.loginForm.username).split('').reverse().join()))
+          //       let pass = btoa(escape(btoa(this.loginForm.password).split('').reverse().join()))
+          //       utils.setCookie('uname', name, '7d')
+          //       utils.setCookie('ukey', pass, '7d')
+          //     } else {
+          //       utils.delCookie('uname')
+          //       utils.delCookie('ukey')
+          //     }
+          //     this.$message({
+          //       type: 'success',
+          //       message: '登录成功'
+          //     })
+          //     this.$router.push({ path: '/provider/ware/wareManage' })
+          //   } else {
+          //     this.$message({
+          //       type: 'error',
+          //       message: res.data.message
+          //     })
+          //     this.drawCode()
+          //   }
+          //   self.logging = false
+          // })
+          // .catch(function (error) {
+          //   self.logging = false
+          //   console.log(error)
+          // })
         } else {
           this.invalid = true
           console.log('error submit!!');

@@ -96,6 +96,7 @@ export default {
     },
     // 商品列表
     getWareList () {
+      this.loading = true;
       let params = {
         currPage: this.currPage,
         pageSize: this.pageSize,
@@ -112,8 +113,10 @@ export default {
         } else {
           this.$message.error(res.data.message)
         }
+        this.loading = false;
       })
       .catch(err => {
+        this.loading = false;
         console.log(err)
         this.catchError(err.response)
       })

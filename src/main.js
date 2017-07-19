@@ -58,7 +58,7 @@ const editorOptions = {
         sizeLimit: 512 * 1024,
         // 上传参数,默认把图片转为base64而不上传 
         upload: {
-            url: '/imgUploadUrl',
+            url: '/b2b/file/upload',
             headers: {},
             params: {fileUrlType: 3},
             fieldName: 'fileName'
@@ -107,17 +107,19 @@ const router = new Router({
   routes
 })
 router.beforeEach((to, from, next) => {
-	if(to.path === '/register' || to.path === '/login') {
-    // localStorage.clear()
-		return next()
-	}
-	let sessionId = localStorage.getItem('sessionId')
-	if (!sessionId && to.path != '/login') {
-		next('/login')
-	} else {
-		NProgress.start()
-		next()
-	}
+	// if(to.path === '/register' || to.path === '/login') {
+ //    // localStorage.clear()
+	// 	return next()
+	// }
+	// let sessionId = localStorage.getItem('sessionId')
+	// if (!sessionId && to.path != '/login') {
+	// 	next('/login')
+	// } else {
+	// 	NProgress.start()
+	// 	next()
+	// }
+  Vue.prototype.$fromPath = from.path 
+  next() 
 })
 router.afterEach((to, from, next) => {
   // console.log(to.path) 

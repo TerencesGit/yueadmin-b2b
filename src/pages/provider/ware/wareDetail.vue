@@ -454,6 +454,7 @@
       },
       // 获取商品信息
       getWareInfo () {
+        this.loading = true;
         readWareInfo({wareId: this.wareId}).then(res => {
           console.log(res)
           if(res.data.code === '0001') {
@@ -464,7 +465,9 @@
           } else {
             this.$message.error(res.data.message)
           }
+          this.loading = false;
         }).catch(err => {
+          this.loading = false;
           console.log(err)
           this.catchError(err.response)
         })
