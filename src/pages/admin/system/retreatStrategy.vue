@@ -1,9 +1,10 @@
 <template>
 <div>
-	<el-row type="flex" justify="end" style="margin-bottom:50px">
-		<el-col :span="4">
-			<el-button type="primary" @click="addList">新增策略</el-button>
-		</el-col>
+	<el-row type="flex" style="margin-bottom:20px">
+		<el-radio-group @change="changeStrategy" v-model="currentStrategy">
+		    <el-radio-button label="/retreatStrategyList">策略列表</el-radio-button>
+		    <el-radio-button label="/retreatStrategyAdd">新增策略</el-radio-button>
+		</el-radio-group>
 	</el-row>
 	<router-view @add="add"></router-view>
 </div>
@@ -13,20 +14,16 @@
 	export default{
 		data(){
 			return{
-
+				currentStrategy:''
 			}
 		},
 		methods:{
 			add(){
-				// console.log('parentAdd',this);
+				console.log('parentAdd',this);
 			},
-			addList(){
-				this.$router.push({ path: '/admin/system/retreatStrategy/retreatStrategyAdd'});
-				// console.log(this);
+			changeStrategy(val){
+				this.$router.push({ path: '/admin/system/retreatStrategy' + val});
 			}
-		},
-		created(){
-			this.$router.push({ path: '/admin/system/retreatStrategy/retreatStrategyList'});
 		}
 	}
 </script>

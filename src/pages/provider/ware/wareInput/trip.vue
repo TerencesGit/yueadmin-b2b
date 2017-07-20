@@ -225,7 +225,7 @@
 					if (valid) {
 						let data = Object.assign({}, this.tripForm)
 						data.wareId = this.wareId;
-						saveWareTripDetail(JSON.stringify(data)).then(res => {
+						saveWareTripDetail(data).then(res => {
 							if (res.data.code === '0001') {
 								this.$message.success(res.data.message)
 								this.getTripList()

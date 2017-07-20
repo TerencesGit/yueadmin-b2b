@@ -1,5 +1,6 @@
 <template>
 <div class="retreatStrategyAdd">
+	<!-- 新增策略star -->
 	<!-- 选择策略类型 -->
 	<el-dialog top="30%" :close-on-click-modal="false" size="tiny" title="触发退改协议类型" :visible.sync="addStrategyDialog">
 		<el-form :model="submit" ref="submit" label-width="130px">
@@ -23,13 +24,9 @@
 	</el-dialog>
 	<!-- 新增策略end -->
 	<!-- 显示策略类型star -->
-	<el-row v-if="addList" type="flex" justify="star" style="margin-bottom:20px">
-		<el-col :span="4">
-			<el-card class="box-card">
-			  <div>触发退改协议类型：{{typeTxt}}</div>
-			  <div>策略名称：{{submit.reserve2}}</div>
-			</el-card>
-		</el-col>
+	<el-row v-if="addList" style="margin-bottom:10px">
+		<div>策略名称：{{submit.reserve2}}</div>
+	    <div>触发退改协议类型：{{typeTxt}}</div>
 	</el-row>
 	<!-- 显示策略类型end -->
 	<!-- 新增dialog -->
@@ -42,7 +39,7 @@
 	  		  </el-form-item>
 
 	  		  <el-form-item label="赔偿比例：" prop="compensationRate">
-	  		    <el-input v-model.number="tempRetreatStrategy.compensationRate" size="small" placeholder="请输入0-1之间的小数"></el-input>
+	  		    <el-input-number placeholder="请选择赔偿比例" v-model.number="tempRetreatStrategy.compensationRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
 	  		  </el-form-item>
 
 	  		  <el-form-item label="退改日命名：" prop="refundDateName">
@@ -72,7 +69,7 @@
 	    </el-form-item>
 
 	    <el-form-item label="赔偿比例：" prop="compensationRate">
-	      <el-input v-model.number="retreatStrategy.compensationRate" size="small" placeholder="请输入0-1之间的小数"></el-input>
+	      <el-input-number placeholder="请选择赔偿比例" v-model.number="retreatStrategy.compensationRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
 	    </el-form-item>
 
 	    <el-form-item label="退改日命名：" prop="refundDateName">
@@ -95,17 +92,17 @@
 	</el-dialog>
 	<!-- 新增界面star -->
 	<el-table v-loading="loading" v-if="addList" :data="retreatStrategys" border style="width: 100%">
-	    <el-table-column label="规则名" align="center" prop="refundName"></el-table-column>
+	    <el-table-column label="规则名" prop="refundName"></el-table-column>
 
-	    <el-table-column label="赔偿比例" align="center" prop="compensationRate"></el-table-column>
+	    <el-table-column label="赔偿比例" prop="compensationRate"></el-table-column>
 
-	    <el-table-column label="退改日命名" align="center" prop="refundDateName"></el-table-column>
+	    <el-table-column label="退改日命名" prop="refundDateName"></el-table-column>
 
-	    <el-table-column label="退改日期" align="center" prop="refundDays"></el-table-column>
+	    <el-table-column label="退改日期" prop="refundDays"></el-table-column>
 
-	    <el-table-column label="备注/描述" align="center" prop="note"></el-table-column>
+	    <el-table-column label="备注/描述" prop="note"></el-table-column>
 
-	    <el-table-column label="操作" width="230" align="center">
+	    <el-table-column label="操作" width="230">
 	      <template scope="scope">
 	        <el-button size="small"
 	          @click="handleAdd(scope.$index, scope.row)">添加</el-button>
@@ -119,10 +116,7 @@
 	<!-- 新增界面end -->
 	<!-- 保存策略star -->
     <el-row v-if="addList" type="flex" justify="center" style="margin-top:50px">
-    	<el-col :span="4">
-    		<el-button type="primary" @click="saveStrategy">保存</el-button>
-    		<el-button type="primary" @click="$router.push({ path: '/admin/system/retreatStrategy/retreatStrategyList'})">返回</el-button>
-    	</el-col>
+    	<el-button type="primary" @click="saveStrategy">保存</el-button>
     </el-row>
 	<!-- 保存策略end -->
 </div>
@@ -159,7 +153,7 @@
 				index:'',
 				dialogAdd:false,
 				dialogEdit:false,
-				addList:false,
+				addList:true,
 				submit:{
 					reserve2:'',
 					deadlineDateType:'',
@@ -214,28 +208,7 @@
 					refundDays:'',
 					note:''
 				},
-				retreatStrategys:[
-				{
-					refundName:'aaaaa',
-					compensationRate:0.2,
-					refundDateName:'aaaaaa',
-					refundDays:20,
-					note:'aaaaaaaa'
-				},
-				{
-					refundName:'bbbbb',
-					compensationRate:0.3,
-					refundDateName:'bbbbbb',
-					refundDays:30,
-					note:'bbbbbb'
-				},
-				{
-					refundName:'ccccc',
-					compensationRate:0.4,
-					refundDateName:'ccccc',
-					refundDays:40,
-					note:'cccccc'
-				}]
+				retreatStrategys:[]
 			}
 		},
 		methods:{
@@ -254,13 +227,13 @@
 		          	let data = Object.assign({},this.tempRetreatStrategy);
 					this.retreatStrategys.splice(this.index + 1, 0, data);
 					this.dialogAdd = false;
+					for(let i in this.tempRetreatStrategy){
+						this.tempRetreatStrategy[i] = '';
+					}
 		          } else {
 		            return false;
 		          }
 		        });
-				for(let i in this.tempRetreatStrategy){
-					this.tempRetreatStrategy[i] = '';
-				}
 			},
 			handleEdit(index,info){
 				this.dialogEdit = true;

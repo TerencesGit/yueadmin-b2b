@@ -1,33 +1,33 @@
 <template>
-<div class="retreatStrategyList">
-	<el-table v-loading="loading" :data="strategyList" border style="width: 100%">
-	    <el-table-column align="center" prop="groupId" label="ID" width="140"></el-table-column>
-	    <el-table-column :formatter="deadlineDateTypeTxt" align="center" prop="deadlineDateType" label="退改协议类型" width="300"></el-table-column>
-	    <el-table-column align="center" prop="reserve2" label="策略名称"></el-table-column>
-	    <el-table-column align="center" width="180" label="操作">
-          <template scope="scope">
-            <el-button
-              size="small"
-              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button
-              size="small"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-	</el-table>
-	<el-row type="flex" justify="end" style="margin-top:20px">
-		<el-pagination
-	      @size-change="handleSizeChange"
-	      @current-change="handleCurrentChange"
-	      :current-page="pageInfo.currPage"
-	      :page-sizes="[10, 20, 30, 40]"
-	      :page-size="pageInfo.pageSize"
-	      layout="total, sizes, prev, pager, next, jumper"
-	      :total="pageInfo.count">
-	    </el-pagination>
-	</el-row>
-</div>
+	<div class="retreatStrategyList">
+		<el-table v-loading="loading" :data="strategyList" border style="width: 100%">
+		    <el-table-column prop="groupId" label="ID" width="140"></el-table-column>
+		    <el-table-column :formatter="deadlineDateTypeTxt" prop="deadlineDateType" label="退改协议类型" width="300"></el-table-column>
+		    <el-table-column prop="reserve2" label="策略名称"></el-table-column>
+		    <el-table-column width="180" label="操作">
+	          <template scope="scope">
+	            <el-button
+	              size="small"
+	              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+	            <el-button
+	              size="small"
+	              type="danger"
+	              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+	          </template>
+	        </el-table-column>
+		</el-table>
+		<el-row type="flex" justify="end" style="margin-top:20px">
+			<el-pagination
+		      @size-change="handleSizeChange"
+		      @current-change="handleCurrentChange"
+		      :current-page="pageInfo.currPage"
+		      :page-sizes="[10, 20, 30, 40]"
+		      :page-size="pageInfo.pageSize"
+		      layout="total, sizes, prev, pager, next, jumper"
+		      :total="pageInfo.count">
+		    </el-pagination>
+		</el-row>
+	</div>
 </template>
 
 <script>
@@ -37,7 +37,12 @@
 			return{
 				strategyList:[],
 				loading:false,
-				pageInfo:{}
+				pageInfo:{
+					count:0,
+					currPage:1,
+					pageSize:20,
+					currentPage:1
+				}
 			}
 		},
 		methods:{
@@ -67,8 +72,8 @@
 				}
 				data = JSON.stringify(data);
 				this.$router.push({ 
-					path: '/admin/system/retreatStrategy/retreatStrategyEdit?groupId='+row.groupId
-					// query: { data: data}
+					path: '/admin/system/retreatStrategy/retreatStrategyEdit',
+					query: { data: data}
 				})
 			},
 			handleDelete(index,row){
@@ -124,16 +129,16 @@
 						this.loading = false;
 						this.strategyList = res.data.result.list;
 						this.pageInfo = res.data.result.pageInfo;
-					} else {
+					}else{
 						this.$message({
 							message:'获取列表失败，请稍后重试',
 							type:'warning'
 						})
 						this.loading = false;
 					}
-				}).catch(error =>{
-					this.loading = false;
+				}).catch((error)=>{
 					this.catchError(error.response)
+					this.loading = false;
 				})
 			}
 		},

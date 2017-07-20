@@ -127,9 +127,7 @@
 		    </el-row>
 		    <!-- 总价 -->
 		    <el-row style="margin-top:50px" type="flex" justify="end">
-		    	<el-col :span="4">
 		    		<div class="totalPrice">总价：￥<span v-text="totalPrice"></span></div>
-		    	</el-col>
 		    </el-row>
 		    <el-row style="margin-top:50px" type="flex" justify="center">
 		    	<el-button type="primary" @click="changeDetail('changeForm')">确认改单</el-button>
@@ -140,7 +138,6 @@
 </template>
 
 <script>
-	import fullcalendar from '@/components/fullcalendar'
 	import { readWareServerList, readWareActiveList, findWareInfo ,getOrderDetail, checkChange, checkNoPass} from '@/api'
 	export default{
 		data(){
@@ -165,16 +162,16 @@
 					count:0,
 				},
 				serviceParam:{
-					wareId:116,
-					skuDate:"2017-06-29",
-					currPage:1,
-					pageSize:10
+					wareId: '',
+					skuDate: '',
+					currPage: 1,
+					pageSize: 10
 				},
 				activitieParam:{
-					wareId:116,
-					skuDate:"2017-06-29",
-					currPage:1,
-					pageSize:10
+					wareId: '',
+					skuDate: '',
+					currPage: 1,
+					pageSize: 10
 				},
 				totalNum:2,
 				totalPrice:0,
@@ -190,112 +187,14 @@
 				},
 				additionalServicesCheckList:[],
 				recommendedActivitiesCheckList:[],
-				skuList:[
-					{
-						adultPrice:1000,
-						childPrice:500,
-						storageNum:8,
-						start:"2017-07-05"
-					},{
-						adultPrice:1000,
-						childPrice:500,
-						storageNum:7,
-						start:"2017-07-06"
-					},{
-						adultPrice:1000,
-						childPrice:500,
-						storageNum:6,
-						start:"2017-07-07"
-					},{
-						adultPrice:1000,
-						childPrice:500,
-						storageNum:5,
-						start:"2017-07-08"
-					}
-				],
-				additionalServicesList: [
-					{
-						wareCode:"1",
-						wareName:"附加服务1",
-						openDate:"2017-07-01",
-						closeDate:"2017-07-12",
-						wareDesc:"附加服务1的描述",
-						adultPrice:1000,
-						storageNum:8,
-						adultCount:0
-					},{
-						wareCode:"2",
-						wareName:"附加服务2",
-						openDate:"2017-07-01",
-						closeDate:"2017-07-12",
-						wareDesc:"附加服务2的描述",
-						adultPrice:2000,
-						storageNum:6,
-						adultCount:0
-					},{
-						wareCode:"3",
-						wareName:"附加服务3",
-						openDate:"2017-07-01",
-						closeDate:"2017-07-12",
-						wareDesc:"附加服务3的描述",
-						adultPrice:1500,
-						storageNum:4,
-						adultCount:0
-					},{
-						wareCode:"4",
-						wareName:"附加服务4",
-						openDate:"2017-07-01",
-						closeDate:"2017-07-12",
-						wareDesc:"附加服务4的描述",
-						adultPrice:800,
-						storageNum:16,
-						adultCount:0
-					}
-				],
-				recommendedActivitiesList:[
-					{
-						wareCode:"1",
-						wareName:"推荐活动1",
-						openDate:"2017-07-01",
-						closeDate:"2017-07-12",
-						wareDesc:"推荐活动1的描述",
-						adultPrice:1000,
-						storageNum:8,
-						adultCount:0
-					},{
-						wareCode:"2",
-						wareName:"推荐活动2",
-						openDate:"2017-07-01",
-						closeDate:"2017-07-12",
-						wareDesc:"推荐活动2的描述",
-						adultPrice:2000,
-						storageNum:6,
-						adultCount:0
-					},{
-						wareCode:"3",
-						wareName:"推荐活动3",
-						openDate:"2017-07-01",
-						closeDate:"2017-07-12",
-						wareDesc:"推荐活动3的描述",
-						adultPrice:1500,
-						storageNum:4,
-						adultCount:0
-					},{
-						wareCode:"4",
-						wareName:"推荐活动4",
-						openDate:"2017-07-01",
-						closeDate:"2017-07-12",
-						wareDesc:"推荐活动4的描述",
-						adultPrice:800,
-						storageNum:16,
-						adultCount:0
-					}
-				],
-				 changeRules:{
-                    auditInformation:[
-                        { required: true, message: '请输入审核信息', trigger: 'blur' }
-                    ]
-                },
+				skuList:[],
+				additionalServicesList: [],
+				recommendedActivitiesList:[],
+				changeRules: {
+          auditInformation: [
+            { required: true, message: '请输入审核信息', trigger: 'blur' }
+          ]
+        },
 			}
 		},
 		components:{

@@ -257,7 +257,7 @@
             console.log(data)
             if (this.wareForm.verifyStatus === 2) {
               this.$confirm('编辑商品将会重新提交审核？', '提示', {type: 'warning'}).then(() => {
-                saveWareInfo(JSON.stringify(data)).then(res => {
+                saveWareInfo(data).then(res => {
                   if (res.data.code === '0001') {
                     let wareId = res.data.result.wareId;
                     this.$message.success(res.data.message)
@@ -273,7 +273,7 @@
                 this.$message('已取消操作')
               })
             } else {
-                saveWareInfo(JSON.stringify(data)).then(res => {
+                saveWareInfo(data).then(res => {
                   if (res.data.code === '0001') {
                     let wareId = res.data.result.wareId;
                     this.$message.success(res.data.message)

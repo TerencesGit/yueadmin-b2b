@@ -83,7 +83,7 @@
             name="fileName"
             :data="{fileUrlType: 2}"
             accept="image/jpeg, image/png"
-            action="/imgUploadUrl"
+            action="/b2b/file/upload"
             :show-file-list="false"
             :on-success="handleSuccess"
             :on-error="handleError"
@@ -261,6 +261,8 @@ export default {
     },
     // 上传成功
     handleSuccess (res, file) {
+      console.log(res)
+      this.uploading = false
       if (res.code === '0001') {
         this.uploading = false
         let resFile = res.result.file;
@@ -286,7 +288,7 @@ export default {
     editSubmit () {
       this.$refs.editForm.validate((valid) => {
         if (valid) {
-          let data = JSON.stringify(Object.assign({}, this.editForm))
+          let data = Object.assign({}, this.editForm)
           saveBrandInfo(data).then((res) => {
             console.log(res)
             if (res.data.code === '0001') {
@@ -310,7 +312,7 @@ export default {
       this.addForm = {
         brandName: '',
         content: '',
-        logoUrl: '',
+        logoUrl: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
         brandPage: '',
         status: true
       }
@@ -321,8 +323,7 @@ export default {
       this.$refs.addForm.validate((valid) => {
         if(valid) {
           this.addForm.status = this.addForm.status ? 1 : 0
-          let data = JSON.stringify(Object.assign({}, this.addForm))
-          console.log(data)
+          let data = Object.assign({}, this.addForm)
           saveBrandInfo(data).then(res => {
             console.log(res)
             if(res.data.code === '0001') {

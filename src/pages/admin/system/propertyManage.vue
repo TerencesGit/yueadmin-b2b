@@ -219,24 +219,24 @@
 			addSave(formName){
 				this.$refs[formName].validate((valid) => {
 		          if (valid) {
-		            let data = Object.assign({},this.addPropertyManage);
+		            let data = Object.assign({}, this.addPropertyManage);
 		            attrManagement(data).then((res)=>{
 		            	console.log(res);
 		            	if(res.data.code === "0001"){
 		            		this.$message({
-            		          message: res.data.message,
-            		          type: 'success'
-            		        });
-            		        this.getAttrManageList();
-            		        for(let i in this.addPropertyManage){
-            		        	this.addPropertyManage[i] = '';
-            		        }
+        		          message: res.data.message,
+        		          type: 'success'
+        		        });
 		            		this.dialogAdd = false
+        		        this.getAttrManageList();
+        		        for(let i in this.addPropertyManage){
+        		        	this.addPropertyManage[i] = '';
+        		        }
 		            	}else{
 		            		this.$message({
-            		          message: res.data.message,
-            		          type: 'error'
-            		        });
+        		          message: res.data.message,
+        		          type: 'error'
+        		        });
 		            	}
 		            }).catch((error)=>{
 		            	this.catchError(error.response)
@@ -337,8 +337,6 @@
 				readSysWareAttributeDefine(params).then((res)=>{
 					if(res.data.code === "0001"){
 						this.propertyManageList = res.data.result.defineList;
-						this.pageInfo.currPage = res.data.result.pageInfo.currPage;
-						this.pageInfo.pageSize = res.data.result.pageInfo.pageSize;
 						this.pageInfo.count = res.data.result.pageInfo.count;
 						this.loading = false;
 					}else{

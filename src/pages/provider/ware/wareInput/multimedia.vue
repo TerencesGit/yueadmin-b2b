@@ -8,7 +8,8 @@
 		<!-- 图片列表 -->
 		<el-table 
 			border
-			:data="mediaList" 
+			:data="mediaList"
+			v-loading="loading"
 			highlight-current-row
 			style="width: 100%" 
 			@selection-change="selsChange"> 
@@ -102,6 +103,7 @@
     		uploadData: {
 	        fileUrlType: 1
 	      },
+	      loading: false,
 			}
 		},
 		methods: {
@@ -113,7 +115,11 @@
 			},
 			// 获取图片列表
 			getWareFileList () {
-				readWareFileList({wareId: this.wareId}).then(res => {
+				this.loading = true;
+				let params = {
+					wareId: this.wareId
+				}
+				readWareFileList(params).then(res => {
 					// console.log(res)
 					if (res.data.code === '0001') {
 						this.mediaList = res.data.result.fileList;
@@ -123,7 +129,9 @@
 					} else {
 						this.$message.error(res.data.message)
 					}
+					this.loading = false;
 				}).catch((error) => {
+					this.loading = false;
 					this.catchError(error.response)
 				})
 			},
@@ -151,6 +159,7 @@
     	},
     	// 上传失败处理
     	handleError (err, file) {
+    		console.log(file)
     		this.$message.error('图片上传失败，请重试')
     	},
     	// 上传图片删除
@@ -172,7 +181,7 @@
 	    		wareId: this.wareId,
 	    		fileList: this.fileList
 	    	}
-	    	console.log(mediaForm)
+	    	// console.log(mediaForm)
 	    	createWareFile(JSON.stringify(mediaForm)).then(res => {
 	    		if(res.data.code === '0001') {
 	    			this.$message.success('上传成功')

@@ -15,7 +15,8 @@
         @node-click="nodeClick"
         default-expand-all
         :expand-on-click-node="false"
-        :render-content="renderContent">
+        :render-content="renderContent"
+        v-loading="loading">
       </el-tree>
     </el-row>
     <!-- 品类表单 -->
@@ -91,12 +92,14 @@
           note: [
             { required: true, message: '请输入备注信息', trigger: 'blur'},
           ], 
-        }
+        },
+        loading: false
       }
     },
     methods: {
       // 品类列表
     	getWareKindList () {
+        this.loading = true
         let params = {}
     		readWareKind(params).then(res => {
     			console.log(res)
@@ -106,8 +109,11 @@
           } else {
             this.$message.error(res.data.message)
           }
+          this.loading = false
     		}).catch(err => {
+          this.loading = false
           console.log(err)
+          this.catchError(err.response)
         })
     	},
       // 获取属性模板列表

@@ -61,7 +61,7 @@ export default {
             {name: '品类管理', link: '/admin/system/categoryManage', index: '/admin/system/categoryManage'},
             // {name: '营销策略管理', link: '/admin/system/marketingStrategy', index: '/admin/system/marketingStrategy'},
             {name: '结算策略管理', link: '/admin/system/settlementStrategy', index: '/admin/system/settlementStrategy'},
-            {name: '退改策略管理', link: '/admin/system/retreatStrategy', index: '/admin/system/retreatStrategy'},
+            {name: '退改策略管理', link: '/admin/system/retreatStrategy/retreatStrategyList', index: '/admin/system/retreatStrategy/retreatStrategyList'},
           ]
         },
         {

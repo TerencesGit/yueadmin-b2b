@@ -1,14 +1,13 @@
 <template>
 	<section>		
 		<el-row type="flex" justify="center">
-			<el-col :span="18">	
+			<el-col :span="22">	
 				<h3>{{$route.query.wareName}}</h3>				
 				<!-- 基本信息 -->
 				<el-card class="card-box" v-for="(infoForm,index) in forms" :key="index">
 					<h4>基本信息 {{index+1}}</h4>
-					<el-form :model="infoForm" :rules="rules" ref="infoForm" label-width="140px">		
 						<el-row type="flex" justify="center">
-							<el-col :span="20">
+							<el-col :span="22">
 								<el-row>
 									<el-col :span="12">
 										<el-form-item label="姓名：" prop="name">
@@ -103,7 +102,6 @@
 </template>
 <script>
 import { customInfoCompletion } from '@/api'
-import moment from 'moment'
 	export default {
     data() {
       return {
@@ -125,7 +123,7 @@ import moment from 'moment'
       };
     },
     methods: {
-      	submitForm() { 
+      submitForm() { 
 	      	let arr = [];
 	      	for(var i=0;i<this.$refs.infoForm.length;i++){					
 	      		this.$refs.infoForm[i].validate((valid) => {
@@ -135,20 +133,20 @@ import moment from 'moment'
 	      	let flag = arr.every((v,i,a)=>{
         		return v;
         	})
-        	if(flag){
+        	if(flag) {
         		for(var i=0;i<this.forms.length;i++){
-					if(this.forms[i].birthday){
-						this.forms[i].birthday = moment(this.forms[i].birthday).format('YYYY-MM-DD')
-					}
-					if(this.forms[i].weddingDay){
-						this.forms[i].weddingDay = moment(this.forms[i].weddingDay).format('YYYY-MM-DD')
-					}	
+							if(this.forms[i].birthday){
+								this.forms[i].birthday = this.$moment(this.forms[i].birthday).format('YYYY-MM-DD')
+							}
+							if(this.forms[i].weddingDay){
+								this.forms[i].weddingDay = this.$moment(this.forms[i].weddingDay).format('YYYY-MM-DD')
+							}	
   	   			}
         		var data = this.forms;
         		data.forEach((v,i,a)=>{
         			for(let i in v){
         				if(!v[i]){
-        					v[i]=null;
+        					v[i] = null;
         				}
         			}
         		})
@@ -156,49 +154,50 @@ import moment from 'moment'
         		customInfoCompletion(data).then((res) => {
 	            	console.log(res);
 	            	if(res.data.code === "0001"){
-	            		this.$message({
+	            		this.$message.success({
 				          message: '保存成功',
-				          type: 'success'
-				        });
+				        })
 				        this.$router.push({path:'/distributor/order/pendingPayment'})
-	            	}else {
+	            	} else {
 			        	this.$message.error(res.data.message)
 			      	}  	            						
-				}).catch((err)=>{
-					console.log(err)
-      				this.catchError(err.response)
-				});			
+						}).catch((err)=>{
+							console.log(err)
+			    		this.catchError(err.response)
+						});		
 	        }
     	}
-	},
-	created(){
-		for(var i = 0;i<this.$route.query.adultCount;i++){
-			this.forms.push({
-        	name:'',
-        	age:'',
-        	sex:'',
-        	birthday:'',
-        	cardType:'',
-        	cardNum:'',
-        	mibile:'',
-        	email:'',
-        	qq:'',
-        	wechat:'',
-        	weddingDay:'',
-        	isPregnancy:'',
-        	height:'',
-        	weight:'',
-        	chestSize:'',
-        	waistSize:'',
-        	hiplineSize:'',
-        	orderId:this.$route.query.orderId
-        }) ;
+	  },
+		created () {
+			console.log(this.$route.query.adultCount)
+			for(var i = 0;i<this.$route.query.adultCount;i++){
+				this.forms.push({
+	        	name:'',
+	        	age:'',
+	        	sex:'',
+	        	birthday:'',
+	        	cardType:'',
+	        	cardNum:'',
+	        	mibile:'',
+	        	email:'',
+	        	qq:'',
+	        	wechat:'',
+	        	weddingDay:'',
+	        	isPregnancy:'',
+	        	height:'',
+	        	weight:'',
+	        	chestSize:'',
+	        	waistSize:'',
+	        	hiplineSize:'',
+	        	orderId:this.$route.query.orderId
+	        }) ;
+			}
 		}
-	}
   }
 </script>
 <style scoped>
 	h3{
+		margin: 15px 0;
 		color:#1d8ce0;
 	}
 	.form-group{
@@ -208,8 +207,7 @@ import moment from 'moment'
 		text-align: center;
 		margin-top:20px;	
 	}
-	p{
-		margin:0;
+	p {
 		width:500px;
 		line-height: 16px;
 		color:#ccc;

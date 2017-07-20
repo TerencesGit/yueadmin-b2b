@@ -1,11 +1,9 @@
 <template>
 <div class="retreatStrategyEdit">
 	<el-row>
-		<el-col :span="6">
-			<el-card class="box-card">
+		<el-col>
 			    <span style="line-height: 36px;">策略名称：<span v-text="data.reserve2"></span></span>
-			    <el-button style="float:right;" @click="dialogEditName=true" type="primary">修改名称</el-button>
-			</el-card>
+			    <el-button @click="dialogEditName=true" type="text">修改名称</el-button>
 		</el-col>
 	</el-row>
 	<el-dialog size="tiny" title="修改策略名称" :visible.sync="dialogEditName">
@@ -24,17 +22,17 @@
 	</el-dialog>
 	<!-- 新增界面star -->
 	<el-table :data="retreatStrategysDetail" v-loading="loading" border style="width: 100%">
-	    <el-table-column label="规则名" align="center" prop="refundName"></el-table-column>
+	    <el-table-column label="规则名" prop="refundName"></el-table-column>
 
-	    <el-table-column label="赔偿比例" align="center" prop="compensationRate"></el-table-column>
+	    <el-table-column label="赔偿比例" prop="compensationRate"></el-table-column>
 
-	    <el-table-column label="退改日命名" align="center" prop="refundDateName"></el-table-column>
+	    <el-table-column label="退改日命名" prop="refundDateName"></el-table-column>
 
-	    <el-table-column label="退改日期" align="center" prop="refundDays"></el-table-column>
+	    <el-table-column label="退改日期" prop="refundDays"></el-table-column>
 
-	    <el-table-column label="备注/描述" align="center" prop="note"></el-table-column>
+	    <el-table-column label="备注/描述" prop="note"></el-table-column>
 
-	    <el-table-column label="操作" align="center">
+	    <el-table-column label="操作" width="200">
 	      <template scope="scope">
 	        <el-button size="small"
 	          @click="handleAdd(scope.$index, scope.row)">添加</el-button>
@@ -56,7 +54,8 @@
 	  		  </el-form-item>
 
 	  		  <el-form-item label="赔偿比例：" prop="compensationRate">
-	  		    <el-input v-model.number="tempRetreatStrategy.compensationRate" size="small" placeholder="请输入0-1之间的小数"></el-input>
+	  		    <!-- <el-input v-model.number="tempRetreatStrategy.compensationRate" size="small" placeholder="请输入0-1之间的小数"></el-input> -->
+	  		    <el-input-number placeholder="请选择赔偿比例" v-model.number="tempRetreatStrategy.compensationRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
 	  		  </el-form-item>
 
 	  		  <el-form-item label="退改日命名：" prop="refundDateName">
@@ -86,7 +85,7 @@
 	    </el-form-item>
 
 	    <el-form-item label="赔偿比例：" prop="compensationRate">
-	      <el-input v-model.number="retreatStrategy.compensationRate" size="small" placeholder="请输入0-1之间的小数"></el-input>
+	      <el-input-number placeholder="请选择赔偿比例" v-model.number="retreatStrategy.compensationRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
 	    </el-form-item>
 
 	    <el-form-item label="退改日命名：" prop="refundDateName">
@@ -109,20 +108,17 @@
 	</el-dialog>
 	<!-- 保存策略star -->
     <el-row type="flex" justify="center" style="margin-top:50px">
-    	<el-col :span="4">
-    		<el-button type="primary" :disabled="disabledBtn" @click="saveStrategy">保存</el-button>
-    		<el-button type="primary" @click="$router.push({ path: '/admin/system/retreatStrategy/retreatStrategyList'})">返回</el-button>
-    	</el-col>
+    	<el-button type="primary" :disabled="disabledBtn" @click="saveStrategy">保存</el-button>
     </el-row>
 	<!-- 保存策略end -->
 </div>
 </template>
 
 <script>
-	import { retreatStrategyEdit,retreatStrategyUpdate } from '@/api'
+	import { retreatStrategyEdit, retreatStrategyUpdate } from '@/api'
 	export default{
 		data(){
-			var validateCompensationRate = (rule, value, callback)=>{
+			/*var validateCompensationRate = (rule, value, callback)=>{
 				if(!value){
 					callback(new Error('请输入赔偿比例'));
 				}else if(typeof value !== 'number'){
@@ -132,7 +128,7 @@
 				}else{
 					callback();
 				}
-			}
+			}*/
 			var validateDays = (rule, value, callback)=>{
 				if(!value){
 					callback(new Error('请输入退改日期'));
@@ -172,7 +168,7 @@
 		            { required: true, message: '请输入规则名', trigger: 'blur'}
 		          ],
 		          compensationRate: [
-		            { required: true, validator: validateCompensationRate, trigger: 'blur' }
+		            { required: true, type:'number', trigger: 'change' }
 		          ],
 		          refundDateName: [
 		            { required: true, message: '请输入退改日命名', trigger: 'blur'}
@@ -190,7 +186,7 @@
 				retreatStrategy:{},
 				tempRetreatStrategy:{
 					refundName:'',
-					compensationRate:'',
+					compensationRate:0,
 					refundDateName:'',
 					refundDays:'',
 					note:'',
@@ -220,13 +216,13 @@
 		          	let data = Object.assign({},this.tempRetreatStrategy);
 					this.retreatStrategysDetail.splice(this.index + 1, 0, data);
 					this.dialogAdd = false;
+					for(let i in this.tempRetreatStrategy){
+						this.tempRetreatStrategy[i] = '';
+					}
 		          } else {
 		            return false;
 		          }
 		        });
-				for(let i in this.tempRetreatStrategy){
-					this.tempRetreatStrategy[i] = '';
-				}
 			},
 			handleEdit(index,info){
 				this.dialogEdit = true;
@@ -329,13 +325,9 @@
 		},
 		created(){
 			this.loading = true;
-			console.log(this.$route.query);
-			let groupId = this.$route.query.groupId;
-			if(groupId){
-				let data = {
-					groupId: groupId
-				}
-				retreatStrategyEdit(JSON.stringify(data)).then((res)=>{
+			let data = this.$route.query.data;
+			if(data){
+				retreatStrategyEdit(data).then((res)=>{
 					if(res.data.code === "0001"){
 						this.loading = false;
 						this.data.reserve2 = res.data.result.reserve2;
@@ -350,15 +342,13 @@
 				          message: '退改策略获取成功',
 				          type: 'success'
 				        });
-				        this.loading = false;
-				        console.log(res);
 					}else{
 						this.$message({
 							message:'获取列表失败，请稍后重试',
 							type:'warning'
 						})
-						this.loading = false;
 					}
+					this.loading = false;
 				}).catch((error)=>{
 					this.catchError(error.response)
 					this.loading = false;

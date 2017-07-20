@@ -410,8 +410,6 @@
 				readTemplateList(params).then((res)=>{
 					if(res.data.code === "0001"){
 						this.templateManageList = res.data.result.templateList;
-						this.pageInfo.currPage = res.data.result.pageInfo.currPage;
-						this.pageInfo.pageSize = res.data.result.pageInfo.pageSize;
 						this.pageInfo.count = res.data.result.pageInfo.count;
 						this.loading = false;
 					}else{

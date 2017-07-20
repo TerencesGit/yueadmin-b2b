@@ -83,10 +83,7 @@
 					console.log(res)
 					this.loading = false;
 					if (res.data.code === '0001') {
-						let page = res.data.result.pageInfo;
-						this.currPage = page.currPage;
-						this.pageSize = page.pageSize;
-						this.total = page.count;
+						this.total = res.data.result.pageInfo.count;
 						this.wareList = res.data.result.wareList
 					} else {
 						this.$message.error(res.data.message)

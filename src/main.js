@@ -79,6 +79,10 @@ const editorOptions = {
               return filePath;
             } else {
               alert(data.message)
+              ElementUI.Message({
+                type: 'error',
+                message: data.message
+              })
             }
         }
     },

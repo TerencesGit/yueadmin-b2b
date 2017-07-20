@@ -254,7 +254,7 @@
             data.closeDate = this.$moment(data.closeDate).format('YYYY-MM-DD HH:mm:ss')
             data.nocashReserveMinute = data.nocashReserveMinute * 60;
             console.log(data)
-            saveWareInfo(JSON.stringify(data)).then(res => {
+            saveWareInfo(data).then(res => {
               if (res.data.code === '0001') {
                 let wareId = res.data.result.wareId;
                 this.$message.success(res.data.message)
