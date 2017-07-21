@@ -1,13 +1,13 @@
 <template>
-	<section>		
+	<section class="custom-info">		
 		<el-row type="flex" justify="center">
-			<el-col :span="22">	
+			<el-col :span="18">	
 				<h3>{{$route.query.wareName}}</h3>				
 				<!-- 基本信息 -->
-				<el-card class="card-box" v-for="(infoForm,index) in forms" :key="index">
+				<el-card class="card-box" v-for="(infoForm, index) in forms" :key="index">
 					<h4>基本信息 {{index+1}}</h4>
 						<el-row type="flex" justify="center">
-							<el-col :span="22">
+							<el-col :span="20">
 								<el-row>
 									<el-col :span="12">
 										<el-form-item label="姓名：" prop="name">
@@ -24,7 +24,7 @@
 								    	<el-form-item label="年龄：" prop="age">
 									    	<el-input v-model.number="infoForm.age" size="small"></el-input>
 									    </el-form-item>
-									     <el-form-item label="生日：" prop="birthday" class="travel-date">
+									     <el-form-item label="生日：" prop="birthday">
 								    		<el-date-picker v-model="infoForm.birthday" type="date" placeholder="选择日期" :editable="false" size="small"></el-date-picker>
 								  		</el-form-item>
 								  	</el-col>
@@ -53,7 +53,7 @@
 										<el-form-item label="QQ：" prop="qq">
 									        <el-input v-model="infoForm.qq" size="small"></el-input>
 						        		</el-form-item>
-						        		<el-form-item label="婚期：" prop="weddingDay" class="travel-date">
+						        		<el-form-item label="婚期：" prop="weddingDay">
 									    	<el-date-picker v-model="infoForm.weddingDay" type="date" placeholder="选择日期" :editable="false" size="small"></el-date-picker>
 									  	</el-form-item>								    	
 									  	<el-form-item label="身高：" prop="height">
@@ -101,7 +101,7 @@
 	</section>
 </template>
 <script>
-import { customInfoCompletion } from '@/api'
+	import { customInfoCompletion } from '@/api'
 	export default {
     data() {
       return {
@@ -123,7 +123,7 @@ import { customInfoCompletion } from '@/api'
       };
     },
     methods: {
-      submitForm() { 
+      	submitForm() { 
 	      	let arr = [];
 	      	for(var i=0;i<this.$refs.infoForm.length;i++){					
 	      		this.$refs.infoForm[i].validate((valid) => {
@@ -133,20 +133,20 @@ import { customInfoCompletion } from '@/api'
 	      	let flag = arr.every((v,i,a)=>{
         		return v;
         	})
-        	if(flag) {
+        	if(flag){
         		for(var i=0;i<this.forms.length;i++){
-							if(this.forms[i].birthday){
-								this.forms[i].birthday = this.$moment(this.forms[i].birthday).format('YYYY-MM-DD')
-							}
-							if(this.forms[i].weddingDay){
-								this.forms[i].weddingDay = this.$moment(this.forms[i].weddingDay).format('YYYY-MM-DD')
-							}	
+					if(this.forms[i].birthday){
+						this.forms[i].birthday = this.$moment(this.forms[i].birthday).format('YYYY-MM-DD')
+					}
+					if(this.forms[i].weddingDay){
+						this.forms[i].weddingDay = this.$moment(this.forms[i].weddingDay).format('YYYY-MM-DD')
+					}	
   	   			}
         		var data = this.forms;
         		data.forEach((v,i,a)=>{
         			for(let i in v){
         				if(!v[i]){
-        					v[i] = null;
+        					v[i]=null;
         				}
         			}
         		})
@@ -154,22 +154,23 @@ import { customInfoCompletion } from '@/api'
         		customInfoCompletion(data).then((res) => {
 	            	console.log(res);
 	            	if(res.data.code === "0001"){
-	            		this.$message.success({
+	            		this.$message({
 				          message: '保存成功',
-				        })
+				          type: 'success'
+				        });
 				        this.$router.push({path:'/distributor/order/pendingPayment'})
-	            	} else {
+	            	}else {
 			        	this.$message.error(res.data.message)
 			      	}  	            						
 						}).catch((err)=>{
 							console.log(err)
-			    		this.catchError(err.response)
-						});		
-	        }
+		      		this.catchError(err.response)
+						})	
+	      }
     	}
 	  },
-		created () {
-			console.log(this.$route.query.adultCount)
+		created(){
+			if(!this.$route.query.adultCount) return;
 			for(var i = 0;i<this.$route.query.adultCount;i++){
 				this.forms.push({
 	        	name:'',
@@ -189,36 +190,20 @@ import { customInfoCompletion } from '@/api'
 	        	chestSize:'',
 	        	waistSize:'',
 	        	hiplineSize:'',
-	        	orderId:this.$route.query.orderId
-	        }) ;
+	        	orderId: this.$route.query.orderId
+	      })
 			}
 		}
   }
 </script>
 <style scoped>
 	h3{
-		margin: 15px 0;
 		color:#1d8ce0;
-	}
-	.form-group{
-		margin:20px 0 50px;
+        margin:20px 0;
 	}
 	.save{
 		text-align: center;
 		margin-top:20px;	
-	}
-	p {
-		width:500px;
-		line-height: 16px;
-		color:#ccc;
-	}
-	.ratepaying{
-		margin-bottom:0;
-	}
-	.badge{
-		color:#20A0FF;
-		margin:8px 5px 0;
-		font-size: 14px;
 	}
 	.id-num{
 		margin-left:10px;
@@ -227,4 +212,10 @@ import { customInfoCompletion } from '@/api'
 	.card-box{
 		margin-bottom:20px;
 	}
+    .custom-info .el-date-editor.el-input{
+        width:100%;
+    }
+    .custom-info .el-select{
+        width:100%;
+    }
 </style>

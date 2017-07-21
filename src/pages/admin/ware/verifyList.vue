@@ -18,7 +18,7 @@
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="wareId" label="商品编号" sortable width="170"></el-table-column>
       <el-table-column prop="wareName" label="商品名称"></el-table-column>
-      <el-table-column prop="providerName" label="供应商" width="120"></el-table-column>
+      <el-table-column prop="providerName" label="供应商" width="160"></el-table-column>
       <el-table-column prop="srcCityName" label="出发城市" width="120"></el-table-column>
       <el-table-column prop="verifyStatus" label="状态" width="100" :formatter="formatStatus" >
       </el-table-column>

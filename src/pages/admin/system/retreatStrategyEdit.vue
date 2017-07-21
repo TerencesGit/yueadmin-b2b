@@ -1,117 +1,117 @@
 <template>
-<div class="retreatStrategyEdit">
-	<el-row>
-		<el-col>
-			    <span style="line-height: 36px;">策略名称：<span v-text="data.reserve2"></span></span>
-			    <el-button @click="dialogEditName=true" type="text">修改名称</el-button>
-		</el-col>
-	</el-row>
-	<el-dialog size="tiny" title="修改策略名称" :visible.sync="dialogEditName">
-		<el-form :model="data" ref="data" label-width="100px">
-		  <el-form-item label="策略名称:" prop="reserve2" :rules="[
-		      { required: true, message: '策略名称不能为空'}
-		    ]">
-		    <el-input v-model.number="data.reserve2" auto-complete="off"></el-input>
-		  </el-form-item>
-		  
-		  <el-form-item>
-		    <el-button type="primary" @click="editName('data')">修改</el-button>
-		    <el-button @click="dialogEditName=false">取消</el-button>
-		  </el-form-item>
-		</el-form>
-	</el-dialog>
-	<!-- 新增界面star -->
-	<el-table :data="retreatStrategysDetail" v-loading="loading" border style="width: 100%">
-	    <el-table-column label="规则名" prop="refundName"></el-table-column>
+	<div class="retreatStrategyEdit">
+		<el-row>
+			<el-col>
+				    <span style="line-height: 36px;">策略名称：<span v-text="data.reserve2"></span></span>
+				    <el-button @click="dialogEditName=true" type="text">修改名称</el-button>
+			</el-col>
+		</el-row>
+		<el-dialog size="tiny" title="修改策略名称" :visible.sync="dialogEditName">
+			<el-form :model="data" ref="data" label-width="100px">
+			  <el-form-item label="策略名称:" prop="reserve2" :rules="[
+			      { required: true, message: '策略名称不能为空'}
+			    ]">
+			    <el-input v-model.number="data.reserve2" auto-complete="off"></el-input>
+			  </el-form-item>
+			  
+			  <el-form-item>
+			    <el-button type="primary" @click="editName('data')">修改</el-button>
+			    <el-button @click="dialogEditName=false">取消</el-button>
+			  </el-form-item>
+			</el-form>
+		</el-dialog>
+		<!-- 新增界面star -->
+		<el-table :data="retreatStrategysDetail" v-loading="loading" border style="width: 100%">
+		    <el-table-column label="规则名" prop="refundName"></el-table-column>
 
-	    <el-table-column label="赔偿比例" prop="compensationRate"></el-table-column>
+		    <el-table-column label="赔偿比例" prop="compensationRate"></el-table-column>
 
-	    <el-table-column label="退改日命名" prop="refundDateName"></el-table-column>
+		    <el-table-column label="退改日命名" prop="refundDateName"></el-table-column>
 
-	    <el-table-column label="退改日期" prop="refundDays"></el-table-column>
+		    <el-table-column label="退改日期" prop="refundDays"></el-table-column>
 
-	    <el-table-column label="备注/描述" prop="note"></el-table-column>
+		    <el-table-column label="备注/描述" prop="note"></el-table-column>
 
-	    <el-table-column label="操作" width="200">
-	      <template scope="scope">
-	        <el-button size="small"
-	          @click="handleAdd(scope.$index, scope.row)">添加</el-button>
-	        <el-button size="small"
-	          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-	        <el-button size="small" type="danger"
-	          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-	      </template>
-	    </el-table-column>
-	</el-table>
-	<!-- 新增界面end -->
-	<!-- 新增dialog -->
-	<el-dialog size="tiny" title="新增" :visible.sync="dialogAdd">
-	  <el-row type="flex" justify="center">
-	  	<el-col :span="20">
-	  		<el-form label-width="120px" ref="tempRetreatStrategy" :rules="addRules" :model="tempRetreatStrategy">
-	  		  <el-form-item label="规则名：" prop="refundName">
-	  		    <el-input v-model="tempRetreatStrategy.refundName" size="small" placeholder="请输入规则名"></el-input>
-	  		  </el-form-item>
+		    <el-table-column label="操作" width="200">
+		      <template scope="scope">
+		        <el-button size="small"
+		          @click="handleAdd(scope.$index, scope.row)">添加</el-button>
+		        <el-button size="small"
+		          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+		        <el-button size="small" type="danger"
+		          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+		      </template>
+		    </el-table-column>
+		</el-table>
+		<!-- 新增界面end -->
+		<!-- 新增dialog -->
+		<el-dialog size="tiny" title="新增" :visible.sync="dialogAdd">
+		  <el-row type="flex" justify="center">
+		  	<el-col :span="20">
+		  		<el-form label-width="120px" ref="tempRetreatStrategy" :rules="addRules" :model="tempRetreatStrategy">
+		  		  <el-form-item label="规则名：" prop="refundName">
+		  		    <el-input v-model="tempRetreatStrategy.refundName" size="small" placeholder="请输入规则名"></el-input>
+		  		  </el-form-item>
 
-	  		  <el-form-item label="赔偿比例：" prop="compensationRate">
-	  		    <!-- <el-input v-model.number="tempRetreatStrategy.compensationRate" size="small" placeholder="请输入0-1之间的小数"></el-input> -->
-	  		    <el-input-number placeholder="请选择赔偿比例" v-model.number="tempRetreatStrategy.compensationRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
-	  		  </el-form-item>
+		  		  <el-form-item label="赔偿比例：" prop="compensationRate">
+		  		    <!-- <el-input v-model.number="tempRetreatStrategy.compensationRate" size="small" placeholder="请输入0-1之间的小数"></el-input> -->
+		  		    <el-input-number placeholder="请选择赔偿比例" v-model.number="tempRetreatStrategy.compensationRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
+		  		  </el-form-item>
 
-	  		  <el-form-item label="退改日命名：" prop="refundDateName">
-	  		    <el-input v-model="tempRetreatStrategy.refundDateName" size="small" placeholder="请输入退改日命名"></el-input>
-	  		  </el-form-item>
+		  		  <el-form-item label="退改日命名：" prop="refundDateName">
+		  		    <el-input v-model="tempRetreatStrategy.refundDateName" size="small" placeholder="请输入退改日命名"></el-input>
+		  		  </el-form-item>
 
-	  		  <el-form-item label="退改日期：" prop="refundDays">
-	  		    <el-input v-model.number="tempRetreatStrategy.refundDays" size="small" placeholder="请输入整数天数"></el-input>
-	  		  </el-form-item>
+		  		  <el-form-item label="退改日期：" prop="refundDays">
+		  		    <el-input v-model.number="tempRetreatStrategy.refundDays" size="small" placeholder="请输入整数天数"></el-input>
+		  		  </el-form-item>
 
-	  		  <el-form-item label="备注/描述：" prop="note">
-	  		    <el-input v-model="tempRetreatStrategy.note" :autosize="{ minRows: 2, maxRows: 4}" size="small" placeholder="请输入备注/描述" type="textarea"></el-input>
-	  		  </el-form-item>
-	  		</el-form>
-	  	</el-col>
-	  </el-row>
-	  <div slot="footer">
-  		  <el-button @click="dialogAdd = false">取 消</el-button>
-  		  <el-button type="primary" @click="addRetreatStrategys('tempRetreatStrategy')">确 定</el-button>
-  	  </div>
-	</el-dialog>
-	<!-- 编辑dialog -->
-	<el-dialog size="tiny" title="编辑" :visible.sync="dialogEdit">
-	  <el-form label-width="120px" ref="retreatStrategy" :rules="addRules" :model="retreatStrategy">
-	    <el-form-item label="规则名：" prop="refundName">
-	      <el-input v-model="retreatStrategy.refundName" size="small" placeholder="请输入规则名"></el-input>
-	    </el-form-item>
+		  		  <el-form-item label="备注/描述：" prop="note">
+		  		    <el-input v-model="tempRetreatStrategy.note" :autosize="{ minRows: 2, maxRows: 4}" size="small" placeholder="请输入备注/描述" type="textarea"></el-input>
+		  		  </el-form-item>
+		  		</el-form>
+		  	</el-col>
+		  </el-row>
+		  <div slot="footer">
+	  		  <el-button @click="dialogAdd = false">取 消</el-button>
+	  		  <el-button type="primary" @click="addRetreatStrategys('tempRetreatStrategy')">确 定</el-button>
+	  	  </div>
+		</el-dialog>
+		<!-- 编辑dialog -->
+		<el-dialog size="tiny" title="编辑" :visible.sync="dialogEdit">
+		  <el-form label-width="120px" ref="retreatStrategy" :rules="addRules" :model="retreatStrategy">
+		    <el-form-item label="规则名：" prop="refundName">
+		      <el-input v-model="retreatStrategy.refundName" size="small" placeholder="请输入规则名"></el-input>
+		    </el-form-item>
 
-	    <el-form-item label="赔偿比例：" prop="compensationRate">
-	      <el-input-number placeholder="请选择赔偿比例" v-model.number="retreatStrategy.compensationRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
-	    </el-form-item>
+		    <el-form-item label="赔偿比例：" prop="compensationRate">
+		      <el-input-number placeholder="请选择赔偿比例" v-model.number="retreatStrategy.compensationRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
+		    </el-form-item>
 
-	    <el-form-item label="退改日命名：" prop="refundDateName">
-	      <el-input v-model="retreatStrategy.refundDateName" size="small" placeholder="请输入退改日命名"></el-input>
-	    </el-form-item>
+		    <el-form-item label="退改日命名：" prop="refundDateName">
+		      <el-input v-model="retreatStrategy.refundDateName" size="small" placeholder="请输入退改日命名"></el-input>
+		    </el-form-item>
 
-	    <el-form-item label="退改日期：" prop="refundDays">
-	      <el-input v-model.number="retreatStrategy.refundDays" size="small" placeholder="请输入整数天数"></el-input>
-	    </el-form-item>
+		    <el-form-item label="退改日期：" prop="refundDays">
+		      <el-input v-model.number="retreatStrategy.refundDays" size="small" placeholder="请输入整数天数"></el-input>
+		    </el-form-item>
 
-	    <el-form-item label="备注/描述：" prop="note">
-	      <el-input v-model="retreatStrategy.note" :autosize="{ minRows: 2, maxRows: 4}" size="small" placeholder="请输入备注/描述" type="textarea"></el-input>
-	    </el-form-item>
+		    <el-form-item label="备注/描述：" prop="note">
+		      <el-input v-model="retreatStrategy.note" :autosize="{ minRows: 2, maxRows: 4}" size="small" placeholder="请输入备注/描述" type="textarea"></el-input>
+		    </el-form-item>
 
-	  </el-form>
-	  <div slot="footer">
-	    <el-button @click="dialogEdit = false">取 消</el-button>
-	    <el-button type="primary" @click="editRetreatStrategys('retreatStrategy')">确 定</el-button>
-	  </div>
-	</el-dialog>
-	<!-- 保存策略star -->
-    <el-row type="flex" justify="center" style="margin-top:50px">
-    	<el-button type="primary" :disabled="disabledBtn" @click="saveStrategy">保存</el-button>
-    </el-row>
-	<!-- 保存策略end -->
-</div>
+		  </el-form>
+		  <div slot="footer">
+		    <el-button @click="dialogEdit = false">取 消</el-button>
+		    <el-button type="primary" @click="editRetreatStrategys('retreatStrategy')">确 定</el-button>
+		  </div>
+		</el-dialog>
+		<!-- 保存策略star -->
+	    <el-row type="flex" justify="center" style="margin-top:50px">
+	    	<el-button type="primary" :disabled="disabledBtn" @click="saveStrategy">保存</el-button>
+	    </el-row>
+		<!-- 保存策略end -->
+	</div>
 </template>
 
 <script>
@@ -286,8 +286,6 @@
 						list:this.retreatStrategysDetail,
 						delIdlList:this.delIdlList
 			        };
-			        data = JSON.stringify(data);
-			        console.log(data);
 			        this.disabledBtn = true;
 			        this.loading = true;
 			        retreatStrategyUpdate(data).then((res)=>{

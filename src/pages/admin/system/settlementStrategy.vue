@@ -1,347 +1,347 @@
 <template>
-<div class="settlementStrategy">
-	<!-- 新增策略 -->
-	<el-row  class="toolbar">
-			<el-button @click="addStrategyDialog">新增</el-button>		
-	</el-row>
-	<!-- 新增弹窗 -->
-	<el-dialog title="新增" :visible.sync="isAddShow">
-		<el-row type="flex" justify="center">
-		  	<el-col :span="18">
-			  	<el-form :rules="addStrategyRules" label-width="146px" ref="addStrategy" :model="addStrategy">			  
-		    		<el-form-item label="规则名:" prop="settleName">
-		    		  <el-input placeholder="请输入规则名" size="small" v-model="addStrategy.settleName" auto-complete="off"></el-input>
-		    		</el-form-item>
-				    <el-form-item label="平台佣金率:" prop="commissionRate">
-				      <el-input-number placeholder="请选择赔偿比例" v-model.number="addStrategy.commissionRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
-				    </el-form-item>
-				    <el-form-item label="日期类型:" prop="firstSetttleDateType">
-				        <el-radio-group v-model="addStrategy.firstSetttleDateType">
-				          <el-radio :label="1">下单日期</el-radio>
-				          <el-radio :label="2">返程结束日期</el-radio>
-				        </el-radio-group>
-				    </el-form-item>
-		    		<el-form-item label="结算类型:" prop="firstDays">
-				       <el-select @change="changeFirstDays" size="small" v-model="addStrategy.firstDays" placeholder="请选择">
-				           <el-option label="半月结" :value="1">
-				           </el-option>
-				           <el-option label="月结" :value="2">
-				           </el-option>
-				           <el-option label="单笔订单结算" :value="3">
-				           </el-option>
-				        </el-select>
-				    </el-form-item>
-				    <div v-if="addStrategy.firstDays === 1">
-		    		    <el-form-item label="上半月结算日期:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="firstTopHalfMonthStar">
-		    	    	    		   <el-input size="small" placeholder="上半月起始日" v-model="addStrategy.firstTopHalfMonthStar" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    	<el-col :offset="2" :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="firstLowerHalfMonthEnd">
-		    	    			       <el-input size="small" placeholder="上半月结束日" v-model="addStrategy.firstLowerHalfMonthEnd" auto-complete="off"></el-input>
-		    	    			    </el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-		    		    <el-form-item label="下半月结算日期:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="secondTopHalfMonthStar">
-		    	    			       <el-input size="small" placeholder="下半月起始日" v-model="addStrategy.secondTopHalfMonthStar" auto-complete="off" :disabled="addStrategy.firstLowerHalfMonthEnd==31"></el-input>
-		    	    			    </el-form-item>
-		    	    	    	</el-col>
-		    	    	    	<el-col :offset="2" :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="secondLowerHalfMonthEnd">
-		    	    			       <el-input size="small" placeholder="下半月结束日" v-model="addStrategy.secondLowerHalfMonthEnd" auto-complete="off" :disabled="addStrategy.firstLowerHalfMonthEnd==31"></el-input>
-		    	    			    </el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-		    		    <el-form-item label="首次结算延后日:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="firstTopHalfMonthDelayDay">
-		    	    	    		   <el-input size="small" placeholder="首次结算延后日" v-model="addStrategy.firstTopHalfMonthDelayDay" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-		    		    <el-form-item label="二次结算延后日:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="secondTopHalfMonthDelayDay">
-		    	    	    		   <el-input size="small" placeholder="二次结算延后日" v-model="addStrategy.secondTopHalfMonthDelayDay" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-				    </div>
-				    <div v-if="addStrategy.firstDays === 2">
-		    		    <el-form-item label="结算日期:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="allMonthStar">
-		    	    	    		   <el-input size="small" placeholder="起始日" v-model="addStrategy.allMonthStar" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-		    		    <el-form-item label="首次结算延后日:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="allFirstMonthdelayDay">
-		    	    	    		   <el-input size="small" placeholder="首次结算延后日" v-model="addStrategy.allFirstMonthdelayDay" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-		    		    <el-form-item label="二次结算延后日:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="allSecondMonthdelayDay">
-		    	    	    		   <el-input size="small" placeholder="二次结算延后日" v-model="addStrategy.allSecondMonthdelayDay" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-				    </div>
-				    <div v-if="addStrategy.firstDays === 3">
-		    		    <el-form-item label="首次结算延后日:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="firstDelayDay">
-		    	    	    		   <el-input size="small" placeholder="首次结算延后日" v-model="addStrategy.firstDelayDay" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-		    		    <el-form-item label="二次结算延后日:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="secondDelayDay">
-		    	    	    		   <el-input size="small" placeholder="二次结算延后日" v-model="addStrategy.secondDelayDay" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-				    </div>
-		    		<el-form-item label="首次结算规则名称:" prop="firstSetttleDateName">
-				       <el-input size="small" v-model="addStrategy.firstSetttleDateName" auto-complete="off"></el-input>
-			          </el-date-picker>
-				    </el-form-item>
-				    <el-form-item label="首次结算比率:" prop="firstRate">
-				      <el-input-number placeholder="请选择赔偿比例" v-model.number="addStrategy.firstRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
-				    </el-form-item>
-		    		<el-form-item label="二次结算规则名称:" prop="secondSetttleDateName">
-				       <el-input size="small" v-model="addStrategy.secondSetttleDateName" auto-complete="off"></el-input>
-			          </el-date-picker>
-				    </el-form-item>
-				    <el-form-item label="二次结算比率:" prop="secondRate">
-				      <el-input-number placeholder="请选择赔偿比例" v-model.number="addStrategy.secondRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
-				    </el-form-item>
-		    		<el-form-item label="结算状态" prop="status">
-				      <el-select size="small" v-model="addStrategy.status" placeholder="请选择状态">
-				        <el-option label="启用" :value="1"></el-option>
-				        <el-option label="禁用" :value="0"></el-option>
-				      </el-select>
-				    </el-form-item>
-				    <el-form-item label="备注/描述:" prop="note">
-				      <el-input type="textarea" :autosize="{ minRows: 4}" v-model="addStrategy.note" auto-complete="off"></el-input>
-				    </el-form-item>
-			  	</el-form>
-		  	</el-col>
+	<div class="settlementStrategy">
+		<!-- 新增策略 -->
+		<el-row  class="toolbar">
+				<el-button type="primary" @click="addStrategyDialog">新增</el-button>		
 		</el-row>
-	  	<div slot="footer">
-	  	  <el-button @click="saveAddStrategy('addStrategy')">保存</el-button>
-	  	  <el-button @click="isAddShow = false">取消</el-button>
-	  	</div>
-	</el-dialog>
-	<!-- 策略列表渲染 -->
-	<el-table v-loading="loading" element-loading-text="操作中,请稍后O(∩_∩)O" :data="strategy" border style="width: 100%">
-	    <el-table-column prop="settleId" label="结算规则ID"></el-table-column>
-	    <el-table-column prop="settleName" label="规则名"></el-table-column>
-	    <el-table-column prop="commissionRate" :formatter="commissionRateFilter" label="平台佣金费率"></el-table-column>
-	    <el-table-column prop="firstDays" :formatter="firstDaysFilter" label="结算类型"></el-table-column>
-	    <el-table-column prop="firstSetttleDateType" :formatter="setttleDateTypeFilter" label="日期类型"></el-table-column>
-	    <el-table-column prop="status" :formatter="statusFilter" label="结算状态"></el-table-column>
-	    <el-table-column prop="note" label="备注/描述"></el-table-column>
-	    <el-table-column width="180" label="结算操作">
-	    	<template scope="scope">
-	    		<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-	    		<el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-	    	</template>
-	    </el-table-column>
-	</el-table>     	
-	<!-- 编辑弹窗 -->
-	<el-dialog title="编辑" :visible.sync="isEditShow">
-	  	<el-row type="flex" justify="center">
-		  	<el-col :span="18">
-			  	<el-form :rules="addStrategyRules" label-width="146px" ref="addStrategy" :model="addStrategy">			  
-		    		<el-form-item label="规则名:" prop="settleName">
-		    		  <el-input placeholder="请输入规则名" size="small" v-model="addStrategy.settleName" auto-complete="off"></el-input>
-		    		</el-form-item>
-				    <el-form-item label="平台佣金率:" prop="commissionRate">
-				      <el-input-number placeholder="请选择赔偿比例" v-model.number="addStrategy.commissionRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
-				    </el-form-item>
-				    <el-form-item label="日期类型:" prop="firstSetttleDateType">
-				        <el-radio-group v-model="addStrategy.firstSetttleDateType">
-				          <el-radio :label="1">下单日期</el-radio>
-				          <el-radio :label="2">返程结束日期</el-radio>
-				        </el-radio-group>
-				    </el-form-item>
-		    		<el-form-item label="结算类型:" prop="firstDays">
-				       <el-select @change="changeFirstDays" size="small" v-model="addStrategy.firstDays" placeholder="请选择">
-				           <el-option label="半月结" :value="1">
-				           </el-option>
-				           <el-option label="月结" :value="2">
-				           </el-option>
-				           <el-option label="单笔订单结算" :value="3">
-				           </el-option>
-				        </el-select>
-				    </el-form-item>
-				    <div v-if="addStrategy.firstDays === 1">
-		    		    <el-form-item label="上半月结算日期:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="firstTopHalfMonthStar">
-		    	    	    		   <el-input size="small" placeholder="上半月起始日" v-model="addStrategy.firstTopHalfMonthStar" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    	<el-col :offset="2" :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="firstLowerHalfMonthEnd">
-		    	    			       <el-input size="small" placeholder="上半月结束日" v-model="addStrategy.firstLowerHalfMonthEnd" auto-complete="off"></el-input>
-		    	    			    </el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-		    		    <el-form-item label="下半月结算日期:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="secondTopHalfMonthStar">
-		    	    			       <el-input size="small" placeholder="下半月起始日" v-model="addStrategy.secondTopHalfMonthStar" auto-complete="off" :disabled="addStrategy.firstLowerHalfMonthEnd==31"></el-input>
-		    	    			    </el-form-item>
-		    	    	    	</el-col>
-		    	    	    	<el-col :offset="2" :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="secondLowerHalfMonthEnd">
-		    	    			       <el-input size="small" placeholder="下半月结束日" v-model="addStrategy.secondLowerHalfMonthEnd" auto-complete="off" :disabled="addStrategy.firstLowerHalfMonthEnd==31"></el-input>
-		    	    			    </el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-		    		    <el-form-item label="首次结算延后日:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="firstTopHalfMonthDelayDay">
-		    	    	    		   <el-input size="small" placeholder="首次结算延后日" v-model="addStrategy.firstTopHalfMonthDelayDay" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-		    		    <el-form-item label="二次结算延后日:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="secondTopHalfMonthDelayDay">
-		    	    	    		   <el-input size="small" placeholder="二次结算延后日" v-model="addStrategy.secondTopHalfMonthDelayDay" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-				    </div>
-				    <div v-if="addStrategy.firstDays === 2">
-		    		    <el-form-item label="结算日期:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="allMonthStar">
-		    	    	    		   <el-input size="small" placeholder="起始日" v-model="addStrategy.allMonthStar" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-		    		    <el-form-item label="首次结算延后日:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="allFirstMonthdelayDay">
-		    	    	    		   <el-input size="small" placeholder="首次结算延后日" v-model="addStrategy.allFirstMonthdelayDay" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-		    		    <el-form-item label="二次结算延后日:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="allSecondMonthdelayDay">
-		    	    	    		   <el-input size="small" placeholder="二次结算延后日" v-model="addStrategy.allSecondMonthdelayDay" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-				    </div>
-				    <div v-if="addStrategy.firstDays === 3">
-		    		    <el-form-item label="首次结算延后日:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="firstDelayDay">
-		    	    	    		   <el-input size="small" placeholder="首次结算延后日" v-model="addStrategy.firstDelayDay" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-		    		    <el-form-item label="二次结算延后日:">
-		    	    	    <el-row>
-		    	    	    	<el-col :span="11">
-		    	    	    		<el-form-item label-width="0px" prop="secondDelayDay">
-		    	    	    		   <el-input size="small" placeholder="二次结算延后日" v-model="addStrategy.secondDelayDay" auto-complete="off"></el-input>
-		    	    	    		</el-form-item>
-		    	    	    	</el-col>
-		    	    	    </el-row>
-		    		    </el-form-item>
-				    </div>
-		    		<el-form-item label="首次结算规则名称:" prop="firstSetttleDateName">
-				       <el-input size="small" v-model="addStrategy.firstSetttleDateName" auto-complete="off"></el-input>
-			          </el-date-picker>
-				    </el-form-item>
-				    <el-form-item label="首次结算比率:" prop="firstRate">
-				      <el-input-number placeholder="请选择赔偿比例" v-model.number="addStrategy.firstRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
-				    </el-form-item>
-		    		<el-form-item label="二次结算规则名称:" prop="secondSetttleDateName">
-				       <el-input size="small" v-model="addStrategy.secondSetttleDateName" auto-complete="off"></el-input>
-			          </el-date-picker>
-				    </el-form-item>
-				    <el-form-item label="二次结算比率:" prop="secondRate">
-				      <el-input-number placeholder="请选择赔偿比例" v-model.number="addStrategy.secondRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
-				    </el-form-item>
-		    		<el-form-item label="结算状态" prop="status">
-				      <el-select size="small" v-model="addStrategy.status" placeholder="请选择状态">
-				        <el-option label="启用" :value="1"></el-option>
-				        <el-option label="禁用" :value="0"></el-option>
-				      </el-select>
-				    </el-form-item>
-				    <el-form-item label="备注/描述:" prop="note">
-				      <el-input type="textarea" :autosize="{ minRows: 4}" v-model="addStrategy.note" auto-complete="off"></el-input>
-				    </el-form-item>
-			  	</el-form>
-		  	</el-col>
+		<!-- 新增弹窗 -->
+		<el-dialog title="新增" :visible.sync="isAddShow">
+			<el-row type="flex" justify="center">
+			  	<el-col :span="18">
+				  	<el-form :rules="addStrategyRules" label-width="146px" ref="addStrategy" :model="addStrategy">			  
+			    		<el-form-item label="规则名:" prop="settleName">
+			    		  <el-input placeholder="请输入规则名" size="small" v-model="addStrategy.settleName" auto-complete="off"></el-input>
+			    		</el-form-item>
+					    <el-form-item label="平台佣金率:" prop="commissionRate">
+					      <el-input-number placeholder="请选择赔偿比例" v-model.number="addStrategy.commissionRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
+					    </el-form-item>
+					    <el-form-item label="日期类型:" prop="firstSetttleDateType">
+					        <el-radio-group v-model="addStrategy.firstSetttleDateType">
+					          <el-radio :label="1">下单日期</el-radio>
+					          <el-radio :label="2">返程结束日期</el-radio>
+					        </el-radio-group>
+					    </el-form-item>
+			    		<el-form-item label="结算类型:" prop="firstDays">
+					       <el-select @change="changeFirstDays" size="small" v-model="addStrategy.firstDays" placeholder="请选择">
+					           <el-option label="半月结" :value="1">
+					           </el-option>
+					           <el-option label="月结" :value="2">
+					           </el-option>
+					           <el-option label="单笔订单结算" :value="3">
+					           </el-option>
+					        </el-select>
+					    </el-form-item>
+					    <div v-if="addStrategy.firstDays === 1">
+			    		    <el-form-item label="上半月结算日期:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="firstTopHalfMonthStar">
+			    	    	    		   <el-input size="small" placeholder="上半月起始日" v-model="addStrategy.firstTopHalfMonthStar" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    	<el-col :offset="2" :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="firstLowerHalfMonthEnd">
+			    	    			       <el-input size="small" placeholder="上半月结束日" v-model="addStrategy.firstLowerHalfMonthEnd" auto-complete="off"></el-input>
+			    	    			    </el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+			    		    <el-form-item label="下半月结算日期:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="secondTopHalfMonthStar">
+			    	    			       <el-input size="small" placeholder="下半月起始日" v-model="addStrategy.secondTopHalfMonthStar" auto-complete="off" :disabled="addStrategy.firstLowerHalfMonthEnd==31"></el-input>
+			    	    			    </el-form-item>
+			    	    	    	</el-col>
+			    	    	    	<el-col :offset="2" :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="secondLowerHalfMonthEnd">
+			    	    			       <el-input size="small" placeholder="下半月结束日" v-model="addStrategy.secondLowerHalfMonthEnd" auto-complete="off" :disabled="addStrategy.firstLowerHalfMonthEnd==31"></el-input>
+			    	    			    </el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+			    		    <el-form-item label="首次结算延后日:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="firstTopHalfMonthDelayDay">
+			    	    	    		   <el-input size="small" placeholder="首次结算延后日" v-model="addStrategy.firstTopHalfMonthDelayDay" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+			    		    <el-form-item label="二次结算延后日:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="secondTopHalfMonthDelayDay">
+			    	    	    		   <el-input size="small" placeholder="二次结算延后日" v-model="addStrategy.secondTopHalfMonthDelayDay" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+					    </div>
+					    <div v-if="addStrategy.firstDays === 2">
+			    		    <el-form-item label="结算日期:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="allMonthStar">
+			    	    	    		   <el-input size="small" placeholder="起始日" v-model="addStrategy.allMonthStar" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+			    		    <el-form-item label="首次结算延后日:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="allFirstMonthdelayDay">
+			    	    	    		   <el-input size="small" placeholder="首次结算延后日" v-model="addStrategy.allFirstMonthdelayDay" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+			    		    <el-form-item label="二次结算延后日:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="allSecondMonthdelayDay">
+			    	    	    		   <el-input size="small" placeholder="二次结算延后日" v-model="addStrategy.allSecondMonthdelayDay" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+					    </div>
+					    <div v-if="addStrategy.firstDays === 3">
+			    		    <el-form-item label="首次结算延后日:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="firstDelayDay">
+			    	    	    		   <el-input size="small" placeholder="首次结算延后日" v-model="addStrategy.firstDelayDay" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+			    		    <el-form-item label="二次结算延后日:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="secondDelayDay">
+			    	    	    		   <el-input size="small" placeholder="二次结算延后日" v-model="addStrategy.secondDelayDay" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+					    </div>
+			    		<el-form-item label="首次结算规则名称:" prop="firstSetttleDateName">
+					       <el-input size="small" v-model="addStrategy.firstSetttleDateName" auto-complete="off"></el-input>
+				          </el-date-picker>
+					    </el-form-item>
+					    <el-form-item label="首次结算比率:" prop="firstRate">
+					      <el-input-number placeholder="请选择赔偿比例" v-model.number="addStrategy.firstRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
+					    </el-form-item>
+			    		<el-form-item label="二次结算规则名称:" prop="secondSetttleDateName">
+					       <el-input size="small" v-model="addStrategy.secondSetttleDateName" auto-complete="off"></el-input>
+				          </el-date-picker>
+					    </el-form-item>
+					    <el-form-item label="二次结算比率:" prop="secondRate">
+					      <el-input-number placeholder="请选择赔偿比例" v-model.number="addStrategy.secondRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
+					    </el-form-item>
+			    		<el-form-item label="结算状态" prop="status">
+					      <el-select size="small" v-model="addStrategy.status" placeholder="请选择状态">
+					        <el-option label="启用" :value="1"></el-option>
+					        <el-option label="禁用" :value="0"></el-option>
+					      </el-select>
+					    </el-form-item>
+					    <el-form-item label="备注/描述:" prop="note">
+					      <el-input type="textarea" :autosize="{ minRows: 4}" v-model="addStrategy.note" auto-complete="off"></el-input>
+					    </el-form-item>
+				  	</el-form>
+			  	</el-col>
+			</el-row>
+		  	<div slot="footer">
+		  	  <el-button type="primary" @click="saveAddStrategy('addStrategy')">保存</el-button>
+		  	  <el-button @click="isAddShow = false">取消</el-button>
+		  	</div>
+		</el-dialog>
+		<!-- 策略列表渲染 -->
+		<el-table v-loading="loading" element-loading-text="操作中,请稍后O(∩_∩)O" :data="strategy" border style="width: 100%">
+		    <el-table-column prop="settleId" label="结算规则ID"></el-table-column>
+		    <el-table-column prop="settleName" label="规则名"></el-table-column>
+		    <el-table-column prop="commissionRate" :formatter="commissionRateFilter" label="平台佣金费率"></el-table-column>
+		    <el-table-column prop="firstDays" :formatter="firstDaysFilter" label="结算类型"></el-table-column>
+		    <el-table-column prop="firstSetttleDateType" :formatter="setttleDateTypeFilter" label="日期类型"></el-table-column>
+		    <el-table-column prop="status" :formatter="statusFilter" label="结算状态"></el-table-column>
+		    <el-table-column prop="note" label="备注/描述"></el-table-column>
+		    <el-table-column width="180" label="结算操作">
+		    	<template scope="scope">
+		    		<el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+		    		<el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+		    	</template>
+		    </el-table-column>
+		</el-table>     	
+		<!-- 编辑弹窗 -->
+		<el-dialog title="编辑" :visible.sync="isEditShow">
+		  	<el-row type="flex" justify="center">
+			  	<el-col :span="18">
+				  	<el-form :rules="addStrategyRules" label-width="146px" ref="addStrategy" :model="addStrategy">			  
+			    		<el-form-item label="规则名:" prop="settleName">
+			    		  <el-input placeholder="请输入规则名" size="small" v-model="addStrategy.settleName" auto-complete="off"></el-input>
+			    		</el-form-item>
+					    <el-form-item label="平台佣金率:" prop="commissionRate">
+					      <el-input-number placeholder="请选择赔偿比例" v-model.number="addStrategy.commissionRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
+					    </el-form-item>
+					    <el-form-item label="日期类型:" prop="firstSetttleDateType">
+					        <el-radio-group v-model="addStrategy.firstSetttleDateType">
+					          <el-radio :label="1">下单日期</el-radio>
+					          <el-radio :label="2">返程结束日期</el-radio>
+					        </el-radio-group>
+					    </el-form-item>
+			    		<el-form-item label="结算类型:" prop="firstDays">
+					       <el-select @change="changeFirstDays" size="small" v-model="addStrategy.firstDays" placeholder="请选择">
+					           <el-option label="半月结" :value="1">
+					           </el-option>
+					           <el-option label="月结" :value="2">
+					           </el-option>
+					           <el-option label="单笔订单结算" :value="3">
+					           </el-option>
+					        </el-select>
+					    </el-form-item>
+					    <div v-if="addStrategy.firstDays === 1">
+			    		    <el-form-item label="上半月结算日期:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="firstTopHalfMonthStar">
+			    	    	    		   <el-input size="small" placeholder="上半月起始日" v-model="addStrategy.firstTopHalfMonthStar" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    	<el-col :offset="2" :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="firstLowerHalfMonthEnd">
+			    	    			       <el-input size="small" placeholder="上半月结束日" v-model="addStrategy.firstLowerHalfMonthEnd" auto-complete="off"></el-input>
+			    	    			    </el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+			    		    <el-form-item label="下半月结算日期:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="secondTopHalfMonthStar">
+			    	    			       <el-input size="small" placeholder="下半月起始日" v-model="addStrategy.secondTopHalfMonthStar" auto-complete="off" :disabled="addStrategy.firstLowerHalfMonthEnd==31"></el-input>
+			    	    			    </el-form-item>
+			    	    	    	</el-col>
+			    	    	    	<el-col :offset="2" :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="secondLowerHalfMonthEnd">
+			    	    			       <el-input size="small" placeholder="下半月结束日" v-model="addStrategy.secondLowerHalfMonthEnd" auto-complete="off" :disabled="addStrategy.firstLowerHalfMonthEnd==31"></el-input>
+			    	    			    </el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+			    		    <el-form-item label="首次结算延后日:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="firstTopHalfMonthDelayDay">
+			    	    	    		   <el-input size="small" placeholder="首次结算延后日" v-model="addStrategy.firstTopHalfMonthDelayDay" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+			    		    <el-form-item label="二次结算延后日:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="secondTopHalfMonthDelayDay">
+			    	    	    		   <el-input size="small" placeholder="二次结算延后日" v-model="addStrategy.secondTopHalfMonthDelayDay" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+					    </div>
+					    <div v-if="addStrategy.firstDays === 2">
+			    		    <el-form-item label="结算日期:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="allMonthStar">
+			    	    	    		   <el-input size="small" placeholder="起始日" v-model="addStrategy.allMonthStar" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+			    		    <el-form-item label="首次结算延后日:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="allFirstMonthdelayDay">
+			    	    	    		   <el-input size="small" placeholder="首次结算延后日" v-model="addStrategy.allFirstMonthdelayDay" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+			    		    <el-form-item label="二次结算延后日:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="allSecondMonthdelayDay">
+			    	    	    		   <el-input size="small" placeholder="二次结算延后日" v-model="addStrategy.allSecondMonthdelayDay" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+					    </div>
+					    <div v-if="addStrategy.firstDays === 3">
+			    		    <el-form-item label="首次结算延后日:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="firstDelayDay">
+			    	    	    		   <el-input size="small" placeholder="首次结算延后日" v-model="addStrategy.firstDelayDay" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+			    		    <el-form-item label="二次结算延后日:">
+			    	    	    <el-row>
+			    	    	    	<el-col :span="11">
+			    	    	    		<el-form-item label-width="0px" prop="secondDelayDay">
+			    	    	    		   <el-input size="small" placeholder="二次结算延后日" v-model="addStrategy.secondDelayDay" auto-complete="off"></el-input>
+			    	    	    		</el-form-item>
+			    	    	    	</el-col>
+			    	    	    </el-row>
+			    		    </el-form-item>
+					    </div>
+			    		<el-form-item label="首次结算规则名称:" prop="firstSetttleDateName">
+					       <el-input size="small" v-model="addStrategy.firstSetttleDateName" auto-complete="off"></el-input>
+				          </el-date-picker>
+					    </el-form-item>
+					    <el-form-item label="首次结算比率:" prop="firstRate">
+					      <el-input-number placeholder="请选择赔偿比例" v-model.number="addStrategy.firstRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
+					    </el-form-item>
+			    		<el-form-item label="二次结算规则名称:" prop="secondSetttleDateName">
+					       <el-input size="small" v-model="addStrategy.secondSetttleDateName" auto-complete="off"></el-input>
+				          </el-date-picker>
+					    </el-form-item>
+					    <el-form-item label="二次结算比率:" prop="secondRate">
+					      <el-input-number placeholder="请选择赔偿比例" v-model.number="addStrategy.secondRate" size="small" :step="0.01" :min="0" :max="1"></el-input-number>
+					    </el-form-item>
+			    		<el-form-item label="结算状态" prop="status">
+					      <el-select size="small" v-model="addStrategy.status" placeholder="请选择状态">
+					        <el-option label="启用" :value="1"></el-option>
+					        <el-option label="禁用" :value="0"></el-option>
+					      </el-select>
+					    </el-form-item>
+					    <el-form-item label="备注/描述:" prop="note">
+					      <el-input type="textarea" :autosize="{ minRows: 4}" v-model="addStrategy.note" auto-complete="off"></el-input>
+					    </el-form-item>
+				  	</el-form>
+			  	</el-col>
+			</el-row>
+			<div slot="footer">
+			    <el-button type="primary" @click="updatePageStrategy('addStrategy')">保存</el-button>
+			    <el-button @click="isEditShow = false">取消</el-button>
+			</div>
+		</el-dialog>
+		<el-row  class="toolbar">
+			<el-pagination
+			  @size-change="handleSizeChange"
+		      @current-change="handleCurrentChange"
+		      :current-page="pageInfo.currPage"
+		      :page-sizes="[10,20,30,40]"
+		      :page-size="pageInfo.pageSize"
+		      layout="total, sizes, prev, pager, next, jumper"
+		      :total="pageInfo.count">
+		    </el-pagination>
 		</el-row>
-		<div slot="footer">
-		    <el-button @click="updatePageStrategy('addStrategy')">保存</el-button>
-		    <el-button @click="isEditShow = false">取消</el-button>
-		</div>
-	</el-dialog>
-	<el-row  class="toolbar">
-		<el-pagination
-		  @size-change="handleSizeChange"
-	      @current-change="handleCurrentChange"
-	      :current-page="pageInfo.currPage"
-	      :page-sizes="[10,20,30,40]"
-	      :page-size="pageInfo.pageSize"
-	      layout="total, sizes, prev, pager, next, jumper"
-	      :total="pageInfo.count">
-	    </el-pagination>
-	</el-row>
-</div>
+	</div>
 </template>
 <script>
 	import axios from 'axios'
@@ -737,8 +737,6 @@
 	    				for(let i in data){
 	    					data[i] += '';
 	    				}
-	    				data = JSON.stringify(data);
-	    				console.log(data);
 	    				updateStrategy(data).then(res=>{
 	    					this.isEditShow = false;
 	    					this.loading = true;
@@ -782,7 +780,7 @@
 				
 			},
 			handleDelete(index,details){
-				this.$confirm('是否删除', '提示', {
+				this.$confirm('是否删除该条规则', '提示', {
 		          confirmButtonText: '确定',
 		          cancelButtonText: '取消',
 		          type: 'warning'
@@ -905,13 +903,13 @@
 			          		firstDelayDay:this.addStrategy.firstDelayDay,
 			          		secondDelayDay:this.addStrategy.secondDelayDay,
 			          	}
-			          	console.log(data);
-	            		insertStrategy(data).then(res=>{
+			          	// console.log(data);
+	            		insertStrategy(data).then(res => {
 	            			if(res.data.code === '0001'){
 	            				this.getList();
 	            				this.pageInfo.currPage = 1;
 	            				this.$message({
-	            		          message: '恭喜你,新增成功',
+	            		          message: '新增成功',
 	            		          type: 'success'
 	            		        });
 	            		        for(let i in this.addStrategy){
@@ -921,11 +919,10 @@
 	            		        this.secondSetttleDateType = this.firstSetttleDateType;
 	            		        this.loading = false;
 	            			}else{
-	            				this.$message({
-	            	    	        message: '新增失败,请稍后再试',
-	            	    	        type: 'error'
-	            	    	    });
-	            	    	    this.loading = false;
+	            				this.$message.error({
+          	    	        message: res.data.message,
+          	    	    });
+	            	    	this.loading = false;
 	            			}
 	            		}).catch(error=>{
 	            			this.catchError(error.response)

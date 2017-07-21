@@ -359,9 +359,6 @@
               console.log(res)
               if( res.data.code === '0001') {
                 this.mediaList = res.data.result.fileList
-                this.mediaList.forEach((media) => {
-                  media.filePath = 'http://192.168.199.211:8080' + media.filePath
-                })
               } else {
                 console.log(res.data.message)
               }

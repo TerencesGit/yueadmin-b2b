@@ -149,7 +149,7 @@
           	let data = Object.assign(form, this.wareForm)
           	data.parentId = this.wareId;
             console.log(data)
-            saveWareActivityInfo(JSON.stringify(data))
+            saveWareActivityInfo(data)
             .then(res => {
             	console.log(res)
             	if (res.data.code === '0001') {

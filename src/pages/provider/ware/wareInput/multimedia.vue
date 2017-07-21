@@ -182,7 +182,7 @@
 	    		fileList: this.fileList
 	    	}
 	    	// console.log(mediaForm)
-	    	createWareFile(JSON.stringify(mediaForm)).then(res => {
+	    	createWareFile(mediaForm).then(res => {
 	    		if(res.data.code === '0001') {
 	    			this.$message.success('上传成功')
 	    			this.getWareFileList()
@@ -236,7 +236,7 @@
 						fileIdList: _fileIdList
 					}
 					console.log(data)
-					deleteWareFile(JSON.stringify(data)).then(res => {
+					deleteWareFile(data).then(res => {
 						console.log(res)
 						if (res.data.code === '0001') {
 							this.$message.success(res.data.message)
@@ -265,16 +265,14 @@
 					let data = {
 						fileIdList: _fileIdList
 					}
-					deleteWareFile(JSON.stringify(data))
-					.then(res => {
+					deleteWareFile(data).then(res => {
 						if(res.data.code === '0001') {
 							this.$message.success(res.data.message)
 							this.getWareFileList()
 						} else {
 							this.$message.error(res.data.message)
 						}
-					})
-					.catch((error) => {
+					}).catch((error) => {
 						console.log(error)
 						this.catchError(error.response)
 					})

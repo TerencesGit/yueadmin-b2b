@@ -4,7 +4,7 @@
 		<el-row class="toolbar">
 			<el-button type="primary" @click="handleAdd">新增推荐活动</el-button>
 			<el-button type="primary" @click="backList">返回商品列表</el-button>
-			<el-button type="primary" @click="submitVerify">重新提交审核</el-button>
+			<el-button type="primary" @click="submitVerify">提交审核</el-button>
 		</el-row>
 		<!-- 推荐活动列表 -->
 		<el-table :data="activityList" border highlight-current-row>
@@ -146,8 +146,8 @@
 		        }
           	let data = Object.assign(form, this.wareForm)
           	data.parentId = this.wareId;
-            console.log(data)
-            saveWareActivityInfo(JSON.stringify(data))
+            // console.log(data)
+            saveWareActivityInfo(data)
             .then(res => {
             	console.log(res)
             	if (res.data.code === '0001') {

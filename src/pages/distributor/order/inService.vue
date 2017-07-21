@@ -249,8 +249,8 @@
                 this.$refs[changeForm].validate((valid) => {
                     if (valid) {
                         var data = {
-                          oldOrderId:this.id,
-                          changeInfo:this.changeForm.changeInfo
+                          oldOrderId: this.id,
+                          changeInfo: this.changeForm.changeInfo
                         }
                         console.log(data);
                         switchBill(data).then((res) => {
@@ -280,8 +280,8 @@
                 this.$refs[refundForm].validate((valid) => {
                     if (valid) {
                         var data = {
-                            orderId:this.id,
-                            cancelReason:this.refundForm.cancelReason
+                            orderId: this.id,
+                            cancelReason: this.refundForm.cancelReason
                         }
                         console.log(data);
                         orderCancel(data).then((res) => {

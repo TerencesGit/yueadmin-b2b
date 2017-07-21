@@ -81,6 +81,7 @@
       return {
       	wareId: '',
       	checked: true,
+      	editorVisible: false,
       	attributeForm: {
       		id: '',
       		introduce: '输入商品介绍',
@@ -88,11 +89,11 @@
 	      	explains: '输入使用说明',
 	      	notice: '输入购买须知',
       	},
-      	editorVisible: false
       }
     },
     methods: {
     	updateIntroduce (content) {
+    		console.log(content)
     		this.attributeForm.introduce = content
     	},
     	updateCharge (content) {
@@ -122,7 +123,7 @@
     		let data = Object.assign({}, this.attributeForm)
     		data.wareId = this.wareId;
     		console.log(data)
-    		saveAttribute(JSON.stringify(data)).then(res => {
+    		saveAttribute(data).then(res => {
     			if (res.data.code === '0001') {
     				this.$message.success('保存成功')
     			} else {

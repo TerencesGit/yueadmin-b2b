@@ -197,12 +197,8 @@
         },
 			}
 		},
-		components:{
-			fullcalendar
-		},
 		methods:{
-			dayClick(day,event){
-				console.log(event);
+			dayClick(day, event){
 				this.currentCommodity = Object.assign({},event);
 				this.orderInfo.date = day;
 				this.orderInfo.adultPrice = event.adultPrice;
@@ -253,8 +249,6 @@
 				this.activitieLoading = true;
 				readWareActiveList(params).then((res)=>{
 					if(res.data.code === "0001"){
-						this.activitiePageInfo.currPage = res.data.result.pageInfo.currPage;
-						this.activitiePageInfo.pageSize = res.data.result.pageInfo.pageSize;
 						this.activitiePageInfo.count = res.data.result.pageInfo.count;
 						res.data.result.wareActivityInfo.forEach((val,index)=>{
 							val.adultCount = 0;
@@ -262,15 +256,15 @@
 						this.recommendedActivitiesList = res.data.result.wareActivityInfo;
 					}else{
 						this.$message({
-        		          message: res.data.message,
-        		          type: 'warning'
-        		        });
+	    		    message: res.data.message,
+	    		    type: 'warning'
+	    		  });
 					}
 					this.activitieLoading = false;
 				}).catch((error)=>{
 					console.log(error);
 					this.catchError(error.response)
-    		        this.activitieLoading = false;
+    		  this.activitieLoading = false;
 				})
 			},
 			changeMonth(){},

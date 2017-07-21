@@ -26,29 +26,26 @@
 		</el-row>
 		<!-- 属性列表 -->
 		<el-table v-loading="loading" :data="templateManageList" border style="width: 100%">
-				<el-table-column type="expand" width="50" label="属性名">
-		    	<template scope="scope">
-		    		<span style="margin-right:10px" v-for="(item,index) in scope.row.attributeNameList">
-		    			属性名
-		    			<el-tag type="primary" v-text="item.attributeName"></el-tag>
-		    		</span>
-		    	</template>
-		    </el-table-column>
-		    <el-table-column prop="templateName" label="页面模板名"></el-table-column>
-		    <!-- <el-table-column :formatter="formatterAttributeNameList" prop="attributeNameList" label="属性名">
-		    </el-table-column> -->
-		    <el-table-column prop="htmlName" label="路径"></el-table-column>
-		    <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
-		    <el-table-column prop="createName" label="创建人"></el-table-column>
-		    <el-table-column :formatter="formatterStatus" prop="status" label="状态"></el-table-column>
-		    <el-table-column label="操作" width="180">
-		    	<template scope="scope">
-	    	        <el-button size="small"
-	    	          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-	    	        <el-button size="small" type="danger"
-	    	          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-    	        </template>
-		    </el-table-column>
+		  <el-table-column type="expand" width="50" label="属性名">
+	    	<template scope="scope">
+	    		<span style="margin-right:10px" v-for="(item,index) in scope.row.attributeNameList" :key="index">
+	    			<el-tag type="primary" v-text="item.attributeName"></el-tag>
+	    		</span>
+	    	</template>
+	    </el-table-column>
+	    <el-table-column prop="templateName" label="页面模板名"></el-table-column>
+	    <el-table-column prop="htmlName" label="路径"></el-table-column>
+	    <el-table-column prop="createTime" label="创建时间"></el-table-column>
+	    <el-table-column prop="createName" label="创建人"></el-table-column>
+	    <el-table-column :formatter="formatterStatus" prop="status" label="状态"></el-table-column>
+	    <el-table-column label="操作" width="180">
+	    	<template scope="scope">
+    	        <el-button size="small"
+    	          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+    	        <el-button size="small" type="danger"
+    	          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+  	        </template>
+	    </el-table-column>
 		</el-table>
 		<!-- 分页 -->
 		<el-row type="flex" justify="end" style="margin-top:20px">
@@ -70,14 +67,14 @@
 						<el-row>
 							<el-col :span="20">
 								<el-form-item label="页面模板名：" prop="templateName">
-									<el-input v-model="addTemplateManage.templateName"></el-input>
+									<el-input size="small" v-model="addTemplateManage.templateName"></el-input>
 								</el-form-item>
 							</el-col>
 						</el-row>
 					    <el-row>
 							<el-col :span="20">
 								<el-form-item label="属性名：" prop="attributeId">
-							    	<el-select style="width:100%" v-model="addTemplateManage.attributeId" multiple placeholder="请选择(可多选)">
+							    	<el-select style="width:100%" size="small" v-model="addTemplateManage.attributeId" multiple placeholder="请选择(可多选)">
 							    	    <el-option v-for="(item,index) in propertyManageList" :key="index" :label="item.attributeName" :value="item.attributeId">
 							    	    </el-option>
 							    	</el-select>
@@ -87,14 +84,14 @@
 						<el-row>
 							<el-col :span="20">
 								<el-form-item label="路径：" prop="htmlName">
-								  	<el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="addTemplateManage.htmlName"></el-input>
+								  	<el-input size="small" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="addTemplateManage.htmlName"></el-input>
 								</el-form-item>
 							</el-col>
 						</el-row>
 						<el-row>
 							<el-col :span="20">
 								<el-form-item label="状态：" prop="status">
-								    <el-radio-group v-model.number="addTemplateManage.status">
+								    <el-radio-group size="small" v-model.number="addTemplateManage.status">
 								        <el-radio :label="1">正常</el-radio>
 								        <el-radio :label="0">停用</el-radio>
 								    </el-radio-group>
@@ -113,18 +110,18 @@
 		<el-dialog title="编辑属性管理" :visible.sync="dialogEdit">
 			<el-row type="flex" justify="center">
 				<el-col :span="22">
-					<el-form :model="editTemplateManage" :rules="rules" ref="editTemplateManage" label-width="160px">
+					<el-form :model="editTemplateManage" :rules="rules" ref="editTemplateManage" label-width="100px">
 						<el-row>
-							<el-col :span="20">
+							<el-col :span="12">
 								<el-form-item label="页面模板名：" prop="templateName">
-									<el-input v-model="editTemplateManage.templateName"></el-input>
+									<el-input size="small" v-model="editTemplateManage.templateName"></el-input>
 								</el-form-item>
 							</el-col>
 						</el-row>
 					    <el-row>
 			    			<el-col :span="20">
 			    				<el-form-item label="属性名：" prop="attributeNameList">
-			    			    	<el-select style="width:100%" v-model="editTemplateManage.attributeNameList" multiple placeholder="请选择(可多选)">
+			    			    	<el-select style="width:100%" size="small" v-model="editTemplateManage.attributeNameList" multiple placeholder="请选择(可多选)">
 			    			    	    <el-option v-for="(item,index) in editPropertyManageList" :key="index" :label="item.attributeName" :value="item.attributeId">
 			    			    	    </el-option>
 			    			    	</el-select>
@@ -133,15 +130,15 @@
 						</el-row>
 						<el-row>
 							<el-col :span="20">
-								<el-form-item label="路径：" prop="htmlName">
-								  	<el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="editTemplateManage.htmlName"></el-input>
+								<el-form-item label="路径" prop="htmlName">
+								  	<el-input size="small" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="editTemplateManage.htmlName"></el-input>
 								</el-form-item>
 							</el-col>
 						</el-row>
 						<el-row>
 							<el-col :span="20">
-								<el-form-item label="状态：" prop="status">
-								    <el-radio-group v-model.number="editTemplateManage.status">
+								<el-form-item label="状态" prop="status">
+								    <el-radio-group size="small" v-model.number="editTemplateManage.status">
 								        <el-radio :label="1">正常</el-radio>
 								        <el-radio :label="0">停用</el-radio>
 								    </el-radio-group>
@@ -215,30 +212,7 @@
 						{ required: true, type:'number', message: '请选择状态', trigger: 'change' }
 					]
 				},
-				templateManageList:[
-					{
-						templateName:'预定控制',
-						attributeId:1,
-						htmlName:'www.baidu.com',
-						createTime:'2017.06.17 09:00',
-						founder:'房峰辉',
-						status:1
-					},{
-						templateName:'预定控制',
-						attributeId:2,
-						htmlName:'www.baidu.com',
-						createTime:'2017.06.17 10:00',
-						founder:'房峰辉2',
-						status:0
-					},{
-						templateName:'预定控制',
-						attributeId:1,
-						htmlName:'www.baidu.com',
-						createTime:'2017.06.17 11:00',
-						founder:'房峰辉3',
-						status:1
-					},
-				],
+				templateManageList:[],
 				pageInfo:{
 					currPage:1,
 					pageSize:20,
@@ -263,9 +237,7 @@
 				this.$refs[formName].validate((valid) => {
 		          if (valid) {
 		            let data = Object.assign({},this.addTemplateManage);
-		            console.log(data);
 		            createTemplate(data).then((res)=>{
-		            	console.log(res);
 		            	if(res.data.code === "0001"){
 		            		this.$message({
             		          message: res.data.message,
@@ -275,6 +247,7 @@
 		            		for(let i in this.addTemplateManage){
 		            			this.addTemplateManage[i] = '';
 		            		}
+		            		this.addTemplateManage.attributeId = [];
 		            		this.dialogAdd = false;
 		            	}else{
 		            		this.$message({
@@ -369,17 +342,17 @@
       				deleteTemplate(data).then((res)=>{
       					if(res.data.code === "0001"){
       						this.$message({
-              		          message: '删除成功',
-              		          type: 'success'
-              		        });
-              		        this.getTemplateManageList();
+      		          message: '删除成功',
+      		          type: 'success'
+      		        });
+      		        this.getTemplateManageList();
       						this.loading = false;
       					}else{
       						this.$message({
-              		          message: '删除失败',
-              		          type: 'error'
-              		        });
-              		        this.loading = false;
+      		          message: '删除失败',
+      		          type: 'error'
+      		        });
+      		        this.loading = false;
       					}
       				}).catch((error)=>{
       					this.catchError(error.response)
@@ -414,23 +387,22 @@
 						this.loading = false;
 					}else{
 						this.$message({
-        		          message: res.data.message,
-        		          type: 'error'
-        		        });
-        		        this.loading = false;
+		          message: res.data.message,
+		          type: 'error'
+		        });
+		        this.loading = false;
 					}
-				}).catch((error)=>{
+				}).catch((error) => {
 					this.catchError(error.response)
-    		        this.loading = false;
+    		  this.loading = false;
 				})
 			}
 		},
 		created(){
-			this.getTemplateManageList();
+			this.getTemplateManageList()
 		}
 	}
 </script>
-
 <style scoped>
 	
 </style>

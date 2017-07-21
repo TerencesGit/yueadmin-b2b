@@ -16,7 +16,7 @@
 					<el-button type="primary" @click="searchHandle('searchInfo')">搜索</el-button>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" @click="dialogAdd = true">添加</el-button>
+					<el-button type="primary" @click="dialogAdd = true">新增属性</el-button>
 				</el-form-item>
 			</el-form>
 		</el-row>

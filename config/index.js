@@ -49,27 +49,27 @@ module.exports = {
           '^/baseUrl': ''
         }
       },
-      '/wareUrl': {
-        target: 'http://192.168.199.211:8080/yue_yb2b',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/wareUrl': ''
-        }
-      },
-      '/orderUrl': {
-        target: 'http://192.168.199.193:8080/yue_yb2b',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/orderUrl': ''
-        }
-      },
-      '/strategyUrl': {
-        target: 'http://192.168.199.169:8080/yue_yb2b',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/strategyUrl': ''
-        }
-      },
+      // '/wareUrl': {
+      //   target: 'http://192.168.199.211:8080/yue_yb2b',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/wareUrl': ''
+      //   }
+      // },
+      // '/orderUrl': {
+      //   target: 'http://192.168.199.193:8080/yue_yb2b',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/orderUrl': ''
+      //   }
+      // },
+      // '/strategyUrl': {
+      //   target: 'http://192.168.199.169:8080/yue_yb2b',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/strategyUrl': ''
+      //   }
+      // },
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README

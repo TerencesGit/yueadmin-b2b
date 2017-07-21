@@ -158,8 +158,7 @@
           	let data = Object.assign(form, this.wareForm)
           	data.parentId = this.wareId;
             console.log(data)
-            saveWareServiceInfo(JSON.stringify(data))
-            .then(res => {
+            saveWareServiceInfo(data).then(res => {
             	console.log(res)
             	if (res.data.code === '0001') {
                 this.$message.success(res.data.message)
@@ -167,8 +166,7 @@
             	} else {
             		this.$message.error(res.data.message)
             	}
-            })
-            .catch(err => {
+            }).catch(err => {
             	console.log(err)
               this.catchError(err.response)
             })

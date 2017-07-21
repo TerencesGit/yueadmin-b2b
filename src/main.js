@@ -75,7 +75,7 @@ const editorOptions = {
         uploadHandler (responseText) {
             let data = JSON.parse(responseText)
             if (data.code === '0001') {
-              let filePath = 'http://192.168.199.211:8080/yue_yb2b/' + data.result.file.filePath;
+              let filePath = data.result.file.filePath;
               return filePath;
             } else {
               alert(data.message)
@@ -122,7 +122,8 @@ router.beforeEach((to, from, next) => {
 	// 	NProgress.start()
 	// 	next()
 	// }
-  Vue.prototype.$fromPath = from.path 
+  Vue.prototype.$fromPath = from.path
+  NProgress.start()
   next() 
 })
 router.afterEach((to, from, next) => {
@@ -164,7 +165,7 @@ Vue.prototype.catchError = (res) => {
     return;
   }
   if (res.status === 404) {
-    ElementUI.Message({ message: '该方法不存在'})
+    ElementUI.Message({ message: '方法不存在'})
   } else if (res.status === 500) {
     ElementUI.Message({ message: '服务器响应错误'})
   } else if (res.status === 504) {

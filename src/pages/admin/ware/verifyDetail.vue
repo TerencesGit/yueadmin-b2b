@@ -385,9 +385,6 @@
               console.log(res)
               if( res.data.code === '0001') {
                 this.mediaList = res.data.result.fileList
-                this.mediaList.forEach((media) => {
-                  media.filePath = 'http://192.168.199.211:8080' + media.filePath
-                })
               } else {
                 console.log(res.data.message)
               }
@@ -401,7 +398,9 @@
         } else if (tab.index == 3) {
           if (JSON.stringify(this.attributeInfo) !== "{}") {
             this.loading = false;
+            console.log(JSON.stringify(this.attributeInfo))
           } else {
+            console.log('readAttribute')
             readAttribute({wareId: this.wareId}).then(res => {
               console.log(res)
               if (res.data.code === '0001') {
@@ -570,7 +569,7 @@
               console.log(res)
               if (res.data.code === '0001') {
                 this.$message.success(res.data.message)
-                this.$route.push('/admin/ware/verifyList')
+                this.$router.push('/admin/ware/verifyList')
               } else {
                 this.$message.error(res.data.message)
               }

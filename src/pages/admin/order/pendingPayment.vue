@@ -165,7 +165,6 @@
                     endDate: this.filter.endDate,
                     status: 2
                 }
-                console.log(params)
                 this.loading = true
                 readOrderList(params).then(res => {
                     console.log(res)
