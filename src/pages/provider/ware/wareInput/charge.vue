@@ -28,7 +28,7 @@
 					<td><el-checkbox v-model="checked"></el-checkbox></td>
 					<td>使用说明：</td>
 					<td>
-						<vue-html5-editor :content="attributeForm.explains" :height="200" :z-index="1" @change="updateExplain"></vue-html5-editor>
+						<vue-html5-editor :content="attributeForm.explains" :height="200" :z-index="1" @change="updateExplains"></vue-html5-editor>
 					</td>
 				</tr>
 				<tr>
@@ -99,7 +99,7 @@
     	updateCharge (content) {
     		this.attributeForm.charge = content
     	},
-    	updateExplain (content) {
+    	updateExplains (content) {
     		this.attributeForm.explains = content
     	},
     	updateNotice (content) {
@@ -126,6 +126,7 @@
     		saveAttribute(data).then(res => {
     			if (res.data.code === '0001') {
     				this.$message.success('保存成功')
+    				this.getChargeInfo()
     			} else {
     				this.$message.error(res.data.message)
     			}
@@ -146,7 +147,7 @@
     mounted () {
     	this.$store.dispatch('setStepActive', 3)
     	this.wareId = parseInt(this.$route.query.wareId)
-    	this.wareId && this.getChargeInfo()
+    	// this.wareId && this.getChargeInfo()
     }
   }
 </script>

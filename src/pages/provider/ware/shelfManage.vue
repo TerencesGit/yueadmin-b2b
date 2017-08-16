@@ -50,7 +50,7 @@
   </section>
 </template>
 <script>
-import { readWareList, updateWareUpDownStatus } from '@/api'
+import { readWareList, updateDraftWareInfoUpDownStatus } from '@/api'
 export default {
   data () {
     return {
@@ -62,7 +62,11 @@ export default {
       pageSize: 10,
       total: 0,
       loading: false,
-      wareList: [],
+      wareList: [{
+        wareId: 10001,
+        wareName: '三亚旅拍',
+        status: 1
+      }],
     }
   },
   methods: {
@@ -107,7 +111,11 @@ export default {
     handleShelf (row) {
     	let statusInfo =  row.status === 1 ? '下架' : '上架';
     	this.$confirm('确定'+statusInfo+'该商品？', '提示', {type: 'warning'}).then(() => {
-        updateWareUpDownStatus({wareId: row.wareId}).then(res => {
+        let data = {
+          wareId: row.wareId,
+          type: 1
+        }
+        updateDraftWareInfoUpDownStatus(data).then(res => {
 	     	  console.log(res)
 	     	  if(res.data.code === '0001') {
 	     	  	this.$message.success(res.data.message)

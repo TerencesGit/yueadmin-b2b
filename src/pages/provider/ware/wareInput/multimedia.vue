@@ -39,8 +39,13 @@
 	    </el-table-column>
 		  <el-table-column label="操作" width="180">
 	        <template scope="scope">
-	        	<el-button v-if="scope.row.isMainPic === 0" size="small" type="primary" @click="handleSetMainImg(scope.row)">设为主图</el-button>
-	        	<el-button size="small" type="danger" @click="handleSingleDelete(scope.row)">删除</el-button>
+	        	<div v-if="scope.row.isMainPic === 0">
+	        		<el-button size="small" type="primary" @click="handleSetMainImg(scope.row)">设为主图</el-button>
+	        		<el-button size="small" type="danger" @click="handleSingleDelete(scope.row)">删除</el-button>
+	        	</div>
+	        	<div v-else>
+		        	<el-button size="small" type="success">当前主图</el-button>
+		        </div>
 	        </template>
     	</el-table-column>
 		</el-table>

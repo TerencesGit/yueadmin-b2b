@@ -120,7 +120,7 @@
             name="fileName"
             :data="{fileUrlType: 2}"
             accept="image/jpeg, image/png"
-            action="/uploadImgUrl"
+            action="/b2b/file/upload"
             :show-file-list="false"
             :on-success="handleSuccess"
             :on-error="handleError"
@@ -162,7 +162,7 @@ export default {
         brandId: 100,
         brandName: '商品品牌管理',
         logoUrl: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
-        brandPage: 'http://192.168.199.211:8080',
+        brandPage: '',
         status: 1
       }],
       page: 1,

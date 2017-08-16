@@ -169,7 +169,7 @@
       getSkuList () {
         let params = {
           wareId: this.wareId,
-          // type: 2
+          type: 2
         }
         readSkuInfoList(params).then(res => {
           console.log(res)

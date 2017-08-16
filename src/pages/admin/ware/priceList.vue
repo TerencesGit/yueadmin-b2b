@@ -67,7 +67,7 @@ export default {
         pageSize: this.pageSize,
         wareName: this.filter.name,
         wareCode: this.filter.code,
-        verifyStatus: 2
+        verifyStatus: 2,
       }
       // 商品列表
       readWareList(params).then(res => {

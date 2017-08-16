@@ -108,6 +108,7 @@
 						console.log(res)
 						if (res.data.code === '0001') {
 							this.$message.success('操作成功')
+							this.getWareList()
 						} else {
 							this.$message.error('操作失败')
 						}

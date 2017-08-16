@@ -92,7 +92,11 @@
 	    handleShelf (row) {
 	    	let statusInfo =  row.status === 1 ? '下架' : '上架';
 	    	this.$confirm('确定'+statusInfo+'该推荐活动？', '提示', {type: 'warning'}).then(() => {
-	        updateWareUpDownStatus({wareId: row.wareId}).then(res => {
+	    		let data = {
+	    			wareId: row.wareId,
+	    			type: 3
+	    		}
+	        updateWareUpDownStatus(data).then(res => {
 		     	  // console.log(res)
 		     	  if(res.data.code === '0001') {
 		     	  	this.$message.success(res.data.message)

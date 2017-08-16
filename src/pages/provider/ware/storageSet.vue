@@ -152,7 +152,6 @@
       getStockList () {
         let params = {
           wareId: this.wareId,
-          skuType: 2
         }
         readSkuInfoList(params).then(res => {
           console.log(res)
