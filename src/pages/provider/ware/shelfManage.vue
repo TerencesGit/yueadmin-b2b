@@ -113,6 +113,7 @@ export default {
     	this.$confirm('确定'+statusInfo+'该商品？', '提示', {type: 'warning'}).then(() => {
         let data = {
           wareId: row.wareId,
+          status: 0,
           type: 1
         }
         updateDraftWareInfoUpDownStatus(data).then(res => {

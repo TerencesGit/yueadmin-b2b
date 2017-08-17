@@ -1,11 +1,11 @@
 <template>
-	<header>
+	<header class="header">
 		<div class="top">
 			<div class="container-fluid">
 				<div class="top-left">
 					<a href="#" class="brand">
 						<i class="fa fa-flag fa-lg"></i>
-						悦视觉供应商系统
+						<span>{{title}}</span>
 					</a>
 				</div>
 				<div class="top-right">
@@ -24,9 +24,12 @@
 			</div>
 		</div>
 		<nav>
-			<el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+			<el-menu :default-active="$route.path" class="el-menu-demo" mode="horizontal" @select="handleSelect" router>
 				<el-submenu :index="index+''" v-for="(menu, index) in routers" :key="menu.id">
-          <template slot="title">{{ menu.name }}</template>
+          <template slot="title">
+          	<i class="fa fa-lg" :class="menu.icon"></i>
+            <span>{{ menu.name }}</span>
+          </template>
             <el-menu-item :index="submenu.index" v-for="submenu in menu.children" :key="submenu.id">
             	<router-link :to="submenu.link">{{ submenu.name }}</router-link>
             </el-menu-item>
@@ -41,107 +44,84 @@ import utils from '@/assets/js/utils'
 export default {
   data() {
     return {
+    	title: '悦视觉后台管理系统',
     	routers: [
         {
-        	name: '品牌管理', 
-        	link: '/provider/brandManage', 
-        	index: '/provider/brandManage',
-        	children: [
-        		{
-		        	name: '品牌添加', 
-		          link: '/provider/brandAdd', 
-		          index: '/provider/brandAdd'
-		        },
-		        {
-		        	name: '品牌修改', 
-		          link: '/provider/brandAdd', 
-		          index: '/provider/brandAdd'
-		        },
-        	]
-        },
-        {
-        	name: '商品管理', 
-          link: '/provider/wareManage', 
-          index: '/provider/wareManage',
+          name: '商品管理',
+          icon: 'fa-gift',
           children: [
-        		{
-		        	name: '商品添加', 
-		          link: '/provider/wareAdd', 
-		          index: '/provider/wareAdd'
-		        },
-		        {
-		        	name: '商品修改', 
-		          link: '/provider/wareAdd', 
-		          index: '/provider/wareAdd'
-		        },
-        	]
+            {name: '品牌管理', link: '/provider/ware/brandManage', index: '/provider/ware/brandManage'},
+            {name: '新建商品', link: '/provider/ware/new/base', index: '/provider/ware/new/base'},
+            {name: '商品管理', link: '/provider/ware/wareManage', index: '/provider/ware/wareManage'},
+            {name: '商品库存', link: '/provider/ware/storageManage', index: '/provider/ware/storageManage'},
+            {name: '商品上下架', link: '/provider/ware/shelfManage', index: '/provider/ware/shelfManage'},
+          ]
         },
         {
-        	name: '订单管理', 
-          link: '/provider/orderManage', 
-          index: '/provider/orderManage',
+          name: '供应商-订单管理',
+          icon: 'fa-file',
           children: [
-          	{
-		        	name: '订单查看', 
-		          link: '/provider/wareAdd', 
-		          index: '/provider/wareAdd'
-		        },
-		        {
-		        	name: '订单删除', 
-		          link: '/provider/wareAdd', 
-		          index: '/provider/wareAdd'
-		        },
+            // {name: '待确认订单', link: '/provider/order/confirmed', index: '/provider/order/confirmed'},
+            {name: '待支付订单', link: '/provider/order/payment', index: '/provider/order/payment'},
+            {name: '服务中订单', link: '/provider/order/inService', index: '/provider/order/inService'},
+            {name: '订单结算', link: '/provider/order/settlement', index: '/provider/order/settlement'},
+            {name: '历史订单', link: '/provider/order/history', index: '/provider/order/history'},
+            {name: '问题订单', link: '/provider/order/problem', index: '/provider/order/problem'},
           ]
         },
         {
-        	name: '销售报表', 
-        	link: '/provider/salesReport', 
-        	index: '/provider/salesReport',
-        	children: [
-          	{
-		        	name: '报表查看', 
-		          link: '/provider/wareAdd', 
-		          index: '/provider/wareAdd'
-		        },
-		        {
-		        	name: '报表删除', 
-		          link: '/provider/wareAdd', 
-		          index: '/provider/wareAdd'
-		        },
+          name: '平台-系统管理',
+          icon: 'fa-cog',
+          children: [
+            {name: '属性管理', link: '/admin/system/propertyManage', index: '/admin/system/propertyManage'},
+            {name: '属性模板管理', link: '/admin/system/templateManage', index: '/admin/system/templateManage'},
+            {name: '品类管理', link: '/admin/system/categoryManage', index: '/admin/system/categoryManage'},
+            // {name: '营销策略管理', link: '/admin/system/marketingStrategy', index: '/admin/system/marketingStrategy'},
+            {name: '结算策略管理', link: '/admin/system/settlementStrategy', index: '/admin/system/settlementStrategy'},
+            {name: '退改策略管理', link: '/admin/system/retreatStrategy/retreatStrategyList', index: '/admin/system/retreatStrategy/retreatStrategyList'},
           ]
         },
         {
-        	name: '发票管理', 
-        	link: '/provider/invoiceManage', 
-        	index: '/provider/invoiceManage',
-        	children: [
-          	{
-		        	name: '发票查看', 
-		          link: '/provider/wareAdd', 
-		          index: '/provider/wareAdd'
-		        },
-		        {
-		        	name: '发票删除', 
-		          link: '/provider/wareAdd', 
-		          index: '/provider/wareAdd'
-		        },
+          name: '平台-商品管理',
+          icon: 'fa-desktop',
+          children: [
+            {name: '待审核商品', link: '/admin/ware/verifyList', index: '/admin/ware/verifyList'},
+            {name: '商品上下架', link: '/admin/ware/shelfManage', index: '/admin/ware/shelfManage'},
+            {name: '商品价格管理', link: '/admin/ware/priceManage', index: '/admin/ware/priceManage'},
+            {name: '商品管理', link: '/admin/ware/manage', index: '/admin/ware/manage'},
           ]
         },
         {
-        	name: '顾客管理', 
-        	link: '/provider/customerManage', 
-        	index: '/provider/customerManage',
-        	children: [
-          	{
-		        	name: '顾客查看', 
-		          link: '/provider/wareAdd', 
-		          index: '/provider/wareAdd'
-		        },
+          name: '平台-订单管理',
+          icon: 'fa-desktop',
+          children: [
+            // {name: '待确认订单', link: '/admin/order/confirmed', index: '/admin/order/confirmed'},
+            {name: '待支付订单', link: '/admin/order/payment', index: '/admin/order/payment'},
+            {name: '服务中订单', link: '/admin/order/inService', index: '/admin/order/inService'},
+            {name: '订单结算', link: '/admin/order/settlement', index: '/admin/order/settlement'},
+            {name: '历史订单', link: '/admin/order/history', index: '/admin/order/history'},
+            {name: '问题订单', link: '/admin/order/problem', index: '/admin/order/problem'},
+          ]
+        },
+        // {
+        //  name: '平台-顾客管理',
+        //  icon: 'fa-desktop',
+        //   children: [
+        //    {name: '顾客查询', link: '/admin/customer/query', index: '/admin/customer/query'},
+        //   ]
+        // },
+        {
+          name: '分销商-订单管理',
+          icon: 'fa-sitemap',
+          children: [
+            {name: '待完善订单', link: '/distributor/order/complete', index: '/distributor/order/complete'},
+            {name: '待支付订单', link: '/distributor/order/payment', index: '/distributor/order/payment'},
+            {name: '服务中订单', link: '/distributor/order/inService', index: '/distributor/order/inService'},
+            // {name: '投诉中订单', link: '/distributor/order/complaint', index: '/distributor/order/complaint'},
+            {name: '历史订单', link: '/distributor/order/history', index: '/distributor/order/history'},
           ]
         }
       ],
-      activeIndex: '1',
-      activeIndex2: '1'
     }
   },
   methods: {
@@ -179,6 +159,11 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+	.header {
+		position: absolute;
+		z-index: 99;
+		width: 100%;
+	}
 	.top {
 		height: 50px;
 		line-height: 50px;
@@ -217,6 +202,9 @@ export default {
 	}
 	.el-menu {
 		border-radius: 0;
-		background: #fff
+		background: #fff;
+		.fa {
+			margin-right: 5px
+		}
 	}
 </style>

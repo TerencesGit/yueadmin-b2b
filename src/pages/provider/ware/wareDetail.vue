@@ -118,7 +118,7 @@
           <el-table-column type="index" width="60"></el-table-column>
           <el-table-column label="图片缩略图" width="120">
             <template scope="scope">
-              <img :src="scope.row.filePath" height="50px" class="cell-img" @click="viewImage(scope.row.filePath)">
+              <img :src="+scope.row.filePath" height="50px" class="cell-img" @click="viewImage(scope.row.filePath)">
             </template>
           </el-table-column>
           <el-table-column label="更新者" prop="createName" width="150"></el-table-column>
@@ -357,10 +357,10 @@
           } else {
             readWareFileList({wareId: this.wareId}).then(res => {
               console.log(res)
-              if( res.data.code === '0001') {
+              if(res.data.code === '0001') {
                 this.mediaList = res.data.result.fileList
               } else {
-                console.log(res.data.message)
+                this.$message.error(res.data.message)
               }
               this.loading = false
             }).catch(err => {

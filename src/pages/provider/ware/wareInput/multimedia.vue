@@ -22,7 +22,7 @@
 	    </el-table-column>
 	    <el-table-column label="更新者" prop="createName" width="180"></el-table-column>
 	    <el-table-column label="更新时间" prop="createTime" :formatter="formatCreateTime" sortable></el-table-column>
-	    <el-table-column label="是否为主图" prop="isMainPic" width="120" :formatter="formatIsMainPic"></el-table-column>
+	    <!-- <el-table-column label="是否为主图" prop="isMainPic" width="120" :formatter="formatIsMainPic"></el-table-column> -->
 	    <el-table-column label="是否显示" width="120">
 	    	<template scope="scope">
 	    		<el-switch
@@ -33,6 +33,7 @@
 					  off-text="否"
 					  :on-value="1"
 					  :off-value="0"
+					  :disabled="scope.row.isMainPic === 1"
 					  @change="handleStatus(scope.row)">
 					</el-switch>
 	    	</template>
@@ -44,7 +45,7 @@
 	        		<el-button size="small" type="danger" @click="handleSingleDelete(scope.row)">删除</el-button>
 	        	</div>
 	        	<div v-else>
-		        	<el-button size="small" type="success">当前主图</el-button>
+		        	<el-button size="small" type="success" @click="return false">当前主图</el-button>
 		        </div>
 	        </template>
     	</el-table-column>
@@ -102,7 +103,15 @@
 				uploadVisible: false,
     		previewVisible: false,
     		fileList: [],
-				mediaList: [],
+				mediaList: [{
+					fileId: 100001,
+					isMainPic: 1,
+					status: 1,
+				},{
+					fileId: 100002,
+					isMainPic: 0,
+					status: 0,
+				}],
     		fileIdList: [],
     		sels: [],
     		uploadData: {
@@ -125,12 +134,9 @@
 					wareId: this.wareId
 				}
 				readWareFileList(params).then(res => {
-					// console.log(res)
+					console.log(res)
 					if (res.data.code === '0001') {
 						this.mediaList = res.data.result.fileList;
-						this.mediaList.forEach(function(media, index) {
-							media.filePath = media.filePath;
-						})
 					} else {
 						this.$message.error(res.data.message)
 					}
@@ -288,7 +294,15 @@
 				})
 			},
 			// 设为主图
-			handleSetMainImg (row) {	
+			handleSetMainImg (row) {
+				if (row.status === 0) {
+					this.$notify({
+						type: 'warning',
+						title: '提示',
+						message: '请先把该图片设为显示'
+					})
+					return false;
+				}	
 				let data = {
 					wareId: this.wareId,
 					fileId: row.fileId,

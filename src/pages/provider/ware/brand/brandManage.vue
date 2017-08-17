@@ -63,7 +63,7 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="page"
+        :current-page="pageNo"
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
@@ -72,10 +72,10 @@
       </el-pagination>
     </el-row>
     <!-- 新增品牌 -->
-    <el-dialog title="新增品牌" v-model="addFormVisible">
-      <el-form :model="addForm" :rules="brandRules" ref="addForm" label-width="120px" style="padding: 30px">
+    <el-dialog :title="visibleTitle" v-model="brandFormVisible">
+      <el-form :model="brandForm" :rules="brandRules" ref="brandForm" label-width="120px" style="padding: 30px">
         <el-form-item label="品牌名称" prop="brandName">
-          <el-input v-model="addForm.brandName" placeholder="品牌名称"></el-input>
+          <el-input v-model="brandForm.brandName" placeholder="品牌名称"></el-input>
         </el-form-item>
         <el-form-item label="LOGO" prop="logoUrl">
           <el-upload
@@ -89,60 +89,31 @@
             :on-error="handleError"
             :before-upload="beforeUpload"
             :on-progress="handleProgress">
-            <img v-if="addForm.logoUrl" :src="addForm.logoUrl" class="upload-image">
+            <img v-if="brandForm.logoUrl" :src="brandForm.logoUrl" class="upload-image">
             <i v-else class="el-icon-plus" v-loading="uploading"></i>
           </el-upload>
         </el-form-item>
         <el-form-item label="品牌描述" prop="content">
-          <el-input type="textarea" v-model="addForm.content" placeholder="品牌描述"></el-input>
+          <el-input type="textarea" v-model="brandForm.content" placeholder="品牌描述"></el-input>
         </el-form-item>
         <el-form-item label="品牌专题页" prop="brandPage">
-          <el-input v-model="addForm.brandPage" placeholder="URL地址"></el-input>
+          <el-input v-model="brandForm.brandPage" placeholder="URL地址"></el-input>
         </el-form-item>
         <el-form-item label="状态">
-          <el-switch v-model="addForm.status" on-text="启用" off-text="禁用"></el-switch>
+          <el-switch 
+            v-model="brandForm.status" 
+            on-color="#13ce66"
+            off-color="#ff4949"
+            :on-value="1"
+            :off-value="0"
+            on-text="启用"
+            off-text="禁用">
+          </el-switch>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="addFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click.native="addSubmit">确 定</el-button>
-      </div>
-    </el-dialog>
-    <!-- 编辑品牌 -->
-    <el-dialog title="编辑品牌" v-model="editFormVisible">
-      <el-form :model="editForm" ref="editForm" :rules="brandRules" label-width="120px" style="padding: 30px" v-loading="editLoading">
-        <el-form-item label="品牌名称" prop="brandName">
-          <el-input v-model="editForm.brandName" placeholder="品牌名称"></el-input>
-        </el-form-item>
-        <el-form-item label="LOGO" prop="logoUrl">
-          <el-upload
-            class="uploader"
-            name="fileName"
-            :data="{fileUrlType: 2}"
-            accept="image/jpeg, image/png"
-            action="/b2b/file/upload"
-            :show-file-list="false"
-            :on-success="handleSuccess"
-            :on-error="handleError"
-            :on-progress="handleProgress"
-            :before-upload="beforeUpload">
-            <img v-if="editForm.logoUrl" :src="editForm.logoUrl" class="upload-image">
-            <i v-else class="el-icon-plus" v-loading="uploading"></i>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="品牌描述" prop="content">
-          <el-input type="textarea" v-model="editForm.content" placeholder="品牌描述"></el-input>
-        </el-form-item>
-        <el-form-item label="品牌专题页" prop="brandPage">
-          <el-input v-model="editForm.brandPage" placeholder="URL地址"></el-input>
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-switch v-model="editForm.status" :on-value="1" :off-value="0" on-text="启用" off-text="禁用"></el-switch>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click.native="editFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click.native="editSubmit" v-loading="editLoading">确 定</el-button>
+        <el-button @click.native="brandFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click.native="submitForm">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 图片预览 -->
@@ -163,36 +134,27 @@ export default {
         brandName: '商品品牌管理',
         logoUrl: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
         brandPage: '',
-        status: 1
+        status: 1,
+        content: '品牌描述',
+        brandPage: 'https://avatars0.githubusercontent.com'
       }],
-      page: 1,
+      pageNo: 1,
       pageSize: 10,
       total: 0,
-      listLoading: false,
       uploading: false,
       loading: false,
       sels: [],
       filters: {
         name: ''
       },
-      addFormVisible: false,
-      addUploading: false,
-      addForm: {
+      brandFormVisible: false,
+      visibleTitle: '',
+      brandForm: {
         brandName: '',
         content: '',
         logoUrl: '',
         brandPage: '',
-        status: true
-      },
-      editFormVisible: false,
-      editLoading: false,
-      editForm: {
-        brandId: '',
-        brandName: '',
-        content: '',
-        logoUrl: '',
-        brandPage: '',
-        status: false
+        status: 1
       },
       brandRules: {
         brandName: [
@@ -267,7 +229,7 @@ export default {
         this.uploading = false
         let resFile = res.result.file;
         file.path = resFile.filePath;
-        this.addForm.logoUrl = resFile.filePath
+        this.brandForm.logoUrl = resFile.filePath
       } else {
         this.$message.error(res.message)
       }
@@ -277,53 +239,32 @@ export default {
       console.log(err)
       this.uploading = false
       this.$message.error('上传失败')
-      // this.addForm.logoUrl = URL.createObjectURL(file.raw)
-    },
-    // 显示编辑
-    handleEdit (index, row) {
-      this.editFormVisible = true
-      this.editForm = Object.assign({}, row);
-    },
-    // 编辑提交
-    editSubmit () {
-      this.$refs.editForm.validate((valid) => {
-        if (valid) {
-          let data = Object.assign({}, this.editForm)
-          saveBrandInfo(data).then((res) => {
-            console.log(res)
-            if (res.data.code === '0001') {
-              this.$message.success('编辑成功')
-              this.getBrandList()
-            } else {
-              this.$message.error(res.data.message)
-            }
-          }).catch(err => {
-            console.log(err)
-            this.catchError(err.response)
-          })
-          this.editFormVisible = false
-        } else {
-          console.log('err submit')
-        }
-      })
+      // this.brandForm.logoUrl = URL.createObjectURL(file.raw)
     },
     // 显示新增
     handleAdd () {
-      this.addForm = {
+      this.visibleTitle = '新增品牌'
+      this.brandForm = {
         brandName: '',
         content: '',
         logoUrl: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
         brandPage: '',
-        status: true
+        status: 1
       }
-      this.addFormVisible = true
+      this.brandFormVisible = true
     },
-    // 新增提交
-    addSubmit () {
-      this.$refs.addForm.validate((valid) => {
+    // 显示编辑
+    handleEdit (index, row) {
+      this.visibleTitle = '品牌编辑'
+      this.brandForm = Object.assign({}, row)
+      this.brandFormVisible = true
+    },
+    // 表单提交
+    submitForm () {
+      this.$refs.brandForm.validate((valid) => {
         if(valid) {
-          this.addForm.status = this.addForm.status ? 1 : 0
-          let data = Object.assign({}, this.addForm)
+          let data = Object.assign({}, this.brandForm)
+          console.log(data)
           saveBrandInfo(data).then(res => {
             console.log(res)
             if(res.data.code === '0001') {
@@ -336,7 +277,7 @@ export default {
             console.log(err)
             this.catchError(err.response)
           })
-          this.addFormVisible = false
+          this.brandFormVisible = false
         } else {
           console.log('err submit')
         }
