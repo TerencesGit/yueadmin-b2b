@@ -72,7 +72,7 @@
       </el-pagination>
     </el-row>
     <!-- 新增品牌 -->
-    <el-dialog :title="visibleTitle" v-model="brandFormVisible">
+    <el-dialog :title="visibleTitle" :visible.sync="brandFormVisible">
       <el-form :model="brandForm" :rules="brandRules" ref="brandForm" label-width="120px" style="padding: 30px">
         <el-form-item label="品牌名称" prop="brandName">
           <el-input v-model="brandForm.brandName" placeholder="品牌名称"></el-input>
@@ -117,7 +117,7 @@
       </div>
     </el-dialog>
     <!-- 图片预览 -->
-    <el-dialog v-model="previewVisible" size="tiny">
+    <el-dialog :visible.sync="previewVisible" size="tiny">
       <img width="100%" :src="previewImgUrl">
     </el-dialog>
   </section>

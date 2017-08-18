@@ -24,12 +24,14 @@
       <el-table-column prop="wareId" label="商品编号" sortable width="200"></el-table-column>
       <el-table-column prop="wareName" label="商品名称"></el-table-column>
       <el-table-column prop="createTime" label="创建时间" sortable width="200"></el-table-column>
+      <el-table-column prop="upDownTime" label="上/下架时间" sortable width="200"></el-table-column>
       <el-table-column prop="status" label="状态" width="120" :formatter="formatStatus" >
       </el-table-column>
-      <el-table-column label="操作" width="260">
+      <el-table-column label="操作" width="280">
         <template scope="scope">
           <el-button v-if="scope.row.status === 0" size="small" @click="handleShelf(scope.row)">上架</el-button>
           <el-button v-if="scope.row.status === 1" size="small" @click="handleShelf(scope.row)">下架</el-button>
+          <el-button v-if="scope.row.status === -1" size="small" @click="showCause(scope.row)">下架原因</el-button>
           <el-button size="small" @click="handleServiceSet(scope.row.wareId)">附加服务</el-button>
           <el-button size="small" @click="handleActivitySet(scope.row.wareId)">推荐活动</el-button>
         </template>
@@ -47,10 +49,18 @@
         class="pull-right">
       </el-pagination>
     </el-row>
+    <el-dialog title="下架原因" :visible.sync="causeVisible">
+      <div class="dialog-content">
+        {{ cause }}
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click.native="causeVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </section>
 </template>
 <script>
-import { readWareList, updateDraftWareInfoUpDownStatus } from '@/api'
+import { readWareList, updateWareInfoUpDownStatus } from '@/api'
 export default {
   data () {
     return {
@@ -66,12 +76,24 @@ export default {
         wareId: 10001,
         wareName: '三亚旅拍',
         status: 1
+      },
+      {
+        wareId: 10002,
+        wareName: '三亚旅拍',
+        status: 0
+      },{
+        wareId: 10003,
+        wareName: '三亚旅拍',
+        status: -1,
+        cause: '暂无原因'
       }],
+      causeVisible: false,
+      cause: '',
     }
   },
   methods: {
     formatStatus (row) {
-      return row.status === 1 ? '上架' : row.status === 0 ? '下架' : '未知'
+      return row.status === 1 ? '已上架' : row.status === 0 ? '已下架' : '平台已下架'
     },
     // 获取商品列表
     getWareList () {
@@ -81,7 +103,7 @@ export default {
         pageSize: this.pageSize,
         wareName: this.filter.name,
         wareCode: this.filter.code,
-        verifyStatus: 2
+        verifyStatus: 2,
       }
       readWareList(params).then(res => {
         this.loading = false;
@@ -109,14 +131,16 @@ export default {
     },
     // 上下架操作
     handleShelf (row) {
-    	let statusInfo =  row.status === 1 ? '下架' : '上架';
+    	let statusInfo = row.status === 1 ? '下架' : '上架';
+      let upDownStatus = row.status === 1 ? 0 : 1;
     	this.$confirm('确定'+statusInfo+'该商品？', '提示', {type: 'warning'}).then(() => {
         let data = {
           wareId: row.wareId,
-          status: 0,
-          type: 1
+          upDownStatus: upDownStatus,
+          wareType: 1
         }
-        updateDraftWareInfoUpDownStatus(data).then(res => {
+        console.log(data)
+        updateWareInfoUpDownStatus(data).then(res => {
 	     	  console.log(res)
 	     	  if(res.data.code === '0001') {
 	     	  	this.$message.success(res.data.message)
@@ -131,6 +155,11 @@ export default {
       	console.log(err)
         this.$message('取消操作')
       })
+    },
+    // 查看原因
+    showCause (row) {
+      this.cause = row.cause
+      this.causeVisible = true
     },
     // 附加服务
     handleServiceSet (wareId) {

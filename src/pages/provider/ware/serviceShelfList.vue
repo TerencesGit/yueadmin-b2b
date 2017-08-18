@@ -44,7 +44,7 @@
 	</section>
 </template>
 <script>
-	import { readWareService, updateWareUpDownStatus} from '@/api'
+	import { readWareService, updateWareInfoUpDownStatus} from '@/api'
 	export default {
 		data () {
 			return {
@@ -52,7 +52,16 @@
 				currPage: 1,
 				pageSize: 10,
 				total: 0,
-				serviceList: [],
+				serviceList: [{
+	        wareId: 10001,
+	        wareName: '三亚旅拍',
+	        status: 1
+	      },
+	      {
+	        wareId: 10002,
+	        wareName: '三亚旅拍',
+	        status: 0
+	      }],
 				filter: {
 					code: '',
 					name: ''
@@ -91,12 +100,14 @@
       // 上下架操作
 	    handleShelf (row) {
 	    	let statusInfo =  row.status === 1 ? '下架' : '上架';
+	    	let upDownStatus = row.status === 1 ? 0 : 1;
 	    	this.$confirm('确定'+statusInfo+'该附加服务？', '提示', {type: 'warning'}).then(() => {
 	    		let data = {
 	    			wareId: row.wareId,
-	    			type: 2
+	    			upDownStatus: upDownStatus,
+	    			wareType: 3
 	    		}
-	        updateWareUpDownStatus(data).then(res => {
+	        updateWareInfoUpDownStatus(data).then(res => {
 		     	  console.log(res)
 		     	  if(res.data.code === '0001') {
 		     	  	this.$message.success(res.data.message)

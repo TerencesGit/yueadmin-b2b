@@ -299,7 +299,7 @@
 					this.$notify({
 						type: 'warning',
 						title: '提示',
-						message: '请先把该图片设为显示'
+						message: '请把该图片设为显示状态'
 					})
 					return false;
 				}	
