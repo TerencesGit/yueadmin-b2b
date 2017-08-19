@@ -3,10 +3,10 @@
     <div v-title :data-title="this.$route.name"></div>
     <el-row class="toolbar">
 			<el-form :inline="true" :model="filter">
-				<el-form-item label="">
+				<el-form-item label="商品编号">
 					<el-input v-model="filter.code" placeholder="商品编号"></el-input>
 				</el-form-item>
-				<el-form-item label="">
+				<el-form-item label="商品名称">
 					<el-input v-model="filter.name" placeholder="商品名称"></el-input>
 				</el-form-item>
 				<el-form-item label="">

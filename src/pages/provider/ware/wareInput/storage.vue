@@ -43,7 +43,7 @@
         <el-form-item label="单人差：" prop="singlePrice">
           <el-input v-model.number="batchSkuForm.singlePrice" placeholder="输入单人差"></el-input>
         </el-form-item>
-        <el-form-item v-if="batchType === 1" label="库存：" prop="storageNum">
+        <el-form-item v-show="batchType === 1" label="库存：" prop="storageNum">
           <el-input v-model.number="batchSkuForm.storageNum" placeholder="输入库存数量"></el-input>
         </el-form-item>
       </el-form>
@@ -67,7 +67,7 @@
         <el-form-item label="单人差：" prop="singlePrice">
           <el-input v-model.number="singleSkuForm.singlePrice" placeholder="输入单人差"></el-input>
         </el-form-item>
-        <el-form-item v-if="singleType === 1" label="库存：" prop="storageNum">
+        <el-form-item v-show="singleType === 1" label="库存：" prop="storageNum">
           <el-input v-model.number="singleSkuForm.storageNum" placeholder="输入库存数量"></el-input>
         </el-form-item>
       </el-form>
@@ -85,7 +85,14 @@
     data () {
       return {
         wareId: '',
-        skuList : [],
+        skuList : [{
+          start: '2017-08-08',
+          skuDate: '2017-08-08',
+          adultPrice: 999,
+          childPrice: 999,
+          singlePrice: 999,
+          storageNum: 999
+        }],
         batchSkuVisible: false,
         singleSkuVisible: false,
         batchType: 1,
@@ -100,32 +107,34 @@
           adultPrice: '',
           childPrice: '',
           singlePrice: '',
-          skuDateRange: []
+          skuDateRange: [],
+          wareType: 1
         },
         singleSkuForm: {
           wareId: '',
           skuId: '',
           skuDate: '',
-          storageNum: 100,
-          adultPrice: 8000,
-          childPrice: 7000,
-          singlePrice: 5000,
+          storageNum: '',
+          adultPrice: '',
+          childPrice: '',
+          singlePrice: '',
+          wareType: 1
         },
         rules: {
           storageNum: [
-            { type: 'number', required: true, message: '库存数量不能为空', trigger: 'blur'},
+            { type: 'number', required: true, message: '请输入有效库存', trigger: 'blur'},
           ],
           adultPrice: [
-            { type: 'number', required: true, message: '成人价不能为空', trigger: 'blur'},
+            { type: 'number', required: true, message: '请输入有效成人价', trigger: 'blur'},
           ],
           childPrice: [
-            { type: 'number', required: true, message: '儿童价不能为空', trigger: 'blur'},
+            { type: 'number', required: true, message: '请输入有效儿童价', trigger: 'blur'},
           ],
           singlePrice: [
-            { type: 'number', required: true, message: '单人补差价不能为空', trigger: 'blur'},
+            { type: 'number', required: true, message: '请输入有效单人补差价', trigger: 'blur'},
           ],
           skuDateRange: [
-            { type: 'array', required: true, message: '日期不能为空', trigger: 'change'},
+            { type: 'array', required: true, message: '请选择起止日期', trigger: 'change'},
           ],
           checkedWeeks: [
             { type: 'array', required: true, message: '至少勾选一项', trigger: 'change'},
@@ -198,11 +207,13 @@
       // 批量新增
       handleBatchAdd () {
         this.batchType = 1;
+        this.batchSkuForm.storageNum = '';
         this.batchSkuVisible = true
       },
       // 批量编辑
       handleBatchEdit () {
         this.batchType = 2;
+        this.batchSkuForm.storageNum = 0;
         this.batchSkuVisible = true
       },
       // 批量提交
@@ -211,6 +222,14 @@
           if (valid) {
             this.batchSkuForm.startDate = this.batchSkuForm.skuDateRange[0]
             this.batchSkuForm.endDate = this.batchSkuForm.skuDateRange[1]
+            if(!this.batchSkuForm.startDate) {
+              this.$notify({
+                type: 'warning',
+                title: '提示',
+                message: '请选择起止日期'
+              })
+              return;
+            }
             let data = Object.assign({}, this.batchSkuForm)
             data.wareId = this.wareId;
             console.log(data)
@@ -227,7 +246,6 @@
                 console.log(err)
               })
             } else if (this.batchType === 2) {
-              console.log('edit')
               updateSkuInfoBatch(data).then(res => {
                 console.log(res)
                 if(res.data.code === '0001'){
@@ -275,6 +293,7 @@
               childPrice: this.singleSkuForm.childPrice,
               singlePrice: this.singleSkuForm.singlePrice,
               storageNum: this.singleSkuForm.storageNum,
+              wareType: 1
             }
             console.log(data)
             saveSkuInfo(data).then(res => {

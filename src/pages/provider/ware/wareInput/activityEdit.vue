@@ -20,8 +20,8 @@
 				</template>
 			</el-table-column>
 		</el-table>
-		<!-- 新增活动 -->
-		<el-dialog :visible.sync="serviceFormVisible" title="新增推荐活动">
+		<!-- 推荐活动表单 -->
+		<el-dialog :visible.sync="activityFormVisible" :title="activityFormTitle">
 			<el-form :model="wareForm" :rules="rules" ref="wareForm" label-width="110px" class="form-item-width">
 					<el-row>
 				  	<el-col :span="12">
@@ -54,7 +54,7 @@
 					</el-row>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
-		    <el-button @click="serviceFormVisible = false">取 消</el-button>
+		    <el-button @click="activityFormVisible = false">取 消</el-button>
 		    <el-button type="primary" @click="onSubmit">确 定</el-button>
 		  </div>
 		</el-dialog>
@@ -66,8 +66,19 @@
 		data () {
 			return {
 				wareId: '',
-				serviceFormVisible: false,
-				activityList: [],
+				activityFormTitle: '',
+				activityFormVisible: false,
+				activityList: [
+					{
+	          wareId: 10001,
+	          wareCode: 111110001,
+	        	wareName: '普吉岛5日半自助游直飞随心DIY',
+	        	briefName: '普吉岛5日半自助',
+          	keyWords: '普吉岛',
+	        	wareDesc: '普吉岛5日半自助游直飞随心DIY',
+	          status: 0
+	        }
+				],
 	      wareForm: {
           wareId: '',
         	wareName: '',
@@ -115,13 +126,15 @@
 			},
 			// 新增推荐活动
 			handleAdd () {
-				this.wareForm = {}
-				this.serviceFormVisible = true
+				this.wareForm = {};
+				this.activityFormTitle = '新增推荐活动';
+				this.activityFormVisible = true
 			},
 			// 编辑推荐活动
 			handleEdit (row) {
 				this.wareForm = Object.assign({}, row);
-				this.serviceFormVisible = true
+				this.activityFormTitle = '编辑推荐活动';
+				this.activityFormVisible = true
 			},
       // 保存推荐活动
       onSubmit() {
@@ -161,7 +174,7 @@
             	console.log(err)
               this.catchError(err.response)
             })
-            this.serviceFormVisible = false;
+            this.activityFormVisible = false;
           } else {
           	this.$message.error('表单输入有误')
             return false;
@@ -183,7 +196,7 @@
       // 设置sku
       handleSkuSet (wareId) {
       	this.$router.push({
-      		path: '/provider/ware/serviceSkuSet?wareId=' + wareId
+      		path: '/provider/ware/activitySkuSet?wareId=' + wareId
       	})
       },
       // 返回商品列表

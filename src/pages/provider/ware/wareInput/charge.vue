@@ -110,8 +110,8 @@
     		readAttribute({wareId: this.wareId}).then(res => {
     			console.log(res)
     			if (res.data.code === '0001') {
-    				console.log(res.data.result.AttributeInfo)
-    				// this.attributeForm = res.data.result.AttributeInfo
+    				this.attributeForm = res.data.result.AttributeInfo
+    				console.log(this.attributeForm)
     			} else {
     				this.$message.error(res.data.message)
     			}
