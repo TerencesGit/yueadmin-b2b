@@ -118,7 +118,7 @@
           adultPrice: '',
           childPrice: '',
           singlePrice: '',
-          wareType: 1
+          wareType: 1,
         },
         rules: {
           storageNum: [

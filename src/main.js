@@ -26,10 +26,6 @@ import RegionPicker from '@/components/region-picker'
 NProgress.configure({ ease: 'ease', speed: 500, minimum: 0.5, showSpinner: false})
 // Mock.bootstrap()
 Vue.prototype.$moment = moment
-const globalVariable = {
-  resError: '服务器响应失败，请重试'
-}
-Vue.prototype.GLOBAL = globalVariable
 Vue.use(Router)
 Vue.use(Vuex)
 Vue.use(ElementUI)

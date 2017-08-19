@@ -93,7 +93,6 @@
     },
     methods: {
     	updateIntroduce (content) {
-    		console.log(content)
     		this.attributeForm.introduce = content
     	},
     	updateCharge (content) {
@@ -111,7 +110,6 @@
     			console.log(res)
     			if (res.data.code === '0001') {
     				this.attributeForm = res.data.result.AttributeInfo
-    				console.log(this.attributeForm)
     			} else {
     				this.$message.error(res.data.message)
     			}
@@ -148,7 +146,7 @@
     mounted () {
     	this.$store.dispatch('setStepActive', 3)
     	this.wareId = parseInt(this.$route.query.wareId)
-    	// this.wareId && this.getChargeInfo()
+    	this.wareId && this.getChargeInfo()
     }
   }
 </script>

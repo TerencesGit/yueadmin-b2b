@@ -100,9 +100,8 @@ export default {
         pageSize: this.pageSize,
         wareName: this.filter.name,
         wareCode: this.filter.code,
-        verifyStatus: this.filter.status
+        verifyStatus: this.filter.status,
       }
-      console.log(params)
       readWareList(params).then(res => {
         console.log(res)
         if (res.data.code === '0001') {
