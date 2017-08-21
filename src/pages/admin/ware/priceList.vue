@@ -56,7 +56,10 @@ export default {
       pageSize: 20,
       total: 0,
       loading: false,
-      wareList: [],
+      wareList: [{
+        wareId: 100001,
+        
+      }],
     }
   },
   methods: {

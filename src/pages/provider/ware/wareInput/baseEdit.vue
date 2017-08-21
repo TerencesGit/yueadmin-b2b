@@ -86,7 +86,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="无订金订单占位时长" prop="nocashReserveMinute">
-                  <el-input v-model.number="wareForm.nocashReserveMinute" placeholder="单位：小时"></el-input>
+                  <el-input-number v-model.number="wareForm.nocashReserveMinute" :min="0.5" :max="168" style="width: 140px"></el-input-number>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -125,7 +125,7 @@
           brandId: '',
           tripDays: 1,
           sellPreDays: 7,
-          nocashReserveMinute: '',
+          nocashReserveMinute: 24,
           suggestedPrice: '',
           srcCityName: '请选择城市',
           dstCityName: '请选择城市',
@@ -222,7 +222,7 @@
       // 获取商品信息
       getWareInfo () {
         readWareInfo({wareId: this.wareId}).then(res => {
-          console.log(res)
+          // console.log(res)
           if(res.data.code === '0001') {
             let wareInfo = res.data.result.wareInfo
             wareInfo.openDate = new Date(wareInfo.openDate)

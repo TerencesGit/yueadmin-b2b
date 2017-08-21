@@ -86,7 +86,8 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="无订金订单占位时长" prop="nocashReserveMinute">
-                  <el-input v-model.number="wareForm.nocashReserveMinute" placeholder="单位：小时"></el-input>
+                 <!--  <el-input v-model.number="wareForm.nocashReserveMinute" placeholder="单位：小时"></el-input> -->
+                 <el-input-number v-model.number="wareForm.nocashReserveMinute" :min="0.5" :max="168" style="width: 140px"></el-input-number>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -125,7 +126,7 @@
           brandId: '',
           tripDays: 1,
           sellPreDays: 7,
-          nocashReserveMinute: '',
+          nocashReserveMinute: 24,
           suggestedPrice: '',
           srcCityName: '请选择城市',
           dstCityName: '请选择城市',
@@ -152,9 +153,9 @@
           dstCityCode: [
             {required: true, message: '请选择目的城市', trigger: 'change'}
           ],
-          brandId: [
-            {type: 'number', required: true, message: '请选择商品品牌', trigger: 'change'}
-          ],
+          // brandId: [
+          //   {type: 'number', required: true, message: '请选择商品品牌', trigger: 'change'}
+          // ],
           nocashReserveMinute: [
             {type: 'number', required: true, message: '请输入无订金订单占位时长', trigger: 'blur'}
           ],

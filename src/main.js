@@ -107,45 +107,29 @@ const router = new Router({
   routes
 })
 router.beforeEach((to, from, next) => {
-	// if(to.path === '/register' || to.path === '/login') {
- //    // localStorage.clear()
-	// 	return next()
-	// }
-	// let sessionId = localStorage.getItem('sessionId')
-	// if (!sessionId && to.path != '/login') {
-	// 	next('/login')
-	// } else {
-	// 	NProgress.start()
-	// 	next()
-	// }
   Vue.prototype.$fromPath = from.path
   NProgress.start()
   next() 
 })
 router.afterEach((to, from, next) => {
-  // console.log(to.path) 
   NProgress.done()
 })
 // request interceptors
 axios.interceptors.request.use((config) => {
-  return config
+  return config;
 }, (err) => {
-  console.log('err')
-  ElementUI.Message({
-    message: '请求失败，请重试'
-  })
   return Promise.reject(err)
 })
 // response interceptors
 axios.interceptors.response.use((res) => {
-  if (res.data.code ===  '0000') {
-  	localStorage.clear()
-    ElementUI.Message({
-   	  message: '长时间未操作，请重新登录'
-    })
-    return router.push('/login')
+  if(res.data.code === '0000') {
+    router.push('/login')
+    res.response = '0000';
+    return Promise.reject(res)
   } else if (res.data.code === '9999') {
-  	return router.push('/NoPermission')
+  	router.push('/NoPermission')
+    res.response = '9999';
+    return Promise.reject(res)
   }
   return res;
 }, (err) => {
@@ -158,6 +142,14 @@ axios.interceptors.response.use((res) => {
 Vue.prototype.catchError = (res) => {
   if (!res) {
     ElementUI.Message({ message: '服务器响应超时'})
+    return;
+  }
+  if(res === '0000') {
+    ElementUI.Message({ message: '尚未登录或当前会话已过期，将自动跳转登录系统验证'})
+    return;
+  }
+  if (res === '9999') {
+    ElementUI.Message({ message: '无此权限'})
     return;
   }
   if (res.status === 404) {

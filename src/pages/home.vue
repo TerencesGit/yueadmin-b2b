@@ -1,7 +1,7 @@
 <template>
 	<el-row :gutter="20">
     <div class="grid-content">
-      <h1>欢迎登录悦视觉系统</h1>
+      <h1>{{title}}</h1>
     </div>
 	  <el-col :span="8" v-for="(item, index) in items" :key="index">
       <el-card class="box-card">
@@ -21,6 +21,7 @@
 export default {
   data () {
     return {
+      title: '欢迎登录悦视觉后台管理系统',
       items: [
         {
           name: '供应商'

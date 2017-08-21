@@ -46,11 +46,11 @@
         <el-form-item label="单人差：" prop="priceSingle">
           <el-input v-model.number="batchPriceForm.priceSingle" placeholder="输入单人差"></el-input>
         </el-form-item>
-        <el-form-item label="" class="m-t-lg">
-          <el-button type="primary" @click="batchSubmit">确定</el-button>
-          <el-button @click="batchFormVisible = false">取消</el-button>
-        </el-form-item>
       </el-form>
+      <div slot="footer">
+        <el-button @click="batchFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="batchSubmit">确定</el-button>
+      </div>
     </el-dialog>
     <!-- 单条价格设置 -->
     <el-dialog :visible.sync="singleFormVisible" title="设置价格">
@@ -79,11 +79,11 @@
         <el-form-item label="单人差：" prop="priceSingle">
           <el-input v-model.number="singlePriceForm.priceSingle" placeholder="输入单人差"></el-input>
         </el-form-item>
-        <el-form-item label="" class="m-t-lg">
-          <el-button type="primary" @click="singleSubmit">确定</el-button>
-          <el-button @click="singleFormVisible = false">取消</el-button>
-        </el-form-item>
       </el-form>
+      <div slot="footer">
+        <el-button @click="singleFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="singleSubmit">确定</el-button>
+      </div>
     </el-dialog>
 	</section>
 </template>
@@ -93,7 +93,13 @@
   	data () {
   		return {
         wareId: '',
-  			skuList : [],
+  			skuList : [{
+          start: '2017-08-08',
+          skuDate: '2017-08-08',
+          adultPrice: 999,
+          childPrice: 999,
+          storageNum: 99
+        }],
         batchFormVisible: false,
         singleFormVisible: false,
         batchPriceForm: {
@@ -305,7 +311,7 @@
 </script>
 <style scoped>
   .sku-form .el-input {
-    width: 200px;
+    width: 240px;
   }
   .sku-form .el-form-item {
     margin-bottom: 5px;

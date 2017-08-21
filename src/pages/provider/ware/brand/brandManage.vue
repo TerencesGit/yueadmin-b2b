@@ -71,7 +71,7 @@
         class="pull-right">
       </el-pagination>
     </el-row>
-    <!-- 新增品牌 -->
+    <!-- 品牌表单 -->
     <el-dialog :title="visibleTitle" :visible.sync="brandFormVisible">
       <el-form :model="brandForm" :rules="brandRules" ref="brandForm" label-width="120px" style="padding: 30px">
         <el-form-item label="品牌名称" prop="brandName">
@@ -177,12 +177,11 @@ export default {
       this.loading = true
       let data = {
         brandName: this.filters.name,
-        currPage: this.page,
+        currPage: this.pageNo,
         pageSize: this.pageSize,
       }
       readBrandList(data)
       .then(res => {
-        console.log(res)
         if (res.data.code === '0001') {
           let result = res.data.result
           this.total = result.pageInfo.count
@@ -202,7 +201,7 @@ export default {
       this.getBrandList()
     },
     handleCurrentChange (val) {
-      this.page = val
+      this.pageNo = val
       this.getBrandList()
     },
     // 上传校验
@@ -247,7 +246,7 @@ export default {
       this.brandForm = {
         brandName: '',
         content: '',
-        logoUrl: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
+        logoUrl: '',
         brandPage: '',
         status: 1
       }
