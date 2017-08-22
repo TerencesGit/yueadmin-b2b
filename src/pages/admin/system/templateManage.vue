@@ -1,26 +1,16 @@
 <template>
-	<div class="templateManage">
+	<section>
 		<!-- 条件搜索 -->
 		<el-row class="toolbar">
 			<el-form :inline="true">
-				<el-form-item label="">
-					<el-input v-model="searchInfo.templateName" placeholder="请输入模板名"></el-input>
-				</el-form-item>
-				<el-form-item label="" prop="createTime">
-					<el-date-picker v-model="searchInfo.createTime" type="date" placeholder="请输入创建时间">
-				    </el-date-picker>
-				</el-form-item>
-				<el-form-item label="" prop="status">
-				  <el-select v-model="searchInfo.status" placeholder="请选择状态">
-				    <el-option label="正常" :value="1"></el-option>
-				    <el-option label="停用" :value="0"></el-option>
-				  </el-select>
+				<el-form-item label="模板名称">
+					<el-input v-model="filter.templateName" placeholder="输入模板名称搜索"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" @click="searchHandle('searchInfo')">搜索</el-button>
+					<el-button type="primary" @click="getTemplateList">搜索</el-button>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" @click="handleAdd">新增</el-button>
+					<el-button type="primary" @click="handleAdd">新增模板</el-button>
 				</el-form-item>
 			</el-form>
 		</el-row>
@@ -28,328 +18,292 @@
 		<el-table 
 			border 
 			v-loading="loading" 
-			:data="templateManageList">
+			:data="templateList"
+			@expand="handleExpand">
 		  <el-table-column type="expand" width="50" label="属性名">
 	    	<template scope="scope">
-	    		<span style="margin-right:10px" v-for="(item, index) in scope.row.attributeNameList" :key="index">
+	    		<el-form inline  label-position="left" class="table-expand">
+	    			<el-form-item label="模板名称">
+	    				<span>{{scope.row.templateName}}</span>
+	    			</el-form-item>
+	    			<el-form-item label="模板页面名称">
+	    				<span>{{scope.row.htmlName}}</span>
+	    			</el-form-item>
+	    			<el-form-item label="模板描述">
+	    				<span>{{scope.row.description}}</span>
+	    			</el-form-item>
+	    			<el-form-item label="创建时间">
+	    				<span>{{scope.row.createTime}}</span>
+	    			</el-form-item>
+						<el-form-item label="创建人">
+	    				<span>{{scope.row.createBy}}</span>
+	    			</el-form-item>
+	    			<el-form-item label="模板属性">
+	    				<span v-for="(item, index) in templateAttrList" :key="index">
+	    				<el-tag type="primary" v-text="item.attributeName"></el-tag>
+	    				</span>
+	    			</el-form-item>
+	    		</el-form>
+	    		<!-- <span style="margin-right:10px" v-for="(item, index) in scope.row.attributeNameList" :key="index">
 	    			<el-tag type="primary" v-text="item.attributeName"></el-tag>
-	    		</span>
+	    		</span> -->
 	    	</template>
 	    </el-table-column>
-	    <el-table-column prop="templateName" label="页面模板名"></el-table-column>
-	    <el-table-column prop="htmlName" label="路径"></el-table-column>
+	    <el-table-column prop="templateName" label="模板名称"></el-table-column>
+	    <el-table-column prop="htmlName" label="模板页面名称"></el-table-column>
+	    <el-table-column prop="description" label="模板描述"></el-table-column>
 	    <el-table-column prop="createTime" label="创建时间"></el-table-column>
-	    <el-table-column prop="createName" label="创建人"></el-table-column>
-	    <el-table-column :formatter="formatterStatus" prop="status" label="状态"></el-table-column>
+	    <el-table-column prop="createBy" label="创建人"></el-table-column>
+	    <el-table-column :formatter="formatStatus" prop="status" label="状态"></el-table-column>
 	    <el-table-column label="操作" width="180">
 	    	<template scope="scope">
-    	        <el-button size="small"
-    	          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-    	        <el-button size="small" type="danger"
-    	          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-  	        </template>
+	        <el-button size="small"
+	          @click="handleEdit(scope.row)">编辑</el-button>
+	        <el-button size="small" type="danger"
+	          @click="handleDelete(scope.row)">删除</el-button>
+        </template>
 	    </el-table-column>
 		</el-table>
 		<!-- 分页 -->
-		<el-row type="flex" justify="end" style="margin-top:20px">
+		<el-row class="toolbar">
 			<el-pagination
 		      @size-change="handleSizeChange"
 		      @current-change="handleCurrentChange"
-		      :current-page="pageInfo.currPage"
+		      :current-page="filter.currPage"
 		      :page-sizes="[10, 20, 30, 40]"
-		      :page-size="pageInfo.pageSize"
+		      :page-size="filter.pageSize"
 		      layout="total, sizes, prev, pager, next, jumper"
-		      :total="pageInfo.count">
+		      :total="count">
 		    </el-pagination>
 		</el-row>
-		<!-- dialog新增框 -->
-		<el-dialog title="新增属性模板管理" :visible.sync="dialogAdd">
-			<el-row type="flex" justify="center">
-				<el-col :span="22">
-					<el-form :model="addTemplateManage" :rules="rules" ref="addTemplateManage" label-width="120px">
-						<el-row>
-							<el-col :span="20">
-								<el-form-item label="页面模板名：" prop="templateName">
-									<el-input size="small" v-model="addTemplateManage.templateName"></el-input>
-								</el-form-item>
-							</el-col>
-						</el-row>
-					    <el-row>
-							<el-col :span="20">
-								<el-form-item label="属性名：" prop="attributeId">
-							    	<el-select style="width:100%" size="small" v-model="addTemplateManage.attributeId" multiple placeholder="请选择(可多选)">
-							    	    <el-option v-for="(item,index) in propertyManageList" :key="index" :label="item.attributeName" :value="item.attributeId">
-							    	    </el-option>
-							    	</el-select>
-								</el-form-item>
-					  		</el-col>
-						</el-row>
-						<el-row>
-							<el-col :span="20">
-								<el-form-item label="路径：" prop="htmlName">
-								  	<el-input size="small" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="addTemplateManage.htmlName"></el-input>
-								</el-form-item>
-							</el-col>
-						</el-row>
-						<el-row>
-							<el-col :span="20">
-								<el-form-item label="状态：" prop="status">
-								    <el-radio-group size="small" v-model.number="addTemplateManage.status">
-								        <el-radio :label="1">正常</el-radio>
-								        <el-radio :label="0">停用</el-radio>
-								    </el-radio-group>
-								</el-form-item>
-							</el-col>
-						</el-row>
+		<!-- 模板表单 -->
+		<el-dialog 
+			:title="templateFormTitle" 
+			:visible.sync="templateFormVisible">
+			<el-row>
+				<el-col :span="16" :offset="4">
+					<el-form :model="templateForm" :rules="rules" ref="templateForm" label-width="120px">
+						<el-form-item label="模板名称：" prop="templateName">
+							<el-input v-model="templateForm.templateName" placeholder="请输入模板名称"></el-input>
+						</el-form-item>
+						<el-form-item label="模板页面：" prop="htmlName">
+						  <el-input v-model="templateForm.htmlName" placeholder="请输入模板页面名"></el-input>
+						</el-form-item>
+						<el-form-item label="模板属性：" prop="attributeIdList">
+				    	<el-select v-model="templateForm.attributeIdList" multiple placeholder="请选择属性(可多选)" style="width: 100%">
+			    	    <el-option v-for="(item, index) in attributeList" :key="index" :label="item.attributeName" :value="item.attributeId">
+			    	    </el-option>
+				    	</el-select>
+						</el-form-item>
+						<el-form-item label="模板描述：" prop="description">
+						  <el-input type="textarea" v-model="templateForm.description" placeholder="请输入模板描述"></el-input>
+						</el-form-item>
+						<el-form-item label="状态：" prop="status">
+					    <el-radio-group v-model.number="templateForm.status">
+					      <el-radio :label="1">启用</el-radio>
+					      <el-radio :label="0">禁用</el-radio>
+					    </el-radio-group>
+						</el-form-item>
 					</el-form>
 				</el-col>
 			</el-row>
 			<div slot="footer">
-	    		<el-button type="primary" @click="addSave('addTemplateManage')">保存</el-button>
-	    		<el-button @click="dialogAdd = false">取消</el-button>
+	    	<el-button @click="templateFormVisible = false">取消</el-button>
+	    	<el-button type="primary" @click="submitForm">提交</el-button>
 			</div>
 		</el-dialog>
-		<!-- dialog编辑框 -->
-		<el-dialog title="编辑属性管理" :visible.sync="dialogEdit">
-			<el-row type="flex" justify="center">
-				<el-col :span="22">
-					<el-form :model="editTemplateManage" :rules="rules" ref="editTemplateManage" label-width="100px">
-						<el-row>
-							<el-col :span="12">
-								<el-form-item label="页面模板名：" prop="templateName">
-									<el-input size="small" v-model="editTemplateManage.templateName"></el-input>
-								</el-form-item>
-							</el-col>
-						</el-row>
-					    <el-row>
-			    			<el-col :span="20">
-			    				<el-form-item label="属性名：" prop="attributeNameList">
-			    			    	<el-select style="width:100%" size="small" v-model="editTemplateManage.attributeNameList" multiple placeholder="请选择(可多选)">
-			    			    	    <el-option v-for="(item,index) in editPropertyManageList" :key="index" :label="item.attributeName" :value="item.attributeId">
-			    			    	    </el-option>
-			    			    	</el-select>
-			    				</el-form-item>
-			    	  		</el-col>
-						</el-row>
-						<el-row>
-							<el-col :span="20">
-								<el-form-item label="路径" prop="htmlName">
-								  	<el-input size="small" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="editTemplateManage.htmlName"></el-input>
-								</el-form-item>
-							</el-col>
-						</el-row>
-						<el-row>
-							<el-col :span="20">
-								<el-form-item label="状态" prop="status">
-								    <el-radio-group size="small" v-model.number="editTemplateManage.status">
-								        <el-radio :label="1">正常</el-radio>
-								        <el-radio :label="0">停用</el-radio>
-								    </el-radio-group>
-								</el-form-item>
-							</el-col>
-						</el-row>
-					</el-form>
-				</el-col>
-			</el-row>
-			<div slot="footer">
-	    		<el-button type="primary" @click="editSave('editTemplateManage')">保存</el-button>
-	    		<el-button @click="dialogEdit = false">取消</el-button>
-			</div>
-		</el-dialog>
-	</div>
+	</section>
 </template>
 
 <script>
-	import { createTemplate, dropDownAttributeDefineList, readTemplateList, deleteTemplate,updateTemplate } from '@/api'
-	import util from '@/assets/js/utils'
+	import { createTemplate, findAttributeListByTemplateId, readTemplateList, deleteTemplate, updateTemplate } from '@/api'
 	export default {
 		data(){
 			return {
-				loading:false,
-				dialogAdd:false,
-				dialogEdit:false,
-				propertyManageList:[
+				filter: {
+					templateName: '',
+					currPage: 1,
+					pageSize: 20
+				},
+				count: 0,
+				loading: false,
+				attributeList: [
 					{
-						label:'大交通',
-						value:1
+						attributeId: 100001,
+						attributeName: '大交通',
 					},
 					{
-						label:'签证/签注',
-						value:2
-					}
+						attributeId: 100002,
+						attributeName: '商品介绍',
+					},
+					{
+						attributeId: 100003,
+						attributeName: '费用说明',
+					},
 				],
-				editPropertyManageList:[],
-				searchInfo:{
-					templateName:'',
-					createTime:'',
-					status:''
+				templateAttrList: [],
+				templateFormVisible: false,
+				templateFormTitle: '',
+				templateForm: {
+					templateName: '',
+					attributeIdList: [],
+					description: '',
+					htmlName: '',
+					status: 1
 				},
-				searchRules:{
-					templateName:[{required: true, message: '请输入模板名', trigger: 'blur'}],
-					createTime:[{required: true, message: '请输入创建时间', trigger: 'blur'}],
-					status:[
-						{required: true, type:'number', message: '请选择状态', trigger: 'change'}
-					]
-				},
-				addTemplateManage:{
-					templateName:'',
-					attributeId:[],
-					htmlName:'',
-					status:''
-				},
-				editTemplateManage:{},
-				rules:{
-					templateName:[
-						{ required: true, message: '请填写页面模板名', trigger: 'blur' }
+				rules: {
+					templateName: [
+						{ required: true, message: '请输入模板名称', trigger: 'blur' }
 					],
-					attributeId:[
-						{ required: true, type:'array', message: '请选择属性名', trigger: 'change' }
+					attributeIdList: [
+						{ required: true, type:'array', message: '请选择属性', trigger: 'blur' }
 					],
-					attributeNameList:[
-						{ required: true, type:'array', message: '请选择属性名', trigger: 'change' }
+					description: [
+						{ required: true, message: '请输入模板描述', trigger: 'blur' }
 					],
 					htmlName:[
-						{ required: true, message: '请填写路径', trigger: 'blur' }
+						{ required: true, message: '请输入模板页面', trigger: 'blur' }
 					],
-					status:[
-						{ required: true, type:'number', message: '请选择状态', trigger: 'change' }
-					]
 				},
-				templateManageList: [{
+				templateList: [{
 					templateId: 100001,
 					templateName: '模板1',
+					htmlName: '模板页面1',
 					createTime: new Date(),
 					status: 1,
-					attributeNameList: [
-						{
-							attributeName: '12345',
-						},
-						{
-							attributeName: '12345',
-						},
-					]
+					attributeList: []
 				}],
-				pageInfo:{
-					currPage:1,
-					pageSize:20,
-					count:0,
-				}
 			}
 		},
 		methods:{
-			formatterStatus(row,column){
-				return row.status === 1 ? '正常' : '停用';
+			formatStatus(row) {
+				return row.status === 1 ? '启用' : '禁用';
 			},
-			handleAdd(){
-				this.dialogAdd = true;
-				dropDownAttributeDefineList().then((res)=>{
-					console.log(res);
-					this.propertyManageList = Object.assign({},res.data.result.attList);
-				}).catch((error)=>{
-					console.log(error);
-				})
-			},
-			addSave(formName){
-				this.$refs[formName].validate((valid) => {
-		          if (valid) {
-		            let data = Object.assign({},this.addTemplateManage);
-		            createTemplate(data).then((res)=>{
-		            	if(res.data.code === "0001"){
-		            		this.$message({
-            		          message: res.data.message,
-            		          type: 'success'
-            		        });
-            		        this.getTemplateManageList();
-		            		for(let i in this.addTemplateManage){
-		            			this.addTemplateManage[i] = '';
-		            		}
-		            		this.addTemplateManage.attributeId = [];
-		            		this.dialogAdd = false;
-		            	}else{
-		            		this.$message({
-            		          message: res.data.message,
-            		          type: 'error'
-            		        });
-		            	}
-		            }).catch((error)=>{
-		            	this.catchError(error.response)
-		            })
-		          } else {
-		            console.log('error submit!!');
-		            return false;
-		          }
-		        });
-			},
-			editSave(formName){
-				this.$refs[formName].validate((valid) => {
-		          if (valid) {
-		          	let data = {
-		          		templateId:this.editTemplateManage.templateId,
-		          		htmlId:this.editTemplateManage.htmlId,
-		          		templateName:this.editTemplateManage.templateName,
-		          		attributeId:this.editTemplateManage.attributeNameList,
-		          		htmlName:this.editTemplateManage.htmlName,
-		          		status:this.editTemplateManage.status
-		          	}
-		          	console.log(data);
-		            updateTemplate(data).then((res)=>{
-		            	console.log(res);
-		            	if(res.data.code === "0001"){
-		            		this.$message({
-            		          message: res.data.message,
-            		          type: 'success'
-            		        });
-            		        this.getTemplateManageList();
-		            		this.dialogEdit = false;
-		            	}else{
-		            		this.$message({
-            		          message: res.data.message,
-            		          type: 'error'
-            		        });
-		            	}
-		            }).catch((error)=>{
-		            	this.catchError(error.response)
-		            })
-		          } else {
-		            console.log('error submit!!');
-		            return false;
-		          }
-		        });
-			},
-			searchHandle(formName){
-				this.$refs[formName].validate((valid) => {
-		          if (valid) {
-		          	if(this.searchInfo.createTime){
-		          		this.searchInfo.createTime = util.formatDate.format(this.searchInfo.createTime);
-		          	}
-		            this.getTemplateManageList(this.pageInfo.currPage,this.pageInfo.pageSize,this.searchInfo.templateName,this.searchInfo.createTime,this.searchInfo.status);
-		          } else {
-		            console.log('error submit!!');
-		            return false;
-		          }
-		        });
-			},
-			handleEdit(index,row){
-				this.dialogEdit = true;
-				this.editTemplateManage = Object.assign({},row);
-				this.editTemplateManage.attributeNameList = [];
-				row.attributeNameList.forEach((v,i,a)=>{
-					this.editTemplateManage.attributeNameList.push(v.attributeId);
-				})
-				console.log(this.editTemplateManage);
-				dropDownAttributeDefineList().then((res)=>{
-					this.editPropertyManageList = Object.assign({},res.data.result.attList);
-				}).catch((error)=>{
-					console.log(error);
+			// 获取属性列表
+			getAttributeList() {
+				this.loading = true;
+				let params = Object.assign({}, this.filter);
+				console.log(params)
+				readSysWareAttributeDefine(params).then((res) => {
+					if (res.data.code === "0001") {
+						this.attributeList = res.data.result.defineList;
+						this.count = res.data.result.pageInfo.count;
+					} else {
+						this.$message(res.data.message);
+					}
+					this.loading = false;
+				}).catch((error) => {
 					this.catchError(error.response)
+    		  this.loading = false;
 				})
 			},
-			handleDelete(index,row){
-				this.$confirm('确认要删除属性？', '提示', {
-		          confirmButtonText: '确定',
-		          cancelButtonText: '取消',
-		          type: 'warning'
-		        }).then(() => {
+			// 获取模板列表
+			getTemplateList(){
+				this.loading = true;
+				let params = Object.assign({}, this.filter)
+				readTemplateList(params).then(res => {
+					if(res.data.code === "0001"){
+						this.templateList = res.data.result.templateList;
+						this.count = res.data.result.pageInfo.count;
+					}else{
+						this.$message(res.data.message);
+					}
+					this.loading = false;
+				}).catch((error) => {
+					this.catchError(error.response)
+    		  this.loading = false;
+				})
+			},
+			// 获取模板对应属性列表
+			getAttrListByTemplateId(tempalteId) {
+				let params = {
+					tempalteId: tempalteId
+				}
+				let attributeList = [
+					{
+						attributeId: 100001,
+						attributeName: '大交通',
+					},
+					{
+						attributeId: 100002,
+						attributeName: '费用说明',
+					},
+				]
+				this.templateAttrList = attributeList;
+				this.templateForm.attributeIdList = attributeList.map(item => item.attributeId)
+				findAttributeListByTemplateId(params).then(res => {
+					console.log(res)
+					if(res.data.code === '0001') {
+						// this.templateForm.attributeId = res.data.result.map(item => item.attributeId)
+					} else {
+						this.$message.error(res.data.message)
+					}
+				}).catch(err => {
+					this.catchError(err.response)
+				})
+			},
+			// 新增模板
+			handleAdd() {
+				this.templateFormTitle = '新增属性模板'
+				this.templateForm = {
+					templateName: '',
+					attributeIdList: [],
+					description: '',
+					htmlName: '',
+					status: 1
+				}
+				this.templateFormVisible = true;
+			},
+			// 编辑模板
+			handleEdit(row) {
+				this.templateFormTitle = '编辑属性模板'
+				this.templateForm = Object.assign({}, row);
+				this.getAttrListByTemplateId(row.templateId)
+				this.templateFormVisible = true;
+				// row.attributeNameList.forEach((v,i,a) => {
+				// 	this.editTemplateManage.attributeNameList.push(v.attributeId);
+				// })
+				console.log(this.templateForm);
+			},
+			// 表单提交
+			submitForm() {
+				this.$refs.templateForm.validate((valid) => {
+          if (valid) {
+            let data = Object.assign({}, this.templateForm);
+            console.log(data)
+            createTemplate(data).then(res => {
+            	if(res.data.code === "0001") {
+            		this.$message.success(res.data.message);
+        		    this.getTemplateList();
+            		// for(let i in this.templateForm){
+            		// 	this.templateForm[i] = '';
+            		// }
+            		// this.templateForm.attributeId = [];
+            	} else {
+            		this.$message.error(res.data.message);
+            	}
+            	this.templateFormVisible = false;
+            }).catch((error) => {
+            	this.catchError(error.response)
+            	this.templateFormVisible = false;
+            })
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        })
+			},
+			// 
+			handleExpand (row, expanded) {
+				console.log(row, expanded)
+				if(expanded) {
+					this.getAttrListByTemplateId(row.templateId)
+					console.log(Object.assign({}, row))
+				}
+			},
+			// 模板删除
+			handleDelete(row) {
+				this.$confirm('确认要删除该模板？', '提示', {type: 'warning'}).then(() => {
       				this.loading = true;
       				let data = {
       					templateId:row.templateId
@@ -361,7 +315,7 @@
       		          message: '删除成功',
       		          type: 'success'
       		        });
-      		        this.getTemplateManageList();
+      		        this.getTemplateList();
       						this.loading = false;
       					}else{
       						this.$message({
@@ -374,51 +328,42 @@
       					this.catchError(error.response)
           		        this.loading = false;
       				})
-		        }).catch(() => {
-		          this.$message({
-		            type: 'info',
-		            message: '已取消删除'
-		          });          
-		        });
+        }).catch(() => {
+          this.$message('已取消操作')     
+        })
 			},
-			handleSizeChange(pageSize){
-				this.getTemplateManageList(this.pageInfo.currPage, pageSize,this.searchInfo.templateName,this.searchInfo.createTime,this.searchInfo.status);
+			handleSizeChange(val) {
+				this.filter.pageSize = val;
+				this.getTemplateList();
 			},
-			handleCurrentChange(currPage){
-				this.getTemplateManageList(currPage, this.pageInfo.pageSize,this.searchInfo.templateName,this.searchInfo.createTime,this.searchInfo.status);
+			handleCurrentChange(val) {
+				this.filter.currPage = val;
+				this.getTemplateList();
 			},
-			getTemplateManageList(currPage = 1,pageSize = 20,templateName = "",createTime = "",status = ""){
-				this.loading = true;
-				let params = {
-					currPage:currPage,
-					pageSize:pageSize,
-					templateName:templateName,
-					createTime:createTime,
-					status:status
-				}
-				readTemplateList(params).then((res)=>{
-					if(res.data.code === "0001"){
-						this.templateManageList = res.data.result.templateList;
-						this.pageInfo.count = res.data.result.pageInfo.count;
-						this.loading = false;
-					}else{
-						this.$message({
-		          message: res.data.message,
-		          type: 'error'
-		        });
-		        this.loading = false;
-					}
-				}).catch((error) => {
-					this.catchError(error.response)
-    		  this.loading = false;
-				})
-			}
 		},
-		created(){
-			this.getTemplateManageList()
+		created() {
+			this.getTemplateList()
 		}
 	}
 </script>
-<style scoped>
-	
+<style scoped lang="scss">
+	.table-expand {
+		font-size: 0;
+		label {
+			width: 120px;
+    	color: #99a9bf;
+		}
+	  .el-form-item {
+	    width: 50%;
+	    margin-right: 0;
+	    margin-bottom: 0;
+	    .el-form-item__label {
+				width: 120px;
+	    	color: #99a9bf;
+			}
+	    .el-tag {
+	    	margin-right: 10px
+	    }
+	  }
+	}
 </style>

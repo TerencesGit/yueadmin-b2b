@@ -58,7 +58,7 @@
 							<el-input v-model="attributeForm.attributeName"></el-input>
 						</el-form-item>
 						<el-form-item label="属性类型：" prop="attributeType">
-							<el-select v-model="attributeForm.attributeType" placeholder="请选择属性类型">
+							<el-select v-model="attributeForm.attributeType" placeholder="请选择属性类型" style="width: 100%">
 								<el-option v-for="item in attrTypeList" :key="item" :value="item.value" :label="item.label"></el-option>
 							</el-select>
 						</el-form-item>
@@ -86,7 +86,7 @@
 </template>
 
 <script>
-	import { attrManagement, readSysWareAttributeDefine, deleteAttributeDefine } from '@/api'
+	import { readAttributeList, saveAttributeDefine, deleteAttributeDefine } from '@/api'
 	export default {
 		data(){
 			return {
@@ -157,10 +157,10 @@
 				this.loading = true;
 				let params = Object.assign({}, this.filter);
 				console.log(params)
-				readSysWareAttributeDefine(params).then((res) => {
+				readAttributeList(params).then((res) => {
 					if (res.data.code === "0001") {
 						this.attributeList = res.data.result.defineList;
-						this.pageInfo.count = res.data.result.pageInfo.count;
+						this.count = res.data.result.pageInfo.count;
 					} else {
 						this.$message(res.data.message);
 					}
@@ -195,7 +195,7 @@
 				this.$refs.attributeForm.validate((valid) => {
           if (valid) {
             let data = Object.assign({}, this.attributeForm);
-            attrManagement(data).then(res => {
+            saveAttributeDefine(data).then(res => {
             	if (res.data.code === "0001") {
             		this.$message.success(res.data.message);
     		        this.getAttributeList();
