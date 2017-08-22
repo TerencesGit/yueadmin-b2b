@@ -133,9 +133,7 @@ axios.interceptors.response.use((res) => {
   }
   return res;
 }, (err) => {
-  ElementUI.Message({
- 	  message: '服务器响应错误，请重试'
-  })
+  err.response = '500';
   return Promise.reject(err)
 })
 // catch error
@@ -150,6 +148,10 @@ Vue.prototype.catchError = (res) => {
   }
   if (res === '9999') {
     ElementUI.Message({ message: '无此权限'})
+    return;
+  }
+  if (res === '500') {
+    ElementUI.Message({ message: '服务器响应失败'})
     return;
   }
   if (res.status === 404) {

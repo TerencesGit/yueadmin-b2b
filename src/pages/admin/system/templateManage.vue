@@ -1,9 +1,9 @@
 <template>
 	<div class="templateManage">
-		<!-- 模糊查询 -->
-		<el-row type="flex" align="middle">
-			<el-form :inline="true" style="width:100%" ref="searchInfo" :model="searchInfo" label-width="80px">
-				<el-form-item label="" prop="templateName">
+		<!-- 条件搜索 -->
+		<el-row class="toolbar">
+			<el-form :inline="true">
+				<el-form-item label="">
 					<el-input v-model="searchInfo.templateName" placeholder="请输入模板名"></el-input>
 				</el-form-item>
 				<el-form-item label="" prop="createTime">
@@ -24,11 +24,14 @@
 				</el-form-item>
 			</el-form>
 		</el-row>
-		<!-- 属性列表 -->
-		<el-table v-loading="loading" :data="templateManageList" border style="width: 100%">
+		<!-- 模板列表 -->
+		<el-table 
+			border 
+			v-loading="loading" 
+			:data="templateManageList">
 		  <el-table-column type="expand" width="50" label="属性名">
 	    	<template scope="scope">
-	    		<span style="margin-right:10px" v-for="(item,index) in scope.row.attributeNameList" :key="index">
+	    		<span style="margin-right:10px" v-for="(item, index) in scope.row.attributeNameList" :key="index">
 	    			<el-tag type="primary" v-text="item.attributeName"></el-tag>
 	    		</span>
 	    	</template>
@@ -212,7 +215,20 @@
 						{ required: true, type:'number', message: '请选择状态', trigger: 'change' }
 					]
 				},
-				templateManageList:[],
+				templateManageList: [{
+					templateId: 100001,
+					templateName: '模板1',
+					createTime: new Date(),
+					status: 1,
+					attributeNameList: [
+						{
+							attributeName: '12345',
+						},
+						{
+							attributeName: '12345',
+						},
+					]
+				}],
 				pageInfo:{
 					currPage:1,
 					pageSize:20,
