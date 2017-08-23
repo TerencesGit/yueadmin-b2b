@@ -116,7 +116,7 @@
 </template>
 
 <script>
-	import { createTemplate, findAttributeListByTemplateId, readTemplateList, deleteTemplate, updateTemplate } from '@/api'
+	import { readTemplateList, readAttributeList, createTemplate, findAttributeListByTemplateId, deleteTemplate, updateTemplate } from '@/api'
 	export default {
 		data(){
 			return {
@@ -128,23 +128,24 @@
 				count: 0,
 				loading: false,
 				attributeList: [
-					{
-						attributeId: 100001,
-						attributeName: '大交通',
-					},
-					{
-						attributeId: 100002,
-						attributeName: '商品介绍',
-					},
-					{
-						attributeId: 100003,
-						attributeName: '费用说明',
-					},
+					// {
+					// 	attributeId: 100001,
+					// 	attributeName: '大交通',
+					// },
+					// {
+					// 	attributeId: 100002,
+					// 	attributeName: '商品介绍',
+					// },
+					// {
+					// 	attributeId: 100003,
+					// 	attributeName: '费用说明',
+					// },
 				],
 				templateAttrList: [],
 				templateFormVisible: false,
 				templateFormTitle: '',
 				templateForm: {
+					templateId: '',
 					templateName: '',
 					attributeIdList: [],
 					description: '',
@@ -183,8 +184,8 @@
 			getAttributeList() {
 				this.loading = true;
 				let params = Object.assign({}, this.filter);
-				console.log(params)
-				readSysWareAttributeDefine(params).then((res) => {
+				readAttributeList(params).then((res) => {
+					console.log(res)
 					if (res.data.code === "0001") {
 						this.attributeList = res.data.result.defineList;
 						this.count = res.data.result.pageInfo.count;
@@ -202,6 +203,7 @@
 				this.loading = true;
 				let params = Object.assign({}, this.filter)
 				readTemplateList(params).then(res => {
+					console.log(res)
 					if(res.data.code === "0001"){
 						this.templateList = res.data.result.templateList;
 						this.count = res.data.result.pageInfo.count;
@@ -229,12 +231,13 @@
 						attributeName: '费用说明',
 					},
 				]
-				this.templateAttrList = attributeList;
-				this.templateForm.attributeIdList = attributeList.map(item => item.attributeId)
+				// this.templateAttrList = attributeList;
+				// this.templateForm.attributeIdList = attributeList.map(item => item.attributeId)
 				findAttributeListByTemplateId(params).then(res => {
 					console.log(res)
 					if(res.data.code === '0001') {
-						// this.templateForm.attributeId = res.data.result.map(item => item.attributeId)
+						this.templateAttrList = res.data.result.attributeList 
+						this.templateForm.attributeId = res.data.result.attributeList.map(item => item.attributeId)
 					} else {
 						this.$message.error(res.data.message)
 					}
@@ -295,41 +298,29 @@
 			},
 			// 
 			handleExpand (row, expanded) {
-				console.log(row, expanded)
-				if(expanded) {
-					this.getAttrListByTemplateId(row.templateId)
-					console.log(Object.assign({}, row))
-				}
+				expanded && this.getAttrListByTemplateId(row.templateId)
+					// console.log(Object.assign({}, row))
 			},
 			// 模板删除
 			handleDelete(row) {
 				this.$confirm('确认要删除该模板？', '提示', {type: 'warning'}).then(() => {
-      				this.loading = true;
       				let data = {
       					templateId:row.templateId
       				}
       				console.log(data);
-      				deleteTemplate(data).then((res)=>{
-      					if(res.data.code === "0001"){
-      						this.$message({
-      		          message: '删除成功',
-      		          type: 'success'
-      		        });
+      				deleteTemplate(data).then((res) => {
+      					console.log(res)
+      					if(res.data.code === "0001") {
+      						this.$message.success(res.data.message);
       		        this.getTemplateList();
-      						this.loading = false;
       					}else{
-      						this.$message({
-      		          message: '删除失败',
-      		          type: 'error'
-      		        });
-      		        this.loading = false;
+      						this.$message.error(res.data.message);
       					}
       				}).catch((error)=>{
       					this.catchError(error.response)
-          		        this.loading = false;
       				})
         }).catch(() => {
-          this.$message('已取消操作')     
+          this.$message('已取消操作')
         })
 			},
 			handleSizeChange(val) {
@@ -342,6 +333,7 @@
 			},
 		},
 		created() {
+			this.getAttributeList()
 			this.getTemplateList()
 		}
 	}

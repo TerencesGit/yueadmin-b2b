@@ -99,7 +99,7 @@
 				attrFormTitle: '新增属性',
 				attrFormVisible: false,
 				attributeForm: {
-					attributeId: '',
+					attributeId: 0,
 					attributeName: '',
 					attributeType: '',
 					description: '',
@@ -156,8 +156,8 @@
 			getAttributeList() {
 				this.loading = true;
 				let params = Object.assign({}, this.filter);
-				console.log(params)
 				readAttributeList(params).then((res) => {
+					console.log(res)
 					if (res.data.code === "0001") {
 						this.attributeList = res.data.result.defineList;
 						this.count = res.data.result.pageInfo.count;
@@ -172,7 +172,7 @@
 			},
 			handleAdd() {
 				this.attributeForm = {
-					attributeId: '',
+					attributeId: 0,
 					attributeName: '',
 					attributeType: '',
 					description: '',

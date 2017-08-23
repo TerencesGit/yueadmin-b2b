@@ -20,34 +20,66 @@
       </el-tree>
     </el-row>
     <!-- 品类表单 -->
-    <el-dialog :title="kindFormTitle" v-model="kindFormVisible">
-      <el-form :model="kindForm" ref="kindForm" :rules="rules" label-width="120px" style="padding: 30px">
-        <el-form-item label="品类名称" prop="kindName">
-          <el-input v-model="kindForm.kindName" placeholder="输入品牌名称"></el-input>
-        </el-form-item>
-        <el-form-item label="品类编号" prop="kindCode">
-          <el-input v-model="kindForm.kindCode" placeholder="旅游以T开头，拍摄以P开头"></el-input>
-        </el-form-item>
-        <el-form-item label="品类描述" prop="kindDesc">
-          <el-input type="textarea" v-model="kindForm.kindDesc" placeholder="品类描述"></el-input>
-        </el-form-item>
-        <el-form-item label="同级序号" prop="sortId">
-          <el-input v-model.number="kindForm.sortId" placeholder="同级序号"></el-input>
-        </el-form-item>
-        <el-form-item label="品类模板" >
-          <el-select v-model="kindForm.templetId" placeholder="品类模板">
-            <el-option v-for="item in templateList" :key="item.templateId"  :label="item.templateName" :value="item.templateId"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="备注" prop="note">
-          <el-input type="textarea" v-model="kindForm.note" placeholder="备注"></el-input>
-        </el-form-item>
-      </el-form>
+    <el-dialog :title="kindFormTitle" :visible.sync="kindFormVisible">
+      <el-row>
+        <el-col :span="16" :offset="4">
+          <el-form :model="kindForm" ref="kindForm" :rules="rules" label-width="120px">
+            <el-form-item label="品类名称" prop="kindName">
+              <el-input v-model="kindForm.kindName" placeholder="输入品牌名称"></el-input>
+            </el-form-item>
+            <el-form-item label="品类编号" prop="kindCode">
+              <el-input v-model="kindForm.kindCode" placeholder="旅游以T开头，拍摄以P开头"></el-input>
+            </el-form-item>
+            <el-form-item label="品类描述" prop="kindDesc">
+              <el-input type="textarea" v-model="kindForm.kindDesc" placeholder="品类描述"></el-input>
+            </el-form-item>
+            <el-form-item label="同级序号" prop="sortId">
+              <el-input v-model.number="kindForm.sortId" placeholder="同级序号"></el-input>
+            </el-form-item>
+            <el-form-item label="品类模板" >
+              <el-select v-model="kindForm.templetId" placeholder="品类模板" style="width: 100%">
+                <el-option v-for="item in templateList" :key="item.templateId"  :label="item.templateName" :value="item.templateId"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="备注" prop="note">
+              <el-input type="textarea" v-model="kindForm.note" placeholder="备注"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="kindFormVisible = false">取 消</el-button>
         <el-button type="primary" @click.native="onSubmit">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 模板列表 -->
+    <!-- <el-dialog title="属性模板" :visible.sync="templateVisible">
+      <el-row>
+        <el-col :span="22" :offset="1">
+          <el-table 
+            border
+            max-height="350"
+            style="width: 100%"
+            v-loading="loading" 
+            :data="templateList">
+            <el-table-column width="80" label="选择" align="center">
+              <template scope="scope">
+                <el-radio class="radio no-input" v-model="templateId" :label="scope.row.templateId">
+                  <i v-if="scope.row.templateId === templateId" class="fa fa-check-square"></i>
+                  <i v-else class="fa fa-square-o"></i>
+                </el-radio>
+              </template>
+            </el-table-column>
+            <el-table-column prop="templateName" label="模板名称"></el-table-column>
+            <el-table-column prop="htmlName" label="对应页面"></el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+      <div slot="footer">
+        <el-button @click="templateVisible = false">取消</el-button>
+        <el-button type="primary" @click="bindTemplate">确定</el-button>
+      </div>
+    </el-dialog> -->
 	</section>
 </template>
 <script>
@@ -55,8 +87,55 @@
   export default {
     data() {
       return {
-        kindList: [],
-        templateList: [],
+        kindList: [{
+          kindId: 10001,
+          kindName: '一级 1',
+          templetId: 10001,
+          children: [{
+            kindId: 20001,
+            kindName: '二级 1-1',
+            templetId: 10002,
+            children: [{
+              kindId: 30001,
+              kindName: '三级 1-1-1',
+              templetId: 10003,
+            }]
+          }]
+        }],
+        templateList: [
+          {
+            templateId: 10001,
+            templateName: '模板1',
+            htmlName: '模板页面1',
+            createTime: new Date(),
+            status: 1,
+            attributeList: []
+          },
+          {
+            templateId: 10002,
+            templateName: '模板2',
+            htmlName: '模板页面1',
+            createTime: new Date(),
+            status: 1,
+            attributeList: []
+          },
+          {
+            templateId: 10003,
+            templateName: '模板3',
+            htmlName: '模板页面1',
+            createTime: new Date(),
+            status: 1,
+            attributeList: []
+          },
+          {
+            templateId: 10004,
+            templateName: '模板4',
+            htmlName: '模板页面1',
+            createTime: new Date(),
+            status: 1,
+            attributeList: []
+          },
+        ],
         defaultProps: {
           children: 'children',
           label: 'kindName'
@@ -93,7 +172,10 @@
             { required: true, message: '请输入备注信息', trigger: 'blur'},
           ], 
         },
-        loading: false
+        loading: false,
+        templateVisible: false,
+        templateId: '',
+        selectedKindId: '',
       }
     },
     methods: {
@@ -188,6 +270,26 @@
           }
         })
       },
+      templateSet(store, data) {
+        console.log(store, data)
+        this.selectedKindId = data.kindId;
+        this.templateVisible = true
+      },
+      bindTemplate() {
+        if(!this.templateId) {
+          this.$notify({
+            title: '提示',
+            type: 'warning',
+            message: '请选择属性模板'
+          })
+        } else {
+          let data = {
+            kindId: this.selectedKindId,
+            templateId: this.templateId
+          }
+          console.log(data)
+        }
+      },
       // 品类删除
       handleRemove (store, data) {
         // store.remove(data)
@@ -209,9 +311,9 @@
               <span>{node.label}</span>
             </span>
             <span style="float: right; margin-right: 20px">
-              <el-button size="mini" on-click={ () => this.handleAppend(store, data) }>添加下级</el-button>
-              <el-button size="mini" on-click={ () => this.handleEdit(store, data) }>编辑</el-button>
-              <el-button size="mini" on-click={ () => this.handleRemove(store, data) }>删除</el-button>
+              <el-button size="mini" type="success" on-click={ () => this.handleAppend(store, data) }>添加下级</el-button>
+              <el-button size="mini" type="warning" on-click={ () => this.handleEdit(store, data) }>编辑</el-button>
+              <el-button size="mini" type="danger" on-click={ () => this.handleRemove(store, data) }>删除</el-button>
             </span>
           </span>
         )
@@ -223,13 +325,30 @@
     }
   }
 </script>
-<style scoped>
+<style scoped lang="scss">
+  .radio.no-input {
+    .el-radio__input {
+      display: none
+    }
+  }
   .kind-detail {
     min-height: 200px;
     padding: 15px;
     background: #fff;
+    p {
+      margin: 10px 0
+    }
   }
-  .kind-detail p {
-    margin: 10px 0
+  .el-radio {
+    span {
+      display: none
+    }
+  }
+  .radio .fa {
+    font-size: 20px;
+    color: #ddd;
+  }
+  .radio .fa-check-square {
+    color: #20a0ff
   }
 </style>
