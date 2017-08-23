@@ -39,8 +39,8 @@
 	    				<span>{{scope.row.createBy}}</span>
 	    			</el-form-item>
 	    			<el-form-item label="模板属性">
-	    				<span v-for="(item, index) in templateAttrList" :key="index">
-	    				<el-tag type="primary" v-text="item.attributeName"></el-tag>
+	    				<span v-for="(item, index) in scope.row.attributeNameList" :key="index">
+	    				<el-tag type="primary" v-text="item"></el-tag>
 	    				</span>
 	    			</el-form-item>
 	    		</el-form>
@@ -172,7 +172,7 @@
 					htmlName: '模板页面1',
 					createTime: new Date(),
 					status: 1,
-					attributeList: []
+					attributeNameList: []
 				}],
 			}
 		},
@@ -221,6 +221,10 @@
 				let params = {
 					tempalteId: tempalteId
 				}
+				let selList = this.templateList.filter(template => {
+					if(template.templateId === templateId) return true;
+					return false;
+				})
 				let attributeList = [
 					{
 						attributeId: 100001,
@@ -231,12 +235,10 @@
 						attributeName: '费用说明',
 					},
 				]
-				// this.templateAttrList = attributeList;
-				// this.templateForm.attributeIdList = attributeList.map(item => item.attributeId)
 				findAttributeListByTemplateId(params).then(res => {
 					console.log(res)
 					if(res.data.code === '0001') {
-						this.templateAttrList = res.data.result.attributeList 
+						selList[0].attributeNameList = res.data.result.attributeList.map(item => item.attributeName)
 						this.templateForm.attributeId = res.data.result.attributeList.map(item => item.attributeId)
 					} else {
 						this.$message.error(res.data.message)

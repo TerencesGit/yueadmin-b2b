@@ -227,7 +227,15 @@
       // 品类编辑
       handleEdit (store, data) {
         this.kindFormTitle = '品类编辑';
-        this.kindForm = Object.assign({}, data);
+        this.kindForm = {
+          kindId: data.kindId,
+          kindName: data.kindName,
+          kindCode: data.kindCode,
+          kindDesc: data.kindDesc,
+          sortId: data.sortId,
+          templetId: data.templateId,
+          note: data.note
+        },
         this.kindFormVisible = true;
       },
       // 添加子品类
