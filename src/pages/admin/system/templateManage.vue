@@ -87,7 +87,7 @@
 						  <el-input v-model="templateForm.htmlName" placeholder="请输入模板页面名"></el-input>
 						</el-form-item>
 						<el-form-item label="模板属性：" prop="attributeIdList">
-				    	<el-select v-model="templateForm.attributeIdList" multiple placeholder="请选择属性(可多选)" style="width: 100%">
+				    	<el-select v-model="templateForm.attributeIdList" multiple placeholder="请选择属性(可多选)" style="width: 100%" @change="handleChange">
 			    	    <el-option v-for="(item, index) in attributeList" :key="index" :label="item.attributeName" :value="item.attributeId">
 			    	    </el-option>
 				    	</el-select>
@@ -176,7 +176,14 @@
 					htmlName: '模板页面2',
 					createTime: new Date(),
 					status: 0,
-					attributeNameList: []
+					attributeNameList: [{
+						attributeId: 100002,
+						attributeName: '商品介绍',
+					},
+					{
+						attributeId: 100003,
+						attributeName: '费用说明',
+					}]
 				}],
 			}
 		},
@@ -242,8 +249,12 @@
 			// 		this.catchError(err.response)
 			// 	})
 			// },
+			handleChange(val) {
+				console.log(val)
+			},
 			// 新增模板
 			handleAdd() {
+				this.submitType = 1
 				this.templateFormTitle = '新增属性模板'
 				this.templateForm = {
 					templateId: '',
@@ -257,10 +268,17 @@
 			},
 			// 编辑模板
 			handleEdit(row) {
+				this.submitType = 2
 				this.templateFormTitle = '编辑属性模板'
-				this.templateForm = Object.assign({}, row);
-				this.templateForm.attributeIdList = row.attributeNameList.map(item => item.attributeId)
-				console.log(this.templateForm)
+				this.templateForm = {
+					templateId: row.templateId,
+					templateName: row.templateName,
+					attributeIdList: row.attributeNameList.map(item => item.attributeId),
+					description: row.description,
+					htmlName: row.htmlName,
+					htmlId: row.htmlId,
+					status: row.status
+				}
 				this.templateFormVisible = true;
 			},
 			// 表单提交
@@ -269,22 +287,35 @@
           if (valid) {
             let data = Object.assign({}, this.templateForm);
             console.log(data)
-            createTemplate(data).then(res => {
-            	if(res.data.code === "0001") {
-            		this.$message.success(res.data.message);
-        		    this.getTemplateList();
-            		// for(let i in this.templateForm){
-            		// 	this.templateForm[i] = '';
-            		// }
-            		// this.templateForm.attributeId = [];
-            	} else {
-            		this.$message.error(res.data.message);
-            	}
-            	this.templateFormVisible = false;
-            }).catch((error) => {
-            	this.catchError(error.response)
-            	this.templateFormVisible = false;
-            })
+            if(this.submitType === 1) {
+            	createTemplate(data).then(res => {
+	            	if(res.data.code === "0001") {
+	            		this.$message.success(res.data.message);
+	        		    this.getTemplateList();
+	            	} else {
+	            		this.$message.error(res.data.message);
+	            	}
+	            	this.templateFormVisible = false;
+	            }).catch((error) => {
+	            	this.catchError(error.response)
+	            	this.templateFormVisible = false;
+	            })
+            } else if (this.submitType === 2) {
+            	updateTemplate(data).then(res => {
+	            	if(res.data.code === "0001") {
+	            		this.$message.success(res.data.message);
+	        		    this.getTemplateList();
+	            	} else {
+	            		this.$message.error(res.data.message);
+	            	}
+	            	this.templateFormVisible = false;
+	            }).catch((error) => {
+	            	this.catchError(error.response)
+	            	this.templateFormVisible = false;
+	            })
+            } else {
+            	return;
+            }
           } else {
             console.log('error submit!!');
             return false;

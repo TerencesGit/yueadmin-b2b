@@ -91,6 +91,9 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-form-item label="商品品类" prop="wareKind">
+              <el-input v-model="wareKindName" placeholder="商品品类" @focus="wareKindVisible = true"></el-input>
+            </el-form-item>
           </el-card>
           <el-card>
             <p class="m-b"><strong>推荐概述</strong><span style="margin-left: 15px; font-size: 14px">最多输入8000个字符</span></p>
@@ -105,15 +108,71 @@
         </el-form>
       </el-col>
     </el-row>
+    <el-dialog 
+      title="商品品类" 
+      :visible.sync="wareKindVisible">
+      <el-tree
+        :data="kindList"
+        :props="defaultProps"
+        node-key="id"
+        ref="tree"
+        accordion
+        highlight-current
+        @node-click="nodeClick"
+        default-expand-all
+        :expand-on-click-node="true">
+      </el-tree>
+      <div slot="footer">
+        <el-button @click="wareKindVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleConfirm">确定</el-button>
+      </div>
+    </el-dialog>
   </section>
 </template>
 <script>
-  import { readBrandList, saveWareInfo, readWareInfo } from '@/api'
+  import { readBrandList, readWareKind, saveWareInfo, readWareInfo } from '@/api'
   export default {
     data () {
       return {
         wareId: '',
         brandList: [],
+        kindList: [{
+          kindId: 10001,
+          kindName: '一级 1',
+          templetId: 10001,
+          children: [{
+            kindId: 20001,
+            kindName: '二级 1-1',
+            templetId: 10002,
+            children: [{
+              kindId: 30001,
+              kindName: '三级 1-1-1',
+              templetId: 10003,
+            },
+            {
+              kindId: 30002,
+              kindName: '三级 1-1-1',
+              templetId: 10003,
+            },
+            {
+              kindId: 30003,
+              kindName: '三级 1-1-1',
+              templetId: 10003,
+            },
+            {
+              kindId: 30004,
+              kindName: '三级 1-1-1',
+              templetId: 10003,
+            }]
+          }]
+        }],
+        selectedKind: {},
+        wareKindName: '',
+        wareKindVisible: false,
+        defaultProps: {
+          children: 'children',
+          label: 'kindName'
+        },
         wareForm: {
           wareName: '',
           keyWords: '',
@@ -130,10 +189,14 @@
           suggestedPrice: '',
           srcCityName: '请选择城市',
           dstCityName: '请选择城市',
+          wareKind: ''
         },
         rules: {
           wareName: [
             {required: true, message: '请输入商品名称', trigger: 'blur'}
+          ],
+          wareKind: [
+            {required: true, type: 'number', message: '请输入商品品类', trigger: 'change'}
           ],
           briefName: [
             {required: true, message: '请输入商品缩略名', trigger: 'blur'}
@@ -204,7 +267,7 @@
       };
     },
     methods: {
-      // 富文本
+      // 富文本编辑
       updateData (content) {
         this.wareForm.wareDesc = content
       },
@@ -219,6 +282,33 @@
         }).catch((err) => {
           this.catchError(err.response)
         })
+      },
+      // 获取品类列表
+      getWareKindList() {
+        let params = {}
+        readWareKind(params).then(res => {
+          console.log(res)
+          if (res.data.code === '0001') {
+            this.$message.success(res.data.message)
+            this.kindList = res.data.result.wareKindList;
+          } else {
+            this.$message.error(res.data.message)
+          }
+        }).catch(err => {
+          console.log(err)
+          this.catchError(err.response)
+        })
+      },
+      nodeClick(data) {
+        this.selectedKind = {
+          kindId: data.kindId,
+          kindName: data.kindName
+        }
+      },
+      handleConfirm() {
+        this.wareForm.wareKind = this.selectedKind.kindId
+        this.wareKindName = this.selectedKind.kindName
+        this.wareKindVisible = false
       },
       // 获取商品信息
       // getWareInfo () {
@@ -289,5 +379,9 @@
   }
   .input-width .el-input {
     width: 217px;
+  }
+  .el-tree {
+    max-height: 300px;
+    overflow-y: auto;
   }
 </style>

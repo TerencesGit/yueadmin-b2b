@@ -83,7 +83,7 @@
 	</section>
 </template>
 <script>
-  import { readTemplateList, readWareKind, saveWareKind } from '@/api'
+  import { readTemplateList, readWareKind, saveWareKind, deleteWareKind } from '@/api'
   export default {
     data() {
       return {
@@ -301,11 +301,31 @@
       },
       // 品类删除
       handleRemove (store, data) {
-        // store.remove(data)
-        console.log(data.kindId)
+        console.log(data)
+        if(data.children.length !== 0) {
+          this.$notify({
+            type: 'warning',
+            title: '提示',
+            message: '有下级品类，不可删除'
+          })
+          return;
+        }
+        let wareKindId = data.kindId;
         this.$confirm('确定删除该品类', '提示', {type: 'warning'}).then(() => {
-          delKind({kindId: data.kindId}).then(res => {
-
+          let data = {
+            wareKindId: wareKindId
+          }
+          deleteWareKind(data).then(res => {
+            console.log(res)
+            if(res.data.code === '0001') {
+              this.$message.success(res.data.message)
+              this.getWareKindList();
+            } else {
+              this.$message.error(res.data.message)
+            }
+          }).catch(err => {
+            console.log(err)
+            this.catchError(err.response)
           })
         }).catch(err => {
           console.log(err)
