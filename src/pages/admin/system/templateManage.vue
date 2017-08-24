@@ -22,7 +22,7 @@
 			@expand="handleExpand">
 		  <el-table-column type="expand" width="50" label="属性名">
 	    	<template scope="scope">
-	    		<el-form inline  label-position="left" class="table-expand">
+	    		<el-form inline label-position="left" class="table-expand">
 	    			<el-form-item label="模板名称">
 	    				<span>{{scope.row.templateName}}</span>
 	    			</el-form-item>
@@ -40,24 +40,21 @@
 	    			</el-form-item>
 	    			<el-form-item label="模板属性">
 	    				<span v-for="(item, index) in scope.row.attributeNameList" :key="index">
-	    				<el-tag type="primary" v-text="item"></el-tag>
+	    				<el-tag type="primary" v-text="item.attributeName"></el-tag>
 	    				</span>
 	    			</el-form-item>
 	    		</el-form>
-	    		<!-- <span style="margin-right:10px" v-for="(item, index) in scope.row.attributeNameList" :key="index">
-	    			<el-tag type="primary" v-text="item.attributeName"></el-tag>
-	    		</span> -->
 	    	</template>
 	    </el-table-column>
 	    <el-table-column prop="templateName" label="模板名称"></el-table-column>
 	    <el-table-column prop="htmlName" label="模板页面名称"></el-table-column>
-	    <el-table-column prop="description" label="模板描述"></el-table-column>
-	    <el-table-column prop="createTime" label="创建时间"></el-table-column>
+	    <!-- <el-table-column prop="description" label="模板描述"></el-table-column> -->
+	    <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
 	    <el-table-column prop="createBy" label="创建人"></el-table-column>
-	    <el-table-column :formatter="formatStatus" prop="status" label="状态"></el-table-column>
-	    <el-table-column label="操作" width="180">
+	    <el-table-column :formatter="formatStatus" prop="status" label="状态" width="90"></el-table-column>
+	    <el-table-column label="操作" width="170">
 	    	<template scope="scope">
-	        <el-button size="small"
+	        <el-button size="small" type="warning"
 	          @click="handleEdit(scope.row)">编辑</el-button>
 	        <el-button size="small" type="danger"
 	          @click="handleDelete(scope.row)">删除</el-button>
@@ -128,18 +125,18 @@
 				count: 0,
 				loading: false,
 				attributeList: [
-					// {
-					// 	attributeId: 100001,
-					// 	attributeName: '大交通',
-					// },
-					// {
-					// 	attributeId: 100002,
-					// 	attributeName: '商品介绍',
-					// },
-					// {
-					// 	attributeId: 100003,
-					// 	attributeName: '费用说明',
-					// },
+					{
+						attributeId: 100001,
+						attributeName: '大交通',
+					},
+					{
+						attributeId: 100002,
+						attributeName: '商品介绍',
+					},
+					{
+						attributeId: 100003,
+						attributeName: '费用说明',
+					},
 				],
 				templateAttrList: [],
 				templateFormVisible: false,
@@ -172,6 +169,13 @@
 					htmlName: '模板页面1',
 					createTime: new Date(),
 					status: 1,
+					attributeNameList: []
+				},{
+					templateId: 100002,
+					templateName: '模板2',
+					htmlName: '模板页面2',
+					createTime: new Date(),
+					status: 0,
 					attributeNameList: []
 				}],
 			}
@@ -217,40 +221,32 @@
 				})
 			},
 			// 获取模板对应属性列表
-			getAttrListByTemplateId(tempalteId) {
-				let params = {
-					tempalteId: tempalteId
-				}
-				let selList = this.templateList.filter(template => {
-					if(template.templateId === templateId) return true;
-					return false;
-				})
-				let attributeList = [
-					{
-						attributeId: 100001,
-						attributeName: '大交通',
-					},
-					{
-						attributeId: 100002,
-						attributeName: '费用说明',
-					},
-				]
-				findAttributeListByTemplateId(params).then(res => {
-					console.log(res)
-					if(res.data.code === '0001') {
-						selList[0].attributeNameList = res.data.result.attributeList.map(item => item.attributeName)
-						this.templateForm.attributeId = res.data.result.attributeList.map(item => item.attributeId)
-					} else {
-						this.$message.error(res.data.message)
-					}
-				}).catch(err => {
-					this.catchError(err.response)
-				})
-			},
+			// getAttrListByTemplateId(templateId) {
+			// 	let params = {
+			// 		templateId: templateId
+			// 	}
+			// 	let selList = this.templateList.filter(template => {
+			// 		if(template.templateId === templateId) return true;
+			// 		return false;
+			// 	})
+			// 	if(selList[0].attributeNameList.length !== 0) return;
+			// 	findAttributeListByTemplateId(params).then(res => {
+			// 		console.log(res)
+			// 		if(res.data.code === '0001') {
+			// 			selList[0].attributeNameList = res.data.result.attributeList.map(item => item.attributeName)
+			// 			this.templateForm.attributeIdList = res.data.result.attributeList.map(item => item.attributeId)
+			// 		} else {
+			// 			this.$message.error(res.data.message)
+			// 		}
+			// 	}).catch(err => {
+			// 		this.catchError(err.response)
+			// 	})
+			// },
 			// 新增模板
 			handleAdd() {
 				this.templateFormTitle = '新增属性模板'
 				this.templateForm = {
+					templateId: '',
 					templateName: '',
 					attributeIdList: [],
 					description: '',
@@ -263,12 +259,9 @@
 			handleEdit(row) {
 				this.templateFormTitle = '编辑属性模板'
 				this.templateForm = Object.assign({}, row);
-				this.getAttrListByTemplateId(row.templateId)
+				this.templateForm.attributeIdList = row.attributeNameList.map(item => item.attributeId)
+				console.log(this.templateForm)
 				this.templateFormVisible = true;
-				// row.attributeNameList.forEach((v,i,a) => {
-				// 	this.editTemplateManage.attributeNameList.push(v.attributeId);
-				// })
-				console.log(this.templateForm);
 			},
 			// 表单提交
 			submitForm() {
@@ -300,8 +293,7 @@
 			},
 			// 
 			handleExpand (row, expanded) {
-				expanded && this.getAttrListByTemplateId(row.templateId)
-					// console.log(Object.assign({}, row))
+				// expanded && this.getAttrListByTemplateId(row.templateId)
 			},
 			// 模板删除
 			handleDelete(row) {

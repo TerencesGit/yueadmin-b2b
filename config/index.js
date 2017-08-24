@@ -28,46 +28,18 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/loginUrl': {
-        target: 'http://www.yueshijue.com/ysj',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/loginUrl': ''
-        }
-      },
-      '/imgUploadUrl': {
-        target: 'http://192.168.199.211:8080/yue_yb2b/file/upload',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/imgUploadUrl': ''
-        }
-      },
-      '/baseUrl': {
-        target: 'http://mall.yueshijue.com/b2b',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/baseUrl': ''
-        }
-      },
-      // '/wareUrl': {
-      //   target: 'http://192.168.199.211:8080/yue_yb2b',
+      // '/loginUrl': {
+      //   target: 'http://www.yueshijue.com/ysj',
       //   changeOrigin: true,
       //   pathRewrite: {
-      //     '^/wareUrl': ''
+      //     '^/loginUrl': ''
       //   }
       // },
-      // '/orderUrl': {
-      //   target: 'http://192.168.199.193:8080/yue_yb2b',
+      // '/baseUrl': {
+      //   target: 'http://mall.yueshijue.com/b2b',
       //   changeOrigin: true,
       //   pathRewrite: {
-      //     '^/orderUrl': ''
-      //   }
-      // },
-      // '/strategyUrl': {
-      //   target: 'http://192.168.199.169:8080/yue_yb2b',
-      //   changeOrigin: true,
-      //   pathRewrite: {
-      //     '^/strategyUrl': ''
+      //     '^/baseUrl': ''
       //   }
       // },
     },

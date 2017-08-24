@@ -233,9 +233,10 @@
           kindCode: data.kindCode,
           kindDesc: data.kindDesc,
           sortId: data.sortId,
-          templetId: data.templateId,
+          templetId: data.templetId,
           note: data.note
-        },
+        }
+        console.log(this.kindForm)
         this.kindFormVisible = true;
       },
       // 添加子品类
