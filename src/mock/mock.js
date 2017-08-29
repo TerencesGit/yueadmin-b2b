@@ -7,7 +7,11 @@ let _Users = Users
 let _Brands = Brands
 let _KindList = WareKind
 let _Wares = Wares
-
+const retObj = {
+	code: '0001',
+	message: '操作成功',
+	result: {}
+}
 export default {
 	bootstrap () {
 		let mock = new MockAdapter(axios);
@@ -114,44 +118,63 @@ export default {
 			})
 		})
 		// 品牌管理
-		mock.onGet('/provider/ware/getBrandList').reply(config => {
-			let { name, page, pageSize } = config.params;
-			let _BrandList = _Brands.filter(brand => {
-				if (brand && brand.brandName.indexOf(name) == -1) return false;
-			  return true;
-			})
-			let total = _BrandList.length;
-			_BrandList = _BrandList.filter((b, index) => index < pageSize * page && index >= pageSize * (page - 1))
+		mock.onGet('ware/readBrandList').reply(config => {
+			let { brandName, currPage, pageSize } = config.params;
+			// let _BrandList = _Brands
+			// .filter(brand => {
+			// 	if (brand && brand.brandName.indexOf(brandName) === -1) return false;
+			//   return true;
+			// })
+			let total = _Brands.length;
+			let _BrandList = _Brands.filter((brand, index) => index < pageSize * currPage && index >= pageSize * (currPage - 1))
+			console.log(_BrandList)
+			// retObj.result.brandInfo = _BrandList;
+			// retObj.result.pageInfo.count = total;
+			retObj.result = {
+				brandInfo: _BrandList,
+				pageInfo: {
+					count: total
+				}
+			}
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
-					resolve([200, {
-						code: '0001',
-						message: '操作成功',
-						brandList: _BrandList,
-						total: total
-					}])
+					resolve([200, retObj])
 				}, 1000)
 			})
 		})
-		// 品牌编辑
-		mock.onPost('/ware/brand/edit').reply(config => {
+		// 品牌新增/编辑
+		mock.onPost('ware/saveBrandInfo').reply(config => {
 			let { brandId, brandName, logoUrl, content, brandPage, status } = Qs.parse(config.data)
-			Brands.some(b => {
-				if (b.brandId === brandId) {
-					b.brandName = brandName;
-					b.logoUrl = logoUrl;
-					b.content = content;
-					b.brandPage = brandPage;
-					b.status = parseInt(status);
-					return true;
-				}
-			})
+			if(brandId) {
+				Brands.some(b => {
+					if(b.brandId === brandId) {
+						b.brandName = brandName;
+						b.logoUrl = logoUrl;
+						b.content = content;
+						b.brandPage = brandPage;
+						b.status = parseInt(status);
+						return true;
+					}
+				})
+			} else {
+				Brands.push({
+					brandName: brandName,
+					logoUrl: logoUrl,
+					content: content,
+					brandPage: brandPage,
+					status: status
+				})
+			}
 			return new Promise((resolve, reject) => {
+				let total = Brands.length;
 				setTimeout(() => {
 					resolve([200, {
 						code: '0001',
 						message: '操作成功',
-						brandList: Brands
+						brandList: Brands,
+						pageInfo: {
+							count: total
+						}
 					}])
 				}, 500)
 			})
@@ -176,9 +199,10 @@ export default {
 			})
 		})
 		// 品牌删除
-		mock.onPost('ware/brand/del').reply(config => {
-			let { id } = Qs.parse(config.data)
-			_Brands = _Brands.filter(b => b.brandId !== id)
+		mock.onPost('ware/deleteBrandInfo').reply(config => {
+			let { brandId } = Qs.parse(config.data)
+			console.log(brandId)
+			_Brands = _Brands.filter(b => b.brandId !== brandId)
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
 					resolve([200, {
@@ -189,7 +213,7 @@ export default {
 			})
 		})
 		// 批量删除
-		mock.onPost('ware/brand/batchDel').reply(config => {
+		mock.onPost('ware/batchDelBrand').reply(config => {
 			let { ids } = Qs.parse(config.data)
 			ids = ids.split(',');
 			console.log(ids)

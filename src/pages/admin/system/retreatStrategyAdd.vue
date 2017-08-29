@@ -302,7 +302,7 @@
 						deadlineDateType:this.submit.deadlineDateType + '',
 						list:this.retreatStrategys
 			        }
-			        data = JSON.stringify(data);
+			        // data = JSON.stringify(data);
 			        console.log(data);
 			        sysRefundInfoInsert(data).then((res)=>{
 	        			if(res.data.code === "0001"){

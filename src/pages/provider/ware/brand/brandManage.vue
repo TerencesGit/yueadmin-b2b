@@ -10,7 +10,7 @@
           <el-button type="primary" @click="getBrandList">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleAdd">新增</el-button>
+          <el-button type="success" @click="handleAdd">新增</el-button>
         </el-form-item>
       </el-form>
     </el-row>
@@ -22,6 +22,7 @@
       highlight-current-row 
       @selection-change="selsChange">
       <!-- <el-table-column type="selection" width="55"></el-table-column> -->
+      <el-table-column type="selection" width="60"></el-table-column>
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="brandName" label="名称" sortable></el-table-column>
       <el-table-column prop="logoUrl" label="Logo" width="120">
@@ -51,15 +52,16 @@
           </el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="100">
+      <el-table-column label="操作" width="160">
         <template scope="scope">
           <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button size="small" type="danger" @click="handleDel(scope.row.brandId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 分页栏 -->
     <el-row class="toolbar">
-     <!--  <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button> -->
+      <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -83,7 +85,7 @@
             name="fileName"
             :data="{fileUrlType: 2}"
             accept="image/jpeg, image/png"
-            action="/b2b/file/upload"
+            :action="uploadUrl"
             :show-file-list="false"
             :on-success="handleSuccess"
             :on-error="handleError"
@@ -123,10 +125,12 @@
   </section>
 </template>
 <script>
-import { readBrandList, saveBrandInfo, updateBrandStatus } from '@/api'
+import { readBrandList, saveBrandInfo, updateBrandStatus, deleteBrandInfo, batchDelBrand } from '@/api'
 export default {
   data() {
     return {
+      uploadUrl: 'https://jsonplaceholder.typicode.com/posts/',
+      // uploadUrl: '/b2b/file/upload',
       previewImgUrl: '',
       previewVisible: false,
       brandList: [{
@@ -175,23 +179,22 @@ export default {
     // 品牌列表
     getBrandList () {
       this.loading = true
-      let data = {
+      let params = {
         brandName: this.filters.name,
         currPage: this.pageNo,
         pageSize: this.pageSize,
       }
-      readBrandList(data)
-      .then(res => {
+      readBrandList(params).then(res => {
+        console.log(res)
         if (res.data.code === '0001') {
-          let result = res.data.result
-          this.total = result.pageInfo.count
-          this.brandList = result.brandInfo
+          let result = res.data.result;
+          this.total = result.pageInfo.count;
+          this.brandList = result.brandInfo;
         } else {
           this.$message.error(res.data.message)
         }
         this.loading = false
-      })
-      .catch(error => {
+      }).catch(error => {
         this.loading = false;
         this.catchError(error.response)
       })
@@ -222,16 +225,17 @@ export default {
     },
     // 上传成功
     handleSuccess (res, file) {
-      console.log(res)
+      console.log(res, file)
       this.uploading = false
-      if (res.code === '0001') {
-        this.uploading = false
-        let resFile = res.result.file;
-        file.path = resFile.filePath;
-        this.brandForm.logoUrl = resFile.filePath
-      } else {
-        this.$message.error(res.message)
-      }
+      this.brandForm.logoUrl = file.url
+      // if (res.code === '0001') {
+      //   this.uploading = false
+      //   let resFile = res.result.file;
+      //   file.path = resFile.filePath;
+      //   this.brandForm.logoUrl = resFile.filePath
+      // } else {
+      //   this.$message.error(res.message)
+      // }
     },
     // 上传失败
     handleError (err, file) {
@@ -263,7 +267,7 @@ export default {
       this.$refs.brandForm.validate((valid) => {
         if(valid) {
           let data = Object.assign({}, this.brandForm)
-          console.log(data)
+          // console.log(data)
           saveBrandInfo(data).then(res => {
             console.log(res)
             if(res.data.code === '0001') {
@@ -299,45 +303,49 @@ export default {
       this.sels = sels
     },
     // 删除操作
-    // handleDel (brandId) {
-    //   console.log(brandId)
-    //   this.$confirm('此操作将删除该品牌, 是否继续?', '提示', {
-    //       type: 'warning',
-    //       confirmButtonText: '确定',
-    //       cancelButtonText: '取消',
-    //   }).then(() => {
-    //     brandDel({id: brandId}).then((res) => {
-    //       if(res.data.code === '0001') {
-    //         this.$message.success(res.data.message)
-    //         this.getBrandList()
-    //       } else {
-    //         this.$message.error(res.data.message)
-    //       }
-    //     })
-    //   }).catch(() => {
-    //     this.$message.info('取消操作')
-    //   })
-    // },
-    // // 批量删除
-    // batchRemove () {
-    //   let ids = this.sels.map(item => item.brandId).toString();
-    //   this.$confirm('确认删除选中记录吗？', '提示', {
-    //       type: 'warning'
-    //     }).then(() => {
-    //       this.listLoading = true;
-    //       let para = { ids: ids }
-    //       brandBatchDel(para).then((res) => {
-    //         this.listLoading = false;
-    //         this.$message({
-    //           message: '删除成功',
-    //           type: 'success'
-    //         });
-    //         this.getBrandList()
-    //       });
-    //     }).catch(() => {
-    //       this.$message.info('取消操作')
-    //     })
-    // },
+    handleDel (brandId) {
+      console.log(brandId)
+      this.$confirm('此操作将删除该品牌, 是否继续?', '提示', {
+          type: 'warning',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+      }).then(() => {
+        let data = {
+          brandId: brandId
+        }
+        deleteBrandInfo(data).then((res) => {
+          console.log(res)
+          if(res.data.code === '0001') {
+            this.$message.success(res.data.message)
+            this.getBrandList()
+          } else {
+            this.$message.error(res.data.message)
+          }
+        })
+      }).catch(err => {
+        console.log(err)
+        this.$message.info('取消操作')
+      })
+    },
+    // 批量删除
+    batchRemove () {
+      let ids = this.sels.map(item => item.brandId).toString();
+      this.$confirm('确认删除选中记录吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.listLoading = true;
+          let data = { ids: ids }
+          batchDelBrand(data).then((res) => {
+            this.listLoading = false;
+            this.$message.success('删除成功');
+            this.getBrandList()
+          });
+        }).catch(err => {
+          console.log(err)
+          this.listLoading = false;
+          this.$message.info('已取消操作')
+        })
+    },
     // 图片查看
     viewImage (imgUrl) {
       this.previewImgUrl = imgUrl;
