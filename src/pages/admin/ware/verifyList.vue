@@ -82,7 +82,7 @@ export default {
     getWareList () {
       this.loading = true
       let params = {
-        currpage: this.currPage,
+        currPage: this.currPage,
         pageSize: this.pageSize,
         verifyStatus: 1
       }

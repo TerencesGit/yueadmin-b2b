@@ -209,7 +209,8 @@
       },
       // 获取品牌列表
       getBrandList () {
-        readBrandList().then(res => {
+        readBrandList({}).then(res => {
+          console.log(res)
           if (res.data.code === '0001') {
             this.brandList = res.data.result.brandInfo
           } else {
@@ -296,7 +297,7 @@
       this.$store.dispatch('setStepActive', 0)
       this.getBrandList()
       this.wareId = parseInt(this.$route.query.wareId)
-      this.wareId && this.getWareInfo()
+      // this.wareId && this.getWareInfo()
     }
   }
 </script>

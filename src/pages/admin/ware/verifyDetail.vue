@@ -67,7 +67,7 @@
               </li>
               <li>
                 <label>无订金订单占位时长：</label>
-                <span>{{wareInfo.nocashReserveMinute / 60}}小时</span>
+                <span>{{wareInfo.nocashReserveMinute / 60 || 0}}小时</span>
               </li>
             </ul>
           </el-col>  

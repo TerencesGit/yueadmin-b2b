@@ -36,7 +36,7 @@
       <el-table-column prop="createTime" label="创建时间" sortable width="170"></el-table-column>
       <el-table-column label="操作" width="140">
         <template scope="scope">
-          <el-button size="small" @click="handleEdit(scope.row.wareId)">编辑</el-button>
+          <el-button plain type="warning" size="small" @click="handleEdit(scope.row.wareId)">编辑</el-button>
           <el-button size="small" @click="handleDetail(scope.row.wareId)">详情</el-button>
         </template>
       </el-table-column>
@@ -66,7 +66,7 @@ export default {
         status: 4,
       },
       currPage: 1,
-      pageSize: 20,
+      pageSize: 10,
       total: 0,
       loading: false,
       wareList: [{wareId: 10001}],

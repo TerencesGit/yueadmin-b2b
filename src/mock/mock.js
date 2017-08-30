@@ -276,23 +276,28 @@ export default {
 			})
 		})
 		// 商品列表
-		mock.onGet('/ware/getWareList').reply(config => {
-			let { page, pageSize } = config.params;
+		mock.onGet('/ware/readWareList').reply(config => {
+			let { currPage, pageSize, verifyStatus } = config.params;
+			console.log(currPage, pageSize, verifyStatus)
 			let pageInfo = {
 				count: _Wares.length
 			}
-			_Wares = _Wares.filter((b, index) => index < pageSize * page && index >= pageSize * (page - 1))
+			let wareList = [];
+			if(verifyStatus > 3 ) {
+				wareList = _Wares.filter((b, index) => index < pageSize * currPage && index >= pageSize * (currPage - 1))
+			} else {
+				let _wareList = _Wares.filter(ware => ware.verifyStatus === verifyStatus)
+				pageInfo.count = _wareList.length;
+				wareList = _wareList.filter((b, index) => index < pageSize * currPage && index >= pageSize * (currPage - 1))
+			}
+			retObj.result = {
+				wareList: wareList,
+				pageInfo: pageInfo
+			}
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
-					resolve([200, {
-						code: '0001',
-						message: '操作成功',
-						result: {
-							wareList: _Wares,
-							pageInfo: pageInfo
-						}
-					}])
-				}, 1000)
+					resolve([200, retObj])
+				}, 500)
 			})
 		})
 		//多媒体表单
