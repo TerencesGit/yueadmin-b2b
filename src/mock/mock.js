@@ -126,10 +126,12 @@ export default {
 			//   return true;
 			// })
 			let total = _Brands.length;
-			let _BrandList = _Brands.filter((brand, index) => index < pageSize * currPage && index >= pageSize * (currPage - 1))
-			console.log(_BrandList)
-			// retObj.result.brandInfo = _BrandList;
-			// retObj.result.pageInfo.count = total;
+			let _BrandList = []
+			if(!currPage) {
+				_BrandList = _Brands;
+			} else {
+				_BrandList = _Brands.filter((brand, index) => index < pageSize * currPage && index >= pageSize * (currPage - 1))
+			}
 			retObj.result = {
 				brandInfo: _BrandList,
 				pageInfo: {
@@ -196,6 +198,26 @@ export default {
 						message: '创建成功'
 					}])
 				}, 1000)
+			})
+		})
+		// 品牌状态设置
+		mock.onPost('/ware/updateBrandStatus').reply(config => {
+			let { brandId } = Qs.parse(config.data)
+			Brands.some(brand => {
+				if(brand.brandId === brandId) {
+					retObj.result = {};
+					return true;
+				} else {
+					let retObj = {
+						code: '1002',
+						message: '该品牌不存在'
+					}
+				}
+			})
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				})
 			})
 		})
 		// 品牌删除

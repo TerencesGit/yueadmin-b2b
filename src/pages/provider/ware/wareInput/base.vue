@@ -216,9 +216,9 @@
           dstCityCode: [
             {required: true, message: '请选择目的城市', trigger: 'change'}
           ],
-          // brandId: [
-          //   {type: 'number', required: true, message: '请选择商品品牌', trigger: 'change'}
-          // ],
+          brandId: [
+            {type: 'number', required: true, message: '请选择商品品牌', trigger: 'change'}
+          ],
           nocashReserveMinute: [
             {type: 'number', required: true, message: '请输入无订金订单占位时长', trigger: 'blur'}
           ],
@@ -273,7 +273,8 @@
       },
       // 获取品牌列表
       getBrandList () {
-        readBrandList().then(res => {
+        readBrandList({}).then(res => {
+          console.log(res)
           if (res.data.code === '0001') {
             this.brandList = res.data.result.brandInfo
           } else {
@@ -284,21 +285,21 @@
         })
       },
       // 获取品类列表
-      getWareKindList() {
-        let params = {}
-        readWareKind(params).then(res => {
-          console.log(res)
-          if (res.data.code === '0001') {
-            this.$message.success(res.data.message)
-            this.kindList = res.data.result.wareKindList;
-          } else {
-            this.$message.error(res.data.message)
-          }
-        }).catch(err => {
-          console.log(err)
-          this.catchError(err.response)
-        })
-      },
+      // getWareKindList() {
+      //   let params = {}
+      //   readWareKind(params).then(res => {
+      //     console.log(res)
+      //     if (res.data.code === '0001') {
+      //       this.$message.success(res.data.message)
+      //       this.kindList = res.data.result.wareKindList;
+      //     } else {
+      //       this.$message.error(res.data.message)
+      //     }
+      //   }).catch(err => {
+      //     console.log(err)
+      //     this.catchError(err.response)
+      //   })
+      // },
       nodeClick(data) {
         this.selectedKind = {
           kindId: data.kindId,
@@ -338,6 +339,7 @@
       },
       // 保存商品信息
       submitForm() {
+        console.log(this.wareForm.wareId)
         this.$refs.wareForm.validate((valid) => {
           if (valid) {
             let data = Object.assign({}, this.wareForm)

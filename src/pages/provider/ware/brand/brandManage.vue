@@ -36,7 +36,7 @@
           <span v-else>{{scope.row.brandPage}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="updateBy" label="更新者" width="120"></el-table-column>
+      <el-table-column prop="updateBy" label="更新者" width="100"></el-table-column>
       <el-table-column prop="updateTime" label="更新时间" width="180" sortable></el-table-column>
       <el-table-column label="状态" width="100">
         <template scope="scope">
@@ -185,7 +185,7 @@ export default {
         pageSize: this.pageSize,
       }
       readBrandList(params).then(res => {
-        console.log(res)
+        // console.log(res)
         if (res.data.code === '0001') {
           let result = res.data.result;
           this.total = result.pageInfo.count;
@@ -287,9 +287,9 @@ export default {
       })
     },
     // 状态设置
-    handleChange (row) {
+    handleChange(row) {
       updateBrandStatus({brandId: row.brandId}).then(res => {
-        console.log(res)
+        // console.log(res)
         if (res.data.code === '0001') {
           this.$message.success(res.data.message)
         } else {
