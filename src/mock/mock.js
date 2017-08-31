@@ -7,6 +7,7 @@ let _Users = Users
 let _Brands = Brands
 let _KindList = WareKind
 let _Wares = Wares
+let TripDetailList = []
 const retObj = {
 	code: '0001',
 	message: '操作成功',
@@ -294,6 +295,85 @@ export default {
 				wareList: wareList,
 				pageInfo: pageInfo
 			}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				}, 500)
+			})
+		})
+		// 商品信息
+		mock.onGet('/ware/readWareInfo').reply(config => {
+			let { wareId } = config.params;
+			retObj.result = {
+				wareInfo: {
+					wareId,
+					wareCode: wareId,
+					wareName: '巴厘岛蜜月旅拍婚纱摄影3天2晚游',
+					tripDays: 3
+				}
+			}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				}, 500)
+			})
+		})
+		// 商品行程信息
+		mock.onGet('/ware/readTripDetailList').reply(config => {
+			let { wareId } = config.params;
+			let retObj = {
+				code: '0001',
+				message: '操作成功',
+				result: {}
+			}
+			retObj.result = {
+				tripDetailList: TripDetailList
+			}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				}, 500)
+			})
+		})
+		// 商品行程信息新增/编辑
+		mock.onPost('/ware/saveWareTripDetail').reply(config => {
+			let { id, tripDayNum, programType, programTime, programTitle, 
+				programIsFree, programDuration, programDetail} = Qs.parse(config.data);
+			if(id) {
+				TripDetailList.some(trip => {
+					if(trip.id == id) {
+						trip.programType = programType; 
+						trip.programTime = programTime; 
+						trip.programTitle = programTitle; 
+						trip.programIsFree = programIsFree + 0; 
+						trip.programDuration = programDuration; 
+						trip.programDetail = programDetail;
+					}
+				})
+			} else {
+				TripDetailList.push({
+					id: new Date().getTime(),
+					tripDayNum: tripDayNum * 1,
+					programType, 
+					programTime, 
+					programTitle, 
+					programIsFree: programIsFree + 0, 
+					programDuration, 
+					programDetail,
+				})
+			}
+			retObj.result = {}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				}, 500)
+			}) 
+		})
+		// 商品行程删除
+		mock.onPost('/ware/deleteTripDetail').reply(config => {
+			let { id } = Qs.parse(config.data)
+			TripDetailList = TripDetailList.filter(trip => trip.id != id)
+			retObj.result = {}
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
 					resolve([200, retObj])

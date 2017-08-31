@@ -6,7 +6,7 @@
 					<span v-text="wareInfo.wareName"></span>
 					<span v-text="'商品ID：' + wareInfo.wareCode"></span>
 				</div>
-				<ul class="trip-content">
+				<ul class="trip-content" v-loading="loading">
 					<li v-for="num in wareInfo.tripDays" :key="num">
 						<el-card class="trip-day">
 							<h4>第{{num}}天</h4>
@@ -128,6 +128,7 @@
 				wareId: '',
 				wareInfo: {},
 				tripList: [],
+				loading: false,
 				tripFormVisible: false,
 				dialogTitle: '',
 				tripForm: {
@@ -172,6 +173,7 @@
 			// 获取商品基本信息
 			getWareInfo () {
 				readWareInfo({wareId: this.wareId}).then(res => {
+					console.log(res)
 					if(res.data.code === '0001') {
 						this.wareInfo = res.data.result.wareInfo;
 					} else {
@@ -183,16 +185,21 @@
 			},
 			// 获取商品行程信息
 			getTripList () {
+				this.loading = true;
 				readTripDetailList({wareId: this.wareId}).then(res => {
+					this.loading = false;
 					if(res.data.code === '0001') {
 						this.tripList = res.data.result.tripDetailList;
+						if(this.tripList.length === 0) return;
 						this.tripList.forEach((trip) => {
 							trip.programTime = new Date(trip.programTime)
 						})
 					} else {
 						this.$message.error(res.data.message)
 					}
+					
 				}).catch(err => {
+					this.loading = false;
 					console.log(err)
 					this.catchError(err.response)
 				})
@@ -246,7 +253,11 @@
 			handleDelete (item) {
 				this.$confirm('确定删除该条行程', '提示', {type: 'warning'})
 				.then(() => {
-					deleteTripDetail({id: item.id}).then(res => {
+					let data = {
+						id: item.id
+					}
+					console.log(data)
+					deleteTripDetail(data).then(res => {
 						console.log(res)
 						if (res.data.code === '0001') {
 							this.$message.success(res.data.message)
@@ -271,7 +282,7 @@
 		},
 		mounted () {
 			this.$store.dispatch('setStepActive', 1)
-			this.wareId = parseInt(this.$route.query.wareId)
+			this.wareId = this.$route.query.wareId;
 			this.wareId && this.getWareInfo()
 			this.wareId && this.getTripList()
 		}
