@@ -2,12 +2,13 @@ import axios from 'axios'
 import Qs from 'qs'
 import MockAdapter from 'axios-mock-adapter'
 import { Users, UserPerssionList } from './data/user'
-import { Brands, WareKind, Wares } from './data/ware'
+import { Brands, WareKind, Wares, Files } from './data/ware'
 let _Users = Users
 let _Brands = Brands
 let _KindList = WareKind
 let _Wares = Wares
 let TripDetailList = []
+let FileList = Files;
 const retObj = {
 	code: '0001',
 	message: '操作成功',
@@ -380,27 +381,50 @@ export default {
 				}, 500)
 			})
 		})
-		//多媒体表单
-		mock.onPost('/upload/list').reply(config => {
-			let { country, view, tag, desc, copyright, url, les } = Qs.parse(config.data);
-			let upload={
-					country: country,
-					view: view,
-					tag: tag,
-					desc: desc,
-					copyright: copyright,
-					url: url,
-					les: les
-			}
-			let uploads=[];
-			for(let i=0;i<upload.les;i++){
-				uploads.push(upload);
-			}
+		//商品图片列表
+		mock.onGet('/ware/readWareFileList').reply(config => {
+			let { wareId } = config.params;
+			retObj.result.fileList = FileList;
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
-					resolve([200, {
-						uploads: uploads
-					}])
+					resolve([200, retObj])
+				}, 500)
+			})
+		})
+		// 商品图片显示
+		mock.onPost('/ware/updateState').reply(config => {
+			retObj.result = {}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				}, 500)
+			})
+		})
+		// 商品图片设为主图
+		mock.onPost('/ware/updateIsMainPic').reply(config => {
+			let { fileId } = Qs.parse(config.data)
+			FileList.some(file => {
+				if(file.fileId === fileId) {
+					file.isMainPic = 1
+				}
+			})
+			retObj.result = {}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				}, 500)
+			})
+		})
+		// 商品图片删除
+		mock.onPost('/ware/updateImgIsEnable').reply(config => {
+			let { fileIdList } = Qs.parse(config.data)
+			fileIdList.forEach(fileId => {
+				FileList = FileList.filter(file => file.fileId !== fileId.fileId)
+			})
+			retObj.result = {} 
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
 				}, 500)
 			})
 		})

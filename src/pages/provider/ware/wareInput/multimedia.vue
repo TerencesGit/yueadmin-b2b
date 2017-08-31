@@ -20,7 +20,7 @@
 		    	<img :src="scope.row.filePath" height="60px" class="cell-img" @click="viewImage(scope.row.filePath)">
 	    	</template>
 	    </el-table-column>
-	    <el-table-column label="更新者" prop="createName" width="180"></el-table-column>
+	    <el-table-column label="更新者" prop="createName" width="100"></el-table-column>
 	    <el-table-column label="更新时间" prop="createTime" :formatter="formatCreateTime" sortable></el-table-column>
 	    <!-- <el-table-column label="是否为主图" prop="isMainPic" width="120" :formatter="formatIsMainPic"></el-table-column> -->
 	    <el-table-column label="是否显示" width="120">
@@ -246,9 +246,7 @@
 					let data = {
 						fileIdList: _fileIdList
 					}
-					console.log(data)
 					deleteWareFile(data).then(res => {
-						console.log(res)
 						if (res.data.code === '0001') {
 							this.$message.success(res.data.message)
 							this.getWareFileList()

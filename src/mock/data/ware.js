@@ -5,7 +5,8 @@ for (let i = 0; i < 15; i++) {
 		brandId: parseInt(Mock.Random.id()),
 		brandName: Mock.mock('@ctitle()'),
 		// logoUrl: 'https://avatars0.githubusercontent.com/u/26806103?v=3&s=460',
-		logoUrl: Mock.Random.image('200x100',  '#'+(Math.random()*0xffffff<<0).toString(16), '#'+(Math.random()*0xffffff<<0).toString(16), 'Logo'),
+		logoUrl: Mock.Random.image('200x100', '#'+(Math.random()*0xffffff<<0).toString(16), 
+															'#'+(Math.random()*0xffffff<<0).toString(16), 'Logo'),
 		content: Mock.mock('@csentence()'),
 		brandPage: Mock.mock('@url'),
 		updateBy: Mock.Random.cname(),
@@ -48,4 +49,16 @@ for (let i = 0; i < 30; i++) {
 		status: Mock.Random.integer(-1, 1),
 	}))
 }
-export { Brands, WareKind, Wares }
+const Files = []
+for(let i = 0; i < 5; i++) {
+	Files.push(Mock.mock({
+		fileId: Mock.Random.id(),
+		filePath: Mock.Random.image('200x100', '#'+(Math.random()*0xffffff<<0).toString(16), 
+															'#'+(Math.random()*0xffffff<<0).toString(16), 'Image'),
+		createName: Mock.Random.cname(),
+		createTime: Mock.mock('@datetime'),
+		isMainPic: 0,
+		status: Mock.Random.integer(0, 1),
+	}))
+}
+export { Brands, WareKind, Wares, Files }
