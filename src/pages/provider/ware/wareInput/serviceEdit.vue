@@ -6,7 +6,11 @@
 			<el-button type="primary" @click="backList">返回商品列表</el-button>
 		</el-row>
 		<!-- 附加服务列表 -->
-		<el-table :data="serviceList" border highlight-current-row>
+		<el-table 
+			border 
+			:data="serviceList"
+			v-loading="loading" 
+			highlight-current-row>
 			<el-table-column type="index"></el-table-column>
 			<el-table-column prop="wareCode" label="服务ID" width="180px"></el-table-column>
 			<el-table-column prop="wareName" label="服务名称"></el-table-column>
@@ -68,18 +72,9 @@
 		data () {
 			return {
 				wareId: '',
+				loading: false,
 				serviceFormVisible: false,
-				serviceList: [
-					{
-	          wareId: 10001,
-	          wareCode: 111110001,
-	        	wareName: '普吉岛5日半自助游直飞随心DIY',
-	        	briefName: '普吉岛5日半自助',
-          	keyWords: '普吉岛',
-	        	wareDesc: '普吉岛5日半自助游直飞随心DIY',
-	          status: 0
-	        }
-	      ],
+				serviceList: [],
 	      wareForm: {
           wareId: '',
         	wareName: '',
@@ -114,14 +109,17 @@
 				let params = {
 					parentId: this.wareId
 				}
+				this.loading = true
 				readWareService(params).then(res => {
-					console.log(res)
+					// console.log(res)
+					this.loading = false
 					if (res.data.code === '0001') {
 						this.serviceList = res.data.result.wareServiceList;
 					} else {
 						this.$message.error(res.data.message)
 					}
 				}).catch(err => {
+					this.loading = false
 					console.log(err)
 				})
 			},

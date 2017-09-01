@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<table class="table table-bordered bg-white">
+		<table class="table table-bordered bg-white" v-loading="loading">
 			<thead>
 				<tr>
 					<th colspan="2" class="text-left">费用及预订限制</th>
@@ -81,6 +81,7 @@
       return {
       	wareId: '',
       	checked: true,
+      	loading: false,
       	editorVisible: false,
       	attributeForm: {
       		id: '',
@@ -106,7 +107,9 @@
     	},
     	// 获取费用信息
     	getChargeInfo () {
+    		this.loading = true;
     		readAttribute({wareId: this.wareId}).then(res => {
+    			this.loading = false;
     			console.log(res)
     			if (res.data.code === '0001') {
     				this.attributeForm = res.data.result.AttributeInfo
@@ -114,6 +117,7 @@
     				this.$message.error(res.data.message)
     			}
     		}).catch(err => {
+    			this.loading = false;
     			console.log(err)
     		})
     	},

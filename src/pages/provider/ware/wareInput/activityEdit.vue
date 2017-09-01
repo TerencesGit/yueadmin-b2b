@@ -7,7 +7,11 @@
 			<el-button type="primary" @click="submitVerify">提交审核</el-button>
 		</el-row>
 		<!-- 推荐活动列表 -->
-		<el-table :data="activityList" border highlight-current-row>
+		<el-table 
+			border 
+			:data="activityList"
+			v-loading="loading" 
+			highlight-current-row>
 			<el-table-column type="index"></el-table-column>
 			<el-table-column prop="wareCode" label="活动ID" width="180px"></el-table-column>
 			<el-table-column prop="wareName" label="活动名称"></el-table-column>
@@ -67,18 +71,9 @@
 			return {
 				wareId: '',
 				activityFormTitle: '',
+				loading: false,
 				activityFormVisible: false,
-				activityList: [
-					{
-	          wareId: 10001,
-	          wareCode: 111110001,
-	        	wareName: '普吉岛5日半自助游直飞随心DIY',
-	        	briefName: '普吉岛5日半自助',
-          	keyWords: '普吉岛',
-	        	wareDesc: '普吉岛5日半自助游直飞随心DIY',
-	          status: 0
-	        }
-				],
+				activityList: [],
 	      wareForm: {
           wareId: '',
         	wareName: '',
@@ -113,14 +108,16 @@
 				let params = {
 					parentId: this.wareId
 				}
+				this.loading = true
 				readWareActivity(params).then(res => {
-					console.log(res)
+					this.loading = false
 					if (res.data.code === '0001') {
 						this.activityList = res.data.result.wareActivityList;
 					} else {
 						this.$message.error(res.data.message)
 					}
 				}).catch(err => {
+					this.loading = false
 					console.log(err)
 				})
 			},

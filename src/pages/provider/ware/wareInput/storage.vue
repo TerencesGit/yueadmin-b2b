@@ -9,6 +9,7 @@
     <full-calendar 
       :events="skuList" 
       first-day='0' 
+      v-loading="loading"
       @changeMonth="changeMonth" 
       @dayClick="dayClick"
       @eventClick="dayClick">
@@ -85,14 +86,8 @@
     data () {
       return {
         wareId: '',
-        skuList : [{
-          start: '2017-08-08',
-          skuDate: '2017-08-08',
-          adultPrice: 999,
-          childPrice: 999,
-          singlePrice: 999,
-          storageNum: 999
-        }],
+        skuList : [],
+        loading: false,
         batchSkuVisible: false,
         singleSkuVisible: false,
         batchType: 1,
@@ -173,8 +168,10 @@
     methods: {
       // 获取sku列表
       getSkuList () {
+        this.loading = true
         readSkuInfoList({wareId: this.wareId}).then(res => {
-          console.log(res)
+          // console.log(res)
+          this.loading = false
           if(res.data.code === '0001') {
             this.skuList = res.data.result.skuList;
             this.skuList.forEach((data) => {
@@ -185,6 +182,7 @@
           }
         }).catch(err => {
           console.log(err)
+          this.loading = false
           this.catchError(err.response)
         })
       },
@@ -319,7 +317,7 @@
     },
     mounted () {
       this.$store.dispatch('setStepActive', 4)
-      this.wareId = parseInt(this.$route.query.wareId)
+      this.wareId = this.$route.query.wareId;
       this.wareId && this.getSkuList()
     }
   }

@@ -67,7 +67,7 @@
 						:data="uploadData"
 						ref="uploadMedia"
 						class="multiple-uploader"
-			  		action="/b2b/file/upload"
+			  		action="https://jsonplaceholder.typicode.com/posts/"
 			  		list-type="picture-card"
 			  		accept="image/jpeg, image/png"
 			  		:on-preview="handleImgPreview"
@@ -160,6 +160,7 @@
 	    },
     	// 上传成功处理
     	handleSuccess (res, file) {
+    		this.fileList.push(file.url)
     		if (res.code === '0001') {
     			let resFile = res.result.file;
 			    file.path = resFile.filePath;
@@ -192,7 +193,7 @@
 	    		wareId: this.wareId,
 	    		fileList: this.fileList
 	    	}
-	    	// console.log(mediaForm)
+	    	console.log(mediaForm)
 	    	createWareFile(mediaForm).then(res => {
 	    		if(res.data.code === '0001') {
 	    			this.$message.success('上传成功')

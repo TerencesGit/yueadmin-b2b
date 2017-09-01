@@ -1,13 +1,26 @@
 import axios from 'axios'
 import Qs from 'qs'
+import Mock from 'mockjs'
 import MockAdapter from 'axios-mock-adapter'
 import { Users, UserPerssionList } from './data/user'
-import { Brands, WareKind, Wares, Files } from './data/ware'
+import { Brands, WareKind, Wares, Files, SkuList, ServiceList, AttributeInfo } from './data/ware'
 let _Users = Users
 let _Brands = Brands
 let _KindList = WareKind
 let _Wares = Wares
-let TripDetailList = []
+let TripDetailList = [
+	{
+		id: 10001,
+		wareId: 110011,
+		tripDayNum: 1,
+		programType: 1,
+		programTime: new Date(),
+		programTitle: '旅游',
+		programIsFree: 1,
+		programDuration: 60,
+		programDetail: '行程详情'
+	}
+]
 let FileList = Files;
 const retObj = {
 	code: '0001',
@@ -305,12 +318,28 @@ export default {
 		// 商品信息
 		mock.onGet('/ware/readWareInfo').reply(config => {
 			let { wareId } = config.params;
+			let retObj = {
+				code: '0001',
+				message: '操作成功',
+				result: {}
+			}
 			retObj.result = {
 				wareInfo: {
 					wareId,
 					wareCode: wareId,
 					wareName: '巴厘岛蜜月旅拍婚纱摄影3天2晚游',
-					tripDays: 3
+					tripDays: 3,
+					brandId: 10001,
+          keyWords: '巴厘岛',
+          openDate: new Date(),
+          closeDate:  new Date(),
+          srcCityCode: 1,
+          dstCityCode: 6,
+          wareDesc: '巴厘岛蜜月旅拍婚纱摄影3天2晚游',
+          briefName: '巴厘岛蜜月旅拍',
+          suggestedPrice: '6688',
+          srcCityName: '北京',
+          dstCityName: '巴厘岛',
 				}
 			}
 			return new Promise((resolve, reject) => {
@@ -381,6 +410,26 @@ export default {
 				}, 500)
 			})
 		})
+		//商品图片新增
+		mock.onPost('/ware/createWareFile').reply(config => {
+			let { wareId, fileList } = Qs.parse(config.data)
+			fileList.forEach(filePath => {
+				FileList.push({
+					fileId: Mock.Random.id(),
+					filePath,
+					createName: Mock.Random.cname(),
+					createTime: new Date(),
+					isMainPic: 0,
+					status: 1,
+				})
+			})
+			retObj.result = {}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				}, 500)
+			})
+		})
 		//商品图片列表
 		mock.onGet('/ware/readWareFileList').reply(config => {
 			let { wareId } = config.params;
@@ -428,7 +477,55 @@ export default {
 				}, 500)
 			})
 		})
-		// 商品上下架
+		// 商品属性
+ 		mock.onGet('/ware/readAttribute').reply(config => {
+ 			let { wareId } = config.params
+ 			retObj.result = {
+ 				AttributeInfo
+ 			}
+ 			return new Promise((resolve, reject) => {
+ 				setTimeout(() => {
+ 					resolve([200, retObj])
+ 				}, 500)
+ 			})
+ 		})
+ 		// 商品库存
+ 		mock.onGet('/ware/readSkuInfoList').reply(config => {
+ 			let { wareId } = config.params
+ 			retObj.result = {
+ 				skuList: SkuList
+ 			}
+ 			return new Promise((resolve, reject) => {
+ 				setTimeout(() => {
+ 					resolve([200, retObj])
+ 				}, 500)
+ 			})
+ 		})
+ 		// 附加服务列表
+ 		mock.onGet('/ware/readWareService').reply(config => {
+ 			let { wareId } = config.params;
+ 			retObj.result = {
+ 				wareServiceList: ServiceList
+ 			}
+ 			return new Promise((resolve, reject) => {
+ 				setTimeout(() => {
+ 					resolve([200, retObj])
+ 				}, 500)
+ 			})
+ 		})
+ 		// 推荐活动列表
+ 		mock.onGet('/ware/readWareActivity').reply(config => {
+ 			let { wareId } = config.params;
+ 			retObj.result = {
+ 				wareActivityList: ServiceList
+ 			}
+ 			return new Promise((resolve, reject) => {
+ 				setTimeout(() => {
+ 					resolve([200, retObj])
+ 				}, 500)
+ 			})
+ 		})
+ 		// 商品上下架
 		mock.onPost('/ware/shelfManage').reply(config => {
 			let { wareId, status } = Qs.parse(config.data)
 			return new Promise((resolve, reject) => {
@@ -440,46 +537,6 @@ export default {
 					}])
 				}, 500)
 			})
- 		})
- 		// 商品库存
- 		mock.onGet('/ware/getStockByWareId').reply(config => {
- 			let { id } = config.params
- 			console.log(id)
- 			let stockList = [
-		    {
-		      start: '2017-06-06',
-		      stock: '100'
-		    },
-		    {
-		      start: '2017-06-07',
-		      stock: '100'
-		    },
-		    {
-		      start: '2017-06-08',
-		      stock: '100'
-		    },
-		    {
-		      start: '2017-06-09',
-		      stock: '100'
-		    },
-		    {
-		      start: '2017-06-10',
-		      stock: '100'
-		    },
-		    {
-		      start: '2017-05-30',
-		      stock: '100'
-		    },
-		  ]
- 			return new Promise((resolve, reject) => {
- 				setTimeout(() => {
- 					resolve([200, {
- 						code: '0001',
- 						message: '操作成功',
- 						result: stockList
- 					}])
- 				}, 500)
- 			})
  		})
 	}
 }

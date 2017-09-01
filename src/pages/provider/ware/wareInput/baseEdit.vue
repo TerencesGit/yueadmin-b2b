@@ -2,8 +2,12 @@
   <section>
     <el-row>
       <el-col :span="20" :offset="2">
-        <el-form :model="wareForm" :rules="rules" ref="wareForm" label-width="150px">
-          <el-card class="input-width">
+        <el-form 
+          :model="wareForm" 
+          :rules="rules" 
+          ref="wareForm" 
+          label-width="150px">
+          <el-card class="input-width" v-loading="loading">
             <el-row>
               <el-col :span="12">
                 <el-form-item label="行程天数" prop="tripDays" style="height: 36px">
@@ -112,6 +116,7 @@
     data () {
       return {
         wareId: '',
+        loading: false,
         brandList: [],
         wareForm: {
           wareName: '',
@@ -210,20 +215,23 @@
       // 获取品牌列表
       getBrandList () {
         readBrandList({}).then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.data.code === '0001') {
             this.brandList = res.data.result.brandInfo
           } else {
             this.$message.error(res.data.message)
           }
         }).catch((err) => {
+          console.log(err)
           this.catchError(err.response)
         })
       },
       // 获取商品信息
       getWareInfo () {
+        this.loading = true
         readWareInfo({wareId: this.wareId}).then(res => {
           // console.log(res)
+          this.loading = false
           if(res.data.code === '0001') {
             let wareInfo = res.data.result.wareInfo
             wareInfo.openDate = new Date(wareInfo.openDate)
@@ -236,6 +244,7 @@
             this.$message.error(res.data.message)
           }
         }).catch(err => {
+          this.loading = false
           console.log(err)
           this.catchError(err.response)
         })
@@ -296,8 +305,8 @@
     mounted () {
       this.$store.dispatch('setStepActive', 0)
       this.getBrandList()
-      this.wareId = parseInt(this.$route.query.wareId)
-      // this.wareId && this.getWareInfo()
+      this.wareId = this.$route.query.wareId
+      this.wareId && this.getWareInfo()
     }
   }
 </script>
