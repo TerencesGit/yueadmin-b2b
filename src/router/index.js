@@ -4,10 +4,8 @@ import Register from '@/pages/register'
 import NotFound from '@/pages/NotFound'
 import NoPermission from '@/pages/NoPermission'
 import Home from '@/pages/home'
-
 import Layout from '@/components/Layout'
 
-/********************  供应商管理 start  ******************/
 // 品牌管理
 const BrandManage = resolve => require(['@/pages/provider/ware/brand/brandManage'], resolve)
 // 商品信息-添加
@@ -146,7 +144,7 @@ const routes = [
   {
     path: '/login',
     name: '欢迎登录',
-    component: CasLogin
+    component: Login
   },
   {
     path: '/register',

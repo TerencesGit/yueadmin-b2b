@@ -280,7 +280,7 @@
           } else {
             this.$message.error(res.data.message)
           }
-        }).catch((err) => {
+       }).catch(err => {
           this.catchError(err.response)
         })
       },

@@ -5,7 +5,7 @@
       <el-form :model="loginForm" :rules="loginRules" ref="loginForm" class="login-form" :class="{'animated shake': invalid}">
         <h2 class="page-header">欢迎登录</h2>
         <el-form-item label="用户名" prop="username" :label-width="labelWith">
-          <el-input v-model.string="loginForm.username" placeholder="请输入用户名"></el-input>
+          <el-input v-model.string="loginForm.username" placeholder="请输入邮箱号"></el-input>
         </el-form-item>
         <el-form-item label="密 码" prop="password" :label-width="labelWith">
           <el-input type="password" v-model="loginForm.password" placeholder="请输入密码"></el-input>
@@ -14,7 +14,7 @@
           <el-input type="text" v-model="loginForm.authcode" placeholder="请输入验证码" style="float: left; width: 65%; margin-right: 15px;"></el-input>
           <canvas id="canvasCode" width="80px" height="35px" class="canvas-code" @click="drawCode"></canvas>
         </el-form-item>
-        <el-form-item label="登录角色" :label-width="labelWith" class="m-b-5">
+        <!-- <el-form-item label="登录角色" :label-width="labelWith" class="m-b-5">
           <el-select v-model="loginForm.isAdmin" class="el-select--block" placeholder="请选择角色">
             <el-option
               v-for="(item, index) in loginRoles"
@@ -28,13 +28,13 @@
           <el-checkbox-group v-model="loginForm.remember">
             <el-checkbox name="type"></el-checkbox>
           </el-checkbox-group>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item class="m-b-5">
           <el-button type="primary" class="el-button--block" :loading="logging" @click="submitForm">
             提 交
           </el-button>
         </el-form-item>
-        <el-form-item style="display: none; margin: 0; text-align: center;">
+        <el-form-item style="margin: 0; text-align: center;">
           <router-link to="/register">尚未注册？</router-link>
           <span style="margin: 0 10px">|</span>
           <router-link to="/forgetPass">忘记密码</router-link>
@@ -44,129 +44,113 @@
   </transition>
 </template>
 <script>
-import { requestLogin } from '../api'
-import utils from '../assets/js/utils'
-import Md5 from '../assets/js/md5'
-export default {
-  data() {
-    var validateCode = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入验证码'))
-      } else if (value.toUpperCase() !== this.authCode.toUpperCase()) {
-        callback(new Error('验证码错误'))
-      } else {
-        callback()
-      }
-    }
-    return {
-      labelWith: '90px',
-      invalid: false,
-      logging: false,
-      authCode: '',
-      loginForm: {
-        username: '',
-        password: '',
-        authcode: '',
-        remember: false,
-        isAdmin: '1'
-      },
-      loginRoles: [{
-        value: '0',
-        label: '商户'
-      }, {
-        value: '1',
-        label: '管理员'
-      }],
-      loginRules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 5, message: '长度不少于5个字符', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 8, max: 20, message: '长度在 8 到 20 个字符', trigger: 'blur'}
-        ],
-        authcode: [
-          { required: true, validator: validateCode, trigger: 'blur'}
-        ]
-      }
-    };
-  },
-  methods: {
-    submitForm () {
-      let self = this;
-      this.$refs.loginForm.validate((valid) => {
-        console.log(this.loginForm)
-        if (valid && !this.logging) {
-          this.logging = true
-           let form = {
-            mobile: this.loginForm.username,
-            pass: Md5.hex_md5(this.loginForm.password)
-          }
-          // console.log(form)
-          this.$message({
-            type: 'success',
-            message: '登录成功'
-          })
-          this.$router.push({ path: '/provider/ware/wareManage' })
-          // requestLogin(form).then(res => {
-          //   console.log(res)
-          //   if (res.data.code === 0) {
-          //     let result = res.data.result;
-          //     console.log(result)
-          //     localStorage.setItem('sessionId', result.customerSessionId)
-          //     if (this.loginForm.remember) {
-          //       let name = btoa(escape(btoa(this.loginForm.username).split('').reverse().join()))
-          //       let pass = btoa(escape(btoa(this.loginForm.password).split('').reverse().join()))
-          //       utils.setCookie('uname', name, '7d')
-          //       utils.setCookie('ukey', pass, '7d')
-          //     } else {
-          //       utils.delCookie('uname')
-          //       utils.delCookie('ukey')
-          //     }
-          //     this.$message({
-          //       type: 'success',
-          //       message: '登录成功'
-          //     })
-          //     this.$router.push({ path: '/provider/ware/wareManage' })
-          //   } else {
-          //     this.$message({
-          //       type: 'error',
-          //       message: res.data.message
-          //     })
-          //     this.drawCode()
-          //   }
-          //   self.logging = false
-          // })
-          // .catch(function (error) {
-          //   self.logging = false
-          //   console.log(error)
-          // })
+  import { requestLogin } from '@/api'
+  import Utils from '@/assets/js/utils'
+  import Md5 from '@/assets/js/md5'
+  export default {
+    data() {
+      var validateCode = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入验证码'))
+        } else if (value.toUpperCase() !== this.authCode.toUpperCase()) {
+          callback(new Error('验证码错误'))
         } else {
-          this.invalid = true
-          console.log('error submit!!');
-          return false;
+          callback()
         }
-      })
+      }
+      return {
+        labelWith: '90px',
+        invalid: false,
+        logging: false,
+        authCode: '',
+        loginForm: {
+          username: '',
+          password: '',
+          authcode: '',
+          remember: false,
+          isAdmin: '1'
+        },
+        loginRoles: [{
+          value: '0',
+          label: '商户'
+        }, {
+          value: '1',
+          label: '管理员'
+        }],
+        loginRules: {
+          username: [
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+            // { min: 5, message: '长度不少于5个字符', trigger: 'blur' }
+          ],
+          password: [
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            // { min: 8, max: 20, message: '长度在 8 到 20 个字符', trigger: 'blur'}
+          ],
+          authcode: [
+            { required: true, validator: validateCode, trigger: 'blur'}
+          ]
+        }
+      };
     },
-    drawCode () {
-      this.authCode = utils.canvasCode('canvasCode')
+    methods: {
+      submitForm () {
+        this.$refs.loginForm.validate(valid => {
+          if (valid && !this.logging) {
+            this.logging = true
+             let data = {
+              username: this.loginForm.username,
+              password: Md5.hex_md5(this.loginForm.password)
+            }
+            requestLogin(data).then(res => {
+              if (res.data.code === '0001') {
+                let userId = res.data.result.userInfo.userId;
+                let user = {
+                  name: escape(btoa(data.username)),
+                  pwd: escape(btoa(this.loginForm.password)),
+                }
+                localStorage.setItem('user', JSON.stringify(user))
+                Utils.setCookie('userId', userId)
+                this.$message.success('登录成功')
+                this.$router.push({ path: '/home/welcome' })
+              } else {
+                this.$message.error(res.data.message)
+                this.drawCode()
+              }
+              this.logging = false
+            }).catch(err => {
+              console.log(err)
+              this.logging = false
+            })
+          } else {
+            this.invalid = true;
+          }
+        })
+      },
+      drawCode () {
+        this.authCode = Utils.canvasCode('canvasCode')
+      },
+      keyDown(e) {
+        e && e.keyCode === 13 && this.submitForm()
+      }
     },
-    keyDown(e) {
-      e && e.keyCode === 13 && this.submitForm()
+    mounted () {
+      this.drawCode()
+      let user = JSON.parse(localStorage.getItem('user'));
+      if(user && user.name && user.pwd) {
+        this.loginForm = {
+          username: atob(unescape(user.name)),
+          password: atob(unescape(user.pwd))
+        }
+      }
+      // if (utils.getCookie('uname') && utils.getCookie('ukey')) {
+      //   this.loginForm.username = atob(unescape(atob(utils.getCookie('uname'))).split(',').reverse().join(''))
+      //   this.loginForm.password = atob(unescape(atob(utils.getCookie('ukey'))).split(',').reverse().join(''))
+      //   this.loginForm.remember = true
+      // }
+      let codeInput = document.querySelectorAll('.el-input__inner')[2]
+      codeInput.addEventListener('keydown', this.keyDown)
     }
-  },
-  mounted () {
-    this.drawCode()
-    if (utils.getCookie('uname') && utils.getCookie('ukey')) {
-      this.loginForm.username = atob(unescape(atob(utils.getCookie('uname'))).split(',').reverse().join(''))
-      this.loginForm.password = atob(unescape(atob(utils.getCookie('ukey'))).split(',').reverse().join(''))
-      this.loginForm.remember = true
-    }
-    let codeInput = document.querySelectorAll('.el-input__inner')[2]
-    codeInput.addEventListener('keydown', this.keyDown)
   }
-}
 </script>
 <style scoped>
   .container {

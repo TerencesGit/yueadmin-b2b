@@ -651,7 +651,7 @@
 					}
 				}).catch((error)=>{
 					console.log(error);
-					this.catchError(error.response)
+					this.$catchError(err)
 					this.loading = false;
 				})
 			},
@@ -718,7 +718,7 @@
 					}
 				}).catch((error)=>{
 					console.log(error);
-					this.catchError(error.response)
+					this.$catchError(err)
 					this.loading = false;
 				})
 			},
@@ -757,7 +757,7 @@
 	    					}
 	    				})
 	    				.catch(error=>{
-	    					this.catchError(error.response)
+	    					this.$catchError(err)
 	    		    	    this.loading = false;
 	    				})
 		          	}else{
@@ -802,7 +802,7 @@
 		          	}
 		          }).catch((error)=>{
 		          	this.loading = false;
-		          	this.catchError(error.response)
+		          	this.$catchError(err)
 		          	console.log(error);
 		          })
 		        }).catch(() => {
@@ -854,7 +854,7 @@
 					}
 				}).catch((error)=>{
 					console.log(error);
-					this.catchError(error.response);
+					this.$catchError(err);
 					this.loading = false;
 				})
 			},
@@ -925,7 +925,7 @@
 	            	    	this.loading = false;
 	            			}
 	            		}).catch(error=>{
-	            			this.catchError(error.response)
+	            			this.$catchError(err)
 	                	    this.loading = false;
 	            		})
 		          	}else{

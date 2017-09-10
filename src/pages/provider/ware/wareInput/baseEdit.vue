@@ -221,7 +221,7 @@
           } else {
             this.$message.error(res.data.message)
           }
-        }).catch((err) => {
+       }).catch(err => {
           console.log(err)
           this.catchError(err.response)
         })

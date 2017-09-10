@@ -165,8 +165,8 @@
 						this.$message(res.data.message);
 					}
 					this.loading = false;
-				}).catch((error) => {
-					this.catchError(error.response)
+				}).catch(err => {
+					this.$catchError(err)
     		  this.loading = false;
 				})
 			},
@@ -206,9 +206,9 @@
             		this.$message.error(res.data.message);
             	}
             	this.attrFormVisible = false
-            }).catch((error) => {
+            }).catch(err => {
             	this.attrFormVisible = false
-            	this.catchError(error.response)
+            	this.$catchError(err)
             })
           } else {
             console.log('error submit!!');
@@ -229,7 +229,7 @@
     						this.$message.error(res.data.message);
     					}
     				}).catch(error => {
-    					this.catchError(error.response)
+    					this.$catchError(err)
     				})
 	      }).catch(() => {
 	        this.$message('已取消操作');          

@@ -10,7 +10,7 @@
           <el-button type="primary" @click="getBrandList">查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="handleAdd">新增</el-button>
+          <el-button type="primary" @click="handleAdd">新增品牌</el-button>
         </el-form-item>
       </el-form>
     </el-row>
@@ -194,9 +194,9 @@ export default {
           this.$message.error(res.data.message)
         }
         this.loading = false
-      }).catch(error => {
+    }).catch(err => {
         this.loading = false;
-        this.catchError(error.response)
+        this.$catchError(err)
       })
     },
     handleSizeChange (val) {

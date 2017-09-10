@@ -36,11 +36,50 @@ const retExpireObj = {
 export default {
 	bootstrap () {
 		let mock = new MockAdapter(axios);
-		mock.onGet('/success').reply(200, {
-			msg: 'success'
+		// 登录
+		mock.onPost('/login').reply(config => {
+			let { username, password } = JSON.parse(config.data);
+			let loginUser = _UserList.filter(user => user.email === username)[0];
+			if(loginUser) {
+				if(loginUser.password === password) {
+					return new Promise((resolve, reject) => {
+						setTimeout(() => {
+							retObj.result.userInfo = loginUser;
+							resolve([200, retObj])
+						}, 500)
+					})
+				} else {
+					let retObj = {
+						code: '1002',
+						message: '密码错误'
+					}
+					return new Promise((resolve, reject) => {
+						setTimeout(() => {
+							resolve([200, retObj])
+						}, 500)
+					})
+				}
+			} else {
+				let retObj = {
+					code: '1001',
+					message: '用户名不存在'
+				}
+				return new Promise((resolve, reject) => {
+					setTimeout(() => {
+						resolve([200, retObj])
+					}, 500)
+				})
+			}
 		})
-		mock.onGet('/error').reply(500, {
-			msg: 'error'
+		// 登出
+		mock.onGet('/logout').reply(config => {
+			Utils.delCookie('userId')
+			retObj.result = {}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				}, 500)
+			})
 		})
 		// 获取当前用户信息
 		mock.onGet('/accountInter/getMyInfo.do').reply(config => {

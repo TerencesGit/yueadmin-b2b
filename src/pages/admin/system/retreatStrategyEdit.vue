@@ -309,7 +309,7 @@
 	        			}
 			        }).catch((error)=>{
 			        	console.log(error);
-			        	this.catchError(error.response)
+			        	this.$catchError(err)
 			        	this.loading = false;
 			        })
 				}else{
@@ -348,7 +348,7 @@
 					}
 					this.loading = false;
 				}).catch((error)=>{
-					this.catchError(error.response)
+					this.$catchError(err)
 					this.loading = false;
 				})
 			}

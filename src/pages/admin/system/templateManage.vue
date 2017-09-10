@@ -204,8 +204,8 @@
 						this.$message(res.data.message);
 					}
 					this.loading = false;
-				}).catch((error) => {
-					this.catchError(error.response)
+				}).catch(err => {
+					this.$catchError(err)
     		  this.loading = false;
 				})
 			},
@@ -222,8 +222,8 @@
 						this.$message(res.data.message);
 					}
 					this.loading = false;
-				}).catch((error) => {
-					this.catchError(error.response)
+				}).catch(err => {
+					this.$catchError(err)
     		  this.loading = false;
 				})
 			},
@@ -296,8 +296,8 @@
 	            		this.$message.error(res.data.message);
 	            	}
 	            	this.templateFormVisible = false;
-	            }).catch((error) => {
-	            	this.catchError(error.response)
+	            }).catch(err => {
+	            	this.$catchError(err)
 	            	this.templateFormVisible = false;
 	            })
             } else if (this.submitType === 2) {
@@ -309,8 +309,8 @@
 	            		this.$message.error(res.data.message);
 	            	}
 	            	this.templateFormVisible = false;
-	            }).catch((error) => {
-	            	this.catchError(error.response)
+	            }).catch(err => {
+	            	this.$catchError(err)
 	            	this.templateFormVisible = false;
 	            })
             } else {
@@ -342,7 +342,7 @@
       						this.$message.error(res.data.message);
       					}
       				}).catch((error)=>{
-      					this.catchError(error.response)
+      					this.$catchError(err)
       				})
         }).catch(() => {
           this.$message('已取消操作')

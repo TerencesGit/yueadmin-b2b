@@ -317,7 +317,7 @@
 	        			this.loading = false;
 			        }).catch((error)=>{
 			        	console.log(error);
-			        	this.catchError(error.response)
+			        	this.$catchError(err)
 			        	this.loading = false;
 			        })
 				}

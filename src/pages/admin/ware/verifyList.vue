@@ -95,7 +95,7 @@ export default {
           tihs.$message.error(res.data.message)
         }
         this.loading = false
-      }).catch((err) => {
+     }).catch(err => {
         console.log(err)
         this.loading = false
       })

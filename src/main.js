@@ -103,6 +103,17 @@ Vue.directive('title', {
     document.title = el.dataset.title
   }
 })
+Vue.prototype.$catchError = (err) => {
+  if(!err.data) {
+    ElementUI.Message('服务器响应错误')
+    return;
+  }
+  if(err.data.code) {
+    ElementUI.Message(err.data.message)
+  } else {
+    ElementUI.Message('服务器响应超时')
+  }
+}
 const router = new Router({
   routes
 })
@@ -129,49 +140,18 @@ axios.interceptors.request.use((config) => {
   return Promise.reject(err)
 })
 // response interceptors
-axios.interceptors.response.use((res) => {
-  if(res.data.code === '0000') {
+axios.interceptors.response.use(res =>{
+  if (res.data.code === '0000') {
     router.push('/login')
-    res.response = '0000';
     return Promise.reject(res)
   } else if (res.data.code === '9999') {
-  	router.push('/NoPermission')
-    res.response = '9999';
+    router.push('/NoPermission')
     return Promise.reject(res)
   }
   return res;
-}, (err) => {
-  err.response = '500';
+}, err => {
   return Promise.reject(err)
-})
-// catch error
-Vue.prototype.$catchError = (res) => {
-  if (!res) {
-    ElementUI.Message({ message: '服务器响应超时'})
-    return;
-  }
-  if(res === '0000') {
-    ElementUI.Message({ message: '尚未登录或当前会话已过期，将自动跳转登录系统验证'})
-    return;
-  }
-  if (res === '9999') {
-    ElementUI.Message({ message: '无此权限'})
-    return;
-  }
-  if (res === '500') {
-    ElementUI.Message({ message: '服务器响应失败'})
-    return;
-  }
-  if (res.status === 404) {
-    ElementUI.Message({ message: '方法不存在'})
-  } else if (res.status === 500) {
-    ElementUI.Message({ message: '服务器响应错误'})
-  } else if (res.status === 504) {
-    ElementUI.Message({ message: '网关超时'})
-  } else {
-    ElementUI.Message({ message: res.status})
-  }
-}    
+})    
 new Vue({
 	store,
   router,

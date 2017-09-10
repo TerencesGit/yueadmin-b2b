@@ -235,7 +235,7 @@
 					this.serviceLoading = false;
 				}).catch((error)=>{
 					console.log(error);
-					this.catchError(error.response)
+					this.$catchError(err)
     		        this.serviceLoading = false;
 				})
 			},
@@ -263,7 +263,7 @@
 					this.activitieLoading = false;
 				}).catch((error)=>{
 					console.log(error);
-					this.catchError(error.response)
+					this.$catchError(err)
     		  this.activitieLoading = false;
 				})
 			},
@@ -367,7 +367,7 @@
 					this.fullcalendarLoading = false;
 				}).catch((error)=>{
 					console.log(error);
-					this.catchError(error.response)
+					this.$catchError(err)
     		        this.fullcalendarLoading = false;
 				})
 			},
@@ -394,7 +394,7 @@
 					}
 				}).catch((error)=>{
 					console.log(error);
-					this.catchError(error.response)
+					this.$catchError(err)
 				})
 			},
 			changeDetail(changeForm){
@@ -486,7 +486,7 @@
 	    	                  	}    
 	    					}).catch((error)=>{
 	    						console.log(error);
-	    						this.catchError(error.response)
+	    						this.$catchError(err)
 	    					})
 					    }else {
 					        console.log('error submit!!');
@@ -528,7 +528,7 @@
 	    	                  	}    
 	    					}).catch((error)=>{
 	    						console.log(error);
-	    						this.catchError(error.response)
+	    						this.$catchError(err)
 	    					})
 					    }else {
 					        console.log('error submit!!');

@@ -141,9 +141,9 @@
 						this.$message.error(res.data.message)
 					}
 					this.loading = false;
-				}).catch((error) => {
+				}).catch(err => {
 					this.loading = false;
-					this.catchError(error.response)
+					this.$catchError(err)
 				})
 			},
 			// 上传校验
@@ -206,7 +206,7 @@
 	    		this.$refs.uploadMedia.clearFiles()
 	    	})
 	    	.catch(error => {
-	    		this.catchError(error.response)
+	    		this.$catchError(err)
 	    		this.uploadVisible = false
 	    		this.fileList = []
 	    		this.$refs.uploadMedia.clearFiles()
@@ -235,7 +235,7 @@
 					}
 				}).catch(error => {
 					row.status = row.status === 1 ? 0 : 1
-					this.catchError(error.response)
+					this.$catchError(err)
 				})
 			},
 			// 单张图片删除
@@ -255,7 +255,7 @@
 							this.$message.error(res.data.message)
 						}
 					}).catch(error => {
-						this.catchError(error.response)
+						this.$catchError(err)
 					})
 				})
 				.catch((err) => {
@@ -282,9 +282,9 @@
 						} else {
 							this.$message.error(res.data.message)
 						}
-					}).catch((error) => {
+					}).catch(err => {
 						console.log(error)
-						this.catchError(error.response)
+						this.$catchError(err)
 					})
 				})
 				.catch((err) => {
@@ -316,7 +316,7 @@
 					}
 				})
 				.catch(error => {
-					this.catchError(error.response)
+					this.$catchError(err)
 				})
 			},
 			// 下一步

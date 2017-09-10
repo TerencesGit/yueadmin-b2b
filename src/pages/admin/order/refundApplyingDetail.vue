@@ -323,7 +323,7 @@
 		          		this.loading = false;
 		          	}).catch((error)=>{
 		          		console.log(error);
-		          		this.catchError(error.response);
+		          		this.$catchError(err);
 		                this.loading = false;
 		          	})
 		        }).catch(() => {
@@ -362,7 +362,7 @@
 		          		this.loading = false;
 		          	}).catch((error)=>{
 		          		console.log(error);
-		          		this.catchError(error.response);
+		          		this.$catchError(err);
 		                this.loading = false;
 		          	})
 		        }).catch(() => {
@@ -433,9 +433,9 @@
 			 }else{
 				this.$message.error(res.data.message)
 			 }
-			}).catch((error) => {
+			}).catch(err => {
 				console.log(err);
-                this.catchError(error.response);
+                this.$catchError(err);
 			})
 		}
 	}
