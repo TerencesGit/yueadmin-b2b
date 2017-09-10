@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 const state = {
 	sidebarStatus: false,
-	user: {},
+	userInfo: null,
 	userPermission: [],
 	stepActive: 0
 }
@@ -15,8 +15,8 @@ const mutations = {
 	TOGGLE_SIDEBAR (state) {
 		state.sidebarStatus = !state.sidebarStatus
 	},
-	SAVE_USER (state, user) {
-		state.user = user
+	SAVE_USERINFO (state, userInfo) {
+		state.userInfo = userInfo
 	},
 	SAVE_PERMISSION (state, permission) {
 		state.userPermission = permission

@@ -2,9 +2,10 @@ import axios from 'axios'
 import Qs from 'qs'
 import Mock from 'mockjs'
 import MockAdapter from 'axios-mock-adapter'
-import { Users, UserPerssionList } from './data/user'
+import Utils from '@/assets/js/utils'
+import { UserList, UserPerssionList } from './data/user'
 import { Brands, WareKind, Wares, Files, SkuList, ServiceList, AttributeInfo } from './data/ware'
-let _Users = Users
+let _UserList = UserList;
 let _Brands = Brands
 let _KindList = WareKind
 let _Wares = Wares
@@ -27,6 +28,11 @@ const retObj = {
 	message: '操作成功',
 	result: {}
 }
+const retExpireObj = {
+	code: '0000',
+	message: '尚未登录或当前会话已过期',
+	result: {}
+}
 export default {
 	bootstrap () {
 		let mock = new MockAdapter(axios);
@@ -36,6 +42,30 @@ export default {
 		mock.onGet('/error').reply(500, {
 			msg: 'error'
 		})
+		// 获取当前用户信息
+		mock.onGet('/accountInter/getMyInfo.do').reply(config => {
+			let userId = Utils.getCookie('userId');
+			if(!userId) {
+				return new Promise((resolve, reject) => {
+					setTimeout(() => {
+						resolve([200, retExpireObj])
+					}, 500)
+				})
+			}
+			let _userInfo = _UserList.filter(user => user.userId == userId)[0];
+			let retObj = {
+				code: '0001',
+				message: '操作成功',
+				result: {
+					userInfo: _userInfo
+				}
+			}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				}, 500)
+			})
+		}) 
 		// 用户权限
 		mock.onGet('/user/permissionList.json').reply(config => {
 			return new Promise((resolve, reject) => {

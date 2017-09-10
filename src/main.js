@@ -16,7 +16,7 @@ import 'element-ui/lib/theme-default/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 import '@/assets/css/base.scss'
 import Mock from './mock'
-import utils from '@/assets/js/utils'
+import Utils from '@/assets/js/utils'
 import VueHtml5Editor from 'vue-html5-editor'
 import FullCalendar from '@/components/fullcalendar'
 import BackButton from '@/components/back-button'
@@ -107,7 +107,15 @@ const router = new Router({
   routes
 })
 router.beforeEach((to, from, next) => {
-  Vue.prototype.$fromPath = from.path
+  // Vue.prototype.$fromPath = from.path;
+  let user = Utils.getCookie('userId');
+  let logRequired = to.path.indexOf('provider') !== -1 || 
+                    to.path.indexOf('admin') !== -1 ||
+                    to.path.indexOf('distributor') !== -1;
+  if(logRequired && !user) {
+    ElementUI.Message('尚未登录或当前会话已过期')
+    return router.push('/login')
+  }
   NProgress.start()
   next() 
 })
@@ -137,7 +145,7 @@ axios.interceptors.response.use((res) => {
   return Promise.reject(err)
 })
 // catch error
-Vue.prototype.catchError = (res) => {
+Vue.prototype.$catchError = (res) => {
   if (!res) {
     ElementUI.Message({ message: '服务器响应超时'})
     return;
