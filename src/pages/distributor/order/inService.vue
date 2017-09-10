@@ -266,7 +266,7 @@
                             }              
                         }).catch((err)=>{
                             console.log(err);
-                            this.catchError(err.response)
+                            this.$catchError(err)
                         });
                         this.dialogVisible1 = false;
                     }else {
@@ -297,7 +297,7 @@
                             }    
                         }).catch((err)=>{
                             console.log(err)
-                            this.catchError(err.response)
+                            this.$catchError(err)
                         });
                         this.dialogVisible2 = false;
                     }else {
@@ -337,7 +337,7 @@
                     this.loading = false
                 }).catch(err => {
                     console.log(err)
-                    this.catchError(err.response)
+                    this.$catchError(err)
                     this.loading = false
                 })
             },

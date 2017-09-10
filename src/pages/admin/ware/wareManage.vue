@@ -88,7 +88,7 @@ export default {
       .catch(err => {
         this.loading = false;
         console.log(err)
-        this.catchError(err.response)
+        this.$catchError(err)
       })
     },
     handleSizeChange (val) {

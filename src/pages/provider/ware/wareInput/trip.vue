@@ -201,7 +201,7 @@
 				}).catch(err => {
 					this.loading = false;
 					console.log(err)
-					this.catchError(err.response)
+					this.$catchError(err)
 				})
 			},
 			// 新增行程
@@ -241,7 +241,7 @@
 							}
 						}).catch(err => {
 							console.log(err)
-							this.catchError(err.response)
+							this.$catchError(err)
 						})
 						this.tripFormVisible = false
 					} else {
@@ -267,7 +267,7 @@
 						}
 					}).catch(err => {
 						console.log(err)
-						this.catchError(err.response)
+						this.$catchError(err)
 					})
 				})
 				.catch(err => {

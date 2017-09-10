@@ -89,7 +89,7 @@
 				}).catch(err => {
 					this.loading = false;
 					console.log(err)
-					this.catchError(err.response)
+					this.$catchError(err)
 				})
 			},
 			// 设置库存

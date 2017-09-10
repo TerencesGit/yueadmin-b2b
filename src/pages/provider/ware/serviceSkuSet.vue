@@ -175,7 +175,7 @@
           }
         }).catch(err => {
           console.log(err)
-          this.catchError(err.response)
+          this.$catchError(err)
         })
       },
       dateChange (val) {

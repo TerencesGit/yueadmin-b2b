@@ -195,7 +195,7 @@
     		}).catch(err => {
           this.loading = false
           console.log(err)
-          this.catchError(err.response)
+          this.$catchError(err)
         })
     	},
       // 获取属性模板列表
@@ -210,7 +210,7 @@
           }
         }).catch(err => {
           console.log(err)
-          this.catchError(err.response)
+          this.$catchError(err)
         })
       },
       // 节点详情
@@ -271,7 +271,7 @@
               }
             }).catch(err => {
               console.log(err)
-              this.catchError(err.response)
+              this.$catchError(err)
             })
             this.kindFormVisible = false
           } else {
@@ -325,7 +325,7 @@
             }
           }).catch(err => {
             console.log(err)
-            this.catchError(err.response)
+            this.$catchError(err)
           })
         }).catch(err => {
           console.log(err)

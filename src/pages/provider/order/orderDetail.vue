@@ -213,7 +213,7 @@
 	</section>
 </template>
 <script>
-	import { getOrderDetail ,addRemark } from '@/api'
+	import { getOrderDetail, addRemark } from '@/api'
 	export default {
 		data () {
 			return {
@@ -336,7 +336,7 @@
 				          }				          
 				        }).catch(err => {
 				          console.log(err)
-				          this.catchError(err.response)
+				          this.$catchError(err)
 				        })
 						this.dialogVisible = false;	
 					}else {
@@ -429,7 +429,7 @@
 			 }
 			}).catch((err) => {
 				console.log(err);
-                this.catchError(err.response)
+                this.$catchError(err)
 			})
 
 		}

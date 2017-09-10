@@ -223,7 +223,7 @@
           }
        }).catch(err => {
           console.log(err)
-          this.catchError(err.response)
+          this.$catchError(err)
         })
       },
       // 获取商品信息
@@ -246,7 +246,7 @@
         }).catch(err => {
           this.loading = false
           console.log(err)
-          this.catchError(err.response)
+          this.$catchError(err)
         })
       },
       srcCityChange (code) {
@@ -276,7 +276,7 @@
                   }
                 }).catch(err => {
                   console.log(err)
-                  this.catchError(err.response)
+                  this.$catchError(err)
                 })
               }).catch(err => {
                 console.log(err)
@@ -292,7 +292,7 @@
                   }
                 }).catch(err => {
                   console.log(err)
-                  this.catchError(err.response)
+                  this.$catchError(err)
                 })
             }
           } else {

@@ -4,25 +4,15 @@ import Mock from 'mockjs'
 import MockAdapter from 'axios-mock-adapter'
 import Utils from '@/assets/js/utils'
 import { UserList, UserPerssionList } from './data/user'
-import { Brands, WareKind, Wares, Files, SkuList, ServiceList, AttributeInfo } from './data/ware'
-let _UserList = UserList;
-let _Brands = Brands
-let _KindList = WareKind
-let _Wares = Wares
-let TripDetailList = [
-	{
-		id: 10001,
-		wareId: 110011,
-		tripDayNum: 1,
-		programType: 1,
-		programTime: new Date(),
-		programTitle: '旅游',
-		programIsFree: 1,
-		programDuration: 60,
-		programDetail: '行程详情'
-	}
-]
-let FileList = Files;
+import { Brands, WareKind, Wares, Files, SkuList, ServiceList, 
+				AttributeInfo, TripDetailList, OrderList } from './data/ware'
+let _UserList = UserList,
+		_Brands = Brands,
+		_KindList = WareKind,
+		_Wares = Wares,
+		_TripDetailList = TripDetailList,
+		_FileList = Files,
+		_OrderList = OrderList;
 const retObj = {
 	code: '0001',
 	message: '操作成功',
@@ -426,7 +416,7 @@ export default {
 				result: {}
 			}
 			retObj.result = {
-				tripDetailList: TripDetailList
+				tripDetailList: _TripDetailList
 			}
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
@@ -439,7 +429,7 @@ export default {
 			let { id, tripDayNum, programType, programTime, programTitle, 
 				programIsFree, programDuration, programDetail} = Qs.parse(config.data);
 			if(id) {
-				TripDetailList.some(trip => {
+				_TripDetailList.some(trip => {
 					if(trip.id == id) {
 						trip.programType = programType; 
 						trip.programTime = programTime; 
@@ -450,7 +440,7 @@ export default {
 					}
 				})
 			} else {
-				TripDetailList.push({
+				_TripDetailList.push({
 					id: new Date().getTime(),
 					tripDayNum: tripDayNum * 1,
 					programType, 
@@ -471,7 +461,7 @@ export default {
 		// 商品行程删除
 		mock.onPost('/ware/deleteTripDetail').reply(config => {
 			let { id } = Qs.parse(config.data)
-			TripDetailList = TripDetailList.filter(trip => trip.id != id)
+			_TripDetailList = _TripDetailList.filter(trip => trip.id != id)
 			retObj.result = {}
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
@@ -483,7 +473,7 @@ export default {
 		mock.onPost('/ware/createWareFile').reply(config => {
 			let { wareId, fileList } = Qs.parse(config.data)
 			fileList.forEach(filePath => {
-				FileList.push({
+				_FileList.push({
 					fileId: Mock.Random.id(),
 					filePath,
 					createName: Mock.Random.cname(),
@@ -500,9 +490,9 @@ export default {
 			})
 		})
 		//商品图片列表
-		mock.onGet('/ware/readWareFileList').reply(config => {
+		mock.onGet('/ware/readWare_FileList').reply(config => {
 			let { wareId } = config.params;
-			retObj.result.fileList = FileList;
+			retObj.result.fileList = _FileList;
 			return new Promise((resolve, reject) => {
 				setTimeout(() => {
 					resolve([200, retObj])
@@ -521,7 +511,7 @@ export default {
 		// 商品图片设为主图
 		mock.onPost('/ware/updateIsMainPic').reply(config => {
 			let { fileId } = Qs.parse(config.data)
-			FileList.some(file => {
+			_FileList.some(file => {
 				if(file.fileId === fileId) {
 					file.isMainPic = 1
 				}
@@ -537,7 +527,7 @@ export default {
 		mock.onPost('/ware/updateImgIsEnable').reply(config => {
 			let { fileIdList } = Qs.parse(config.data)
 			fileIdList.forEach(fileId => {
-				FileList = FileList.filter(file => file.fileId !== fileId.fileId)
+				_FileList = _FileList.filter(file => file.fileId !== fileId.fileId)
 			})
 			retObj.result = {} 
 			return new Promise((resolve, reject) => {
@@ -604,6 +594,25 @@ export default {
 						message: '操作成功',
 						result: null
 					}])
+				}, 500)
+			})
+ 		})
+ 		// 订单列表
+ 		mock.onGet('/order/readOrderList').reply(config => {
+ 			let { pageNo, pageSize, status } = config.params;
+ 			// console.log(pageNo, pageSize, status)
+ 			// let _orderList = _OrderList.filter(order => order.status == status)
+ 			let count = _OrderList.length;
+ 			let orderPage = _OrderList.filter((order, index) => index < pageNo * pageSize && index >= (pageNo - 1) * pageSize)
+ 			retObj.result = {
+ 				orderList: orderPage,
+ 				pageInfo: {
+ 					count
+ 				}
+ 			}
+ 			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
 				}, 500)
 			})
  		})

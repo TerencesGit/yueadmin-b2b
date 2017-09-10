@@ -183,7 +183,7 @@
         }).catch(err => {
           console.log(err)
           this.loading = false
-          this.catchError(err.response)
+          this.$catchError(err)
         })
       },
       dateChange (val) {

@@ -246,7 +246,7 @@
 			// 			this.$message.error(res.data.message)
 			// 		}
 			// 	}).catch(err => {
-			// 		this.catchError(err.response)
+			// 		this.$catchError(err)
 			// 	})
 			// },
 			handleChange(val) {

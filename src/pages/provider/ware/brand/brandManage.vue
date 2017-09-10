@@ -278,7 +278,7 @@ export default {
             }
           }).catch(err => {
             console.log(err)
-            this.catchError(err.response)
+            this.$catchError(err)
           })
           this.brandFormVisible = false
         } else {

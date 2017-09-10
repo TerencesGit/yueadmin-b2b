@@ -346,7 +346,7 @@
               this.loading = false
             }).catch(err => {
               console.log(err)
-              this.catchError(err.response)
+              this.$catchError(err)
               this.loading = false
             })
           }
@@ -365,7 +365,7 @@
               this.loading = false
             }).catch(err => {
               console.log(err)
-              this.catchError(err.response)
+              this.$catchError(err)
               this.loading = false
             })
           }
@@ -403,7 +403,7 @@
               this.loading = false
             }).catch(err => {
               console.log(err)
-              this.catchError(err.response)
+              this.$catchError(err)
               this.loading = false
             })
           }
@@ -422,7 +422,7 @@
               this.loading = false
             }).catch(err => {
               console.log(err)
-              this.catchError(err.response)
+              this.$catchError(err)
               this.loading = false
             })
           }
@@ -441,7 +441,7 @@
               this.loading = false
             }).catch(err => {
               console.log(err)
-              this.catchError(err.response)
+              this.$catchError(err)
               this.loading = false
             }) 
           }
@@ -463,7 +463,7 @@
           }
         }).catch(err => {
           console.log(err)
-          this.catchError(err.response)
+          this.$catchError(err)
         })
       },
       changeMonth (start, end, current) {
@@ -489,7 +489,7 @@
           }
         }).catch(err => {
           console.log(err)
-          this.catchError(err.response)
+          this.$catchError(err)
         })
         this.storageVisible = true
         // this.$router.push({

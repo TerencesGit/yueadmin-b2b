@@ -281,7 +281,7 @@
             this.$message.error(res.data.message)
           }
        }).catch(err => {
-          this.catchError(err.response)
+          this.$catchError(err)
         })
       },
       // 获取品类列表
@@ -297,7 +297,7 @@
       //     }
       //   }).catch(err => {
       //     console.log(err)
-      //     this.catchError(err.response)
+      //     this.$catchError(err)
       //   })
       // },
       nodeClick(data) {
@@ -328,7 +328,7 @@
       //     }
       //   }).catch(err => {
       //     console.log(err)
-      //     this.catchError(err.response)
+      //     this.$catchError(err)
       //   })
       // },
       srcCityChange (code) {
@@ -357,7 +357,7 @@
               }
             }).catch(err => {
               console.log(err)
-              this.catchError(err.response)
+              this.$catchError(err)
             })
           } else {
             this.$message.error('表单输入有误')

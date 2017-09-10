@@ -220,7 +220,7 @@
               this.batchSetVisible = false
             }).catch(err => {
               console.log(err)
-              this.catchError(err.response)
+              this.$catchError(err)
             })
           } else {
             console.log('err submit')
@@ -250,7 +250,7 @@
               this.batchSetVisible = false
             }).catch(err => {
               console.log(err)
-              this.catchError(err.response)
+              this.$catchError(err)
             })
           } else {
             console.log('err submit')

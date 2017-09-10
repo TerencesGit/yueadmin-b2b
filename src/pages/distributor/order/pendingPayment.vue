@@ -176,7 +176,7 @@
                         }
                     }).catch((err)=>{
                         console.log(err);
-                        this.catchError(err.response)
+                        this.$catchError(err)
                     });             
                 }).catch(() => {
                     this.$message({
@@ -217,7 +217,7 @@
                   this.loading = false
                 }).catch(err => {
                     console.log(err)
-                    this.catchError(err.response)
+                    this.$catchError(err)
                     this.loading = false
                 })
             },
@@ -235,9 +235,10 @@
                 //   }       
                 //   }).catch(err => {
                 //     console.log(err)
-                //     this.catchError(err.response)
+                //     this.$catchError(err)
                 //   })
-                window.location.href = 'http://192.168.199.193:8080/yue_yb2b/pay/execute?orderId=' + row.orderId;
+                window.open('https://transformgit.github.io/yueadmin-pay')
+                // window.location.href = 'http://192.168.199.193:8080/yue_yb2b/pay/execute?orderId=' + row.orderId;
               }
         },
         mounted () {

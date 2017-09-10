@@ -169,7 +169,7 @@
             })
             .catch(err => {
             	console.log(err)
-              this.catchError(err.response)
+              this.$catchError(err)
             })
             this.activityFormVisible = false;
           } else {
@@ -214,7 +214,7 @@
         		}
         	}).catch(err => {
         		console.log(err)
-        		this.catchError(err.response)
+        		this.$catchError(err)
         	})
 				})
 				.catch(err => {
