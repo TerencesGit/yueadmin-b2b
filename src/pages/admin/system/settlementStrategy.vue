@@ -852,10 +852,10 @@
 						this.$message('获取失败,请稍后再试');
 						this.loading = false;
 					}
-				}).catch((error)=>{
-					console.log(error);
-					this.$catchError(err);
+				}).catch(err => {
+					console.log(err);
 					this.loading = false;
+					this.$catchError(err);
 				})
 			},
 			addStrategyDialog(){

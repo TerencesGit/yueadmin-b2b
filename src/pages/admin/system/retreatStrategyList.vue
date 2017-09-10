@@ -136,7 +136,7 @@
 						})
 						this.loading = false;
 					}
-				}).catch((error)=>{
+				}).catch(err => {
 					this.$catchError(err)
 					this.loading = false;
 				})

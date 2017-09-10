@@ -54,32 +54,31 @@ const editorOptions = {
         sizeLimit: 512 * 1024,
         // 上传参数,默认把图片转为base64而不上传 
         upload: {
-            url: '/b2b/file/upload',
-            headers: {},
-            params: {fileUrlType: 3},
-            fieldName: 'fileName'
+          url: '/b2b/file/upload',
+          headers: {},
+          params: {fileUrlType: 3},
+          fieldName: 'fileName'
         },
         // 压缩参数,默认使用localResizeIMG进行压缩,设置为null禁止压缩 
         // compression config,default resize image by localResizeIMG (https://github.com/think2011/localResizeIMG) 
         // set null to disable compression 
         compress: {
-            width: 1600,
-            height: 1600,
-            quality: 80
+          width: 1600,
+          height: 1600,
+          quality: 80
         },
         // 响应数据处理，最终返回图片链接  
-        uploadHandler (responseText) {
-            let data = JSON.parse(responseText)
-            if (data.code === '0001') {
-              let filePath = data.result.file.filePath;
-              return filePath;
-            } else {
-              alert(data.message)
-              ElementUI.Message({
-                type: 'error',
-                message: data.message
-              })
-            }
+        uploadHandler (response) {
+          let data = JSON.parse(response)
+          if (data.code === '0001') {
+            let filePath = data.result.file.filePath;
+            return filePath;
+          } else {
+            ElementUI.Message({
+              type: 'error',
+              message: data.message
+            })
+          }
         }
     },
     language: "zh-cn"
@@ -119,12 +118,13 @@ const router = new Router({
 })
 router.beforeEach((to, from, next) => {
   // Vue.prototype.$fromPath = from.path;
-  let user = Utils.getCookie('userId');
-  let logRequired = to.path.indexOf('provider') !== -1 || 
+  let userId = Utils.getCookie('userId');
+  let logRequired = to.path.indexOf('home') !== -1 || 
                     to.path.indexOf('admin') !== -1 ||
+                    to.path.indexOf('provider') !== -1 ||
                     to.path.indexOf('distributor') !== -1;
-  if(logRequired && !user) {
-    ElementUI.Message('尚未登录或当前会话已过期')
+  if(logRequired && !userId) {
+    localStorage.getItem('user') && ElementUI.Message('会话已过期，请重新登录')
     return router.push('/login')
   }
   NProgress.start()
@@ -133,13 +133,11 @@ router.beforeEach((to, from, next) => {
 router.afterEach((to, from, next) => {
   NProgress.done()
 })
-// request interceptors
 axios.interceptors.request.use((config) => {
   return config;
 }, (err) => {
   return Promise.reject(err)
 })
-// response interceptors
 axios.interceptors.response.use(res =>{
   if (res.data.code === '0000') {
     router.push('/login')

@@ -1,4 +1,4 @@
-# yueadmin-trading
+# yueadmin-b2b
 
 > A Vue.js project
 

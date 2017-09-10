@@ -34,7 +34,7 @@
       <el-table-column prop="dstCityName" label="目的城市" width="120"></el-table-column>
       <el-table-column prop="wareKind" label="状态" width="80" :formatter="formatStatus"></el-table-column>
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" sortable width="170"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" sortable width="130" :formatter="formatTime"></el-table-column>
       <el-table-column label="操作" width="280">
         <template scope="scope">
           <el-button size="small" @click="handleStorageSet(scope.row.wareId)">库存管理</el-button>
@@ -75,6 +75,9 @@ export default {
     }
   },
   methods: {
+    formatTime() {
+      return this.$moment(new Date()).format('YYYY-MM-DD')
+    },
     formatStatus (row) {
       switch (row.verifyStatus) {
         case 0 :

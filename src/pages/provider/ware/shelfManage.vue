@@ -23,8 +23,8 @@
       <el-table-column type="index" width="60"></el-table-column>
       <el-table-column prop="wareId" label="商品编号" sortable width="180"></el-table-column>
       <el-table-column prop="wareName" label="商品名称"></el-table-column>
-      <el-table-column prop="createTime" label="创建时间" sortable width="180"></el-table-column>
-      <el-table-column prop="upDownTime" label="上/下架时间" sortable width="180"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" sortable width="130" :formatter="formatTime"></el-table-column>
+      <el-table-column prop="upDownTime" label="上/下架时间" sortable width="140" :formatter="formatTime"></el-table-column>
       <el-table-column prop="status" label="状态" width="110" :formatter="formatStatus" >
       </el-table-column>
       <el-table-column label="操作" width="270">
@@ -92,6 +92,9 @@ export default {
     }
   },
   methods: {
+    formatTime() {
+      return this.$moment(new Date()).format('YYYY-MM-DD')
+    },
     formatStatus (row) {
       return row.status === 1 ? '已上架' : row.status === 0 ? '已下架' : '平台已下架'
     },

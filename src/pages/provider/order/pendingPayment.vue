@@ -69,59 +69,59 @@
   import { readOrderList } from '@/api'
   export default {
     data() {
-        return {
-            loading: false,
-            filter: {
-              orderCode: '',
-              wareName: '',
-              startDate: '',
-              endDate: ''
-            }, 
-            pageNo: 1,
-            pageSize: 10,
-            total: 0,
-            pickerOptions: {
-              // disabledDate (time) {
-              //   return time.getTime() >= Date.now();
-              // },
-                shortcuts: [{
-                    text: '今天',
-                    onClick(picker) {
-                      picker.$emit('pick', new Date());
-                    }
-                }, {
-                    text: '昨天',
-                    onClick(picker) {
-                      const date = new Date();
-                      date.setTime(date.getTime() - 3600 * 1000 * 24);
-                      picker.$emit('pick', date);
-                    }
-                }, {
-                    text: '一周前',
-                    onClick(picker) {
-                      const date = new Date();
-                      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-                      picker.$emit('pick', date);
-                    }
-                }, {
-                    text: '一月前',
-                    onClick(picker) {
-                      const date = new Date();
-                      date.setTime(date.getTime() - 3600 * 1000 * 24 * 30);
-                      picker.$emit('pick', date);
-                    }
-                }]
-            },
-            orderList: [{
-              orderCode: '1001',
-              wareId: '0001',
-              wareName: '产品1',
-              status: 2,
-              orderTotal: 20,
-              dateDepart: '2017-06-10',
-              adultPrice: '12000'
+      return {
+        loading: false,
+        filter: {
+          orderCode: '',
+          wareName: '',
+          startDate: '',
+          endDate: ''
+        }, 
+        pageNo: 1,
+        pageSize: 10,
+        total: 0,
+        pickerOptions: {
+          // disabledDate (time) {
+          //   return time.getTime() >= Date.now();
+          // },
+            shortcuts: [{
+                text: '今天',
+                onClick(picker) {
+                  picker.$emit('pick', new Date());
+                }
+            }, {
+                text: '昨天',
+                onClick(picker) {
+                  const date = new Date();
+                  date.setTime(date.getTime() - 3600 * 1000 * 24);
+                  picker.$emit('pick', date);
+                }
+            }, {
+                text: '一周前',
+                onClick(picker) {
+                  const date = new Date();
+                  date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                  picker.$emit('pick', date);
+                }
+            }, {
+                text: '一月前',
+                onClick(picker) {
+                  const date = new Date();
+                  date.setTime(date.getTime() - 3600 * 1000 * 24 * 30);
+                  picker.$emit('pick', date);
+                }
             }]
-        }
+        },
+        orderList: [{
+          orderCode: '1001',
+          wareId: '0001',
+          wareName: '产品1',
+          status: 2,
+          orderTotal: 20,
+          dateDepart: '2017-06-10',
+          adultPrice: '12000'
+        }]
+      }
     },
     methods: {
       formatStatus (row) {
@@ -147,44 +147,44 @@
                 query: { orderId: row.orderId }
             })
         },
-    // 订单列表
-        getOrderList() {
-            if (this.filter.startDate > this.filter.endDate) {
-                this.$notify.error({
-                    title: '提示',
-                    message: '起始时间不得大于截止时间'
-                })
-                return false;
-            }
-            let params = {
-                pageNo: this.pageNo,
-                pageSize: this.pageSize,
-                orderCode: this.filter.orderCode,
-                wareName: this.filter.wareName,
-                startDate: this.filter.startDate,
-                endDate: this.filter.endDate,
-                status: 2
-            }
-            console.log(params)
-            this.loading = true
-            readOrderList(params).then(res => {
-                console.log(res)
-                if(res.data.code === '0001') {
-                    this.orderList = res.data.result.orderList;
-                    this.total = res.data.result.pageInfo.count;
-                } else {
-                    this.$message.error(res.data.message)
-                }       
-                    this.loading = false
-            }).catch(err => {
-                console.log(err)
-                this.loading = false
-                this.$catchError(err)
+      // 订单列表
+      getOrderList() {
+        if (this.filter.startDate > this.filter.endDate) {
+            this.$notify.error({
+                title: '提示',
+                message: '起始时间不得大于截止时间'
             })
+            return false;
         }
+        let params = {
+            pageNo: this.pageNo,
+            pageSize: this.pageSize,
+            orderCode: this.filter.orderCode,
+            wareName: this.filter.wareName,
+            startDate: this.filter.startDate,
+            endDate: this.filter.endDate,
+            status: 2
+        }
+        // console.log(params)
+        this.loading = true
+        readOrderList(params).then(res => {
+            // console.log(res)
+            if(res.data.code === '0001') {
+                this.orderList = res.data.result.orderList;
+                this.total = res.data.result.pageInfo.count;
+            } else {
+                this.$message.error(res.data.message)
+            }       
+                this.loading = false
+        }).catch(err => {
+            console.log(err)
+            this.loading = false
+            this.$catchError(err)
+        })
+      }
     },
     mounted () {
-        this.getOrderList()
+      this.getOrderList()
     }
   }
 </script>

@@ -2,16 +2,22 @@
   <transition name="slide-fade">
     <div class="container">
       <div v-title :data-title="this.$route.name"></div>
-      <el-form :model="loginForm" :rules="loginRules" ref="loginForm" class="login-form" :class="{'animated shake': invalid}">
+      <el-form 
+        :model="loginForm" 
+        :rules="loginRules" 
+        ref="loginForm" 
+        class="login-form" 
+        :class="{'animated shake': invalid}"
+        :label-width="labelWith">
         <h2 class="page-header">欢迎登录</h2>
-        <el-form-item label="用户名" prop="username" :label-width="labelWith">
-          <el-input v-model.string="loginForm.username" placeholder="请输入邮箱号"></el-input>
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model.trim="loginForm.username" placeholder="请输入邮箱号"></el-input>
         </el-form-item>
-        <el-form-item label="密 码" prop="password" :label-width="labelWith">
-          <el-input type="password" v-model="loginForm.password" placeholder="请输入密码"></el-input>
+        <el-form-item label="密 码" prop="password">
+          <el-input type="password" v-model.trim="loginForm.password" placeholder="请输入密码"></el-input>
         </el-form-item>
-        <el-form-item label="验证码" prop="authcode" :label-width="labelWith">
-          <el-input type="text" v-model="loginForm.authcode" placeholder="请输入验证码" style="float: left; width: 65%; margin-right: 15px;"></el-input>
+        <el-form-item label="验证码" prop="authcode">
+          <el-input type="text" v-model.trim="loginForm.authcode" placeholder="请输入验证码" style="float: left; width: 65%; margin-right: 15px;"></el-input>
           <canvas id="canvasCode" width="80px" height="35px" class="canvas-code" @click="drawCode"></canvas>
         </el-form-item>
         <!-- <el-form-item label="登录角色" :label-width="labelWith" class="m-b-5">
@@ -29,12 +35,12 @@
             <el-checkbox name="type"></el-checkbox>
           </el-checkbox-group>
         </el-form-item> -->
-        <el-form-item class="m-b-5">
+        <el-form-item class="m-b-5" label-width="0">
           <el-button type="primary" class="el-button--block" :loading="logging" @click="submitForm">
             提 交
           </el-button>
         </el-form-item>
-        <el-form-item style="margin: 0; text-align: center;">
+        <el-form-item label-width="0" style="margin: 0; text-align: center;">
           <router-link to="/register">尚未注册？</router-link>
           <span style="margin: 0 10px">|</span>
           <router-link to="/forgetPass">忘记密码</router-link>
@@ -50,7 +56,7 @@
   export default {
     data() {
       var validateCode = (rule, value, callback) => {
-        if (value === '') {
+        if (!value) {
           callback(new Error('请输入验证码'))
         } else if (value.toUpperCase() !== this.authCode.toUpperCase()) {
           callback(new Error('验证码错误'))

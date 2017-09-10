@@ -1,11 +1,13 @@
-import CasLogin from '@/pages/casLogin'
-import Login from '@/pages/login'
-import Register from '@/pages/register'
+import Layout from '@/components/Layout'
 import NotFound from '@/pages/NotFound'
 import NoPermission from '@/pages/NoPermission'
+// 登录
+import CasLogin from '@/pages/casLogin'
+import Login from '@/pages/login'
+// 注册
+import Register from '@/pages/register'
+// 首页
 import Home from '@/pages/home'
-import Layout from '@/components/Layout'
-
 // 品牌管理
 const BrandManage = resolve => require(['@/pages/provider/ware/brand/brandManage'], resolve)
 // 商品信息-添加
@@ -68,9 +70,6 @@ const ProRefunds = resolve => require(['@/pages/provider/order/refunds'], resolv
 const ProChangeOrders = resolve => require(['@/pages/provider/order/changeOrders'], resolve)
 const ProSystemFreeze = resolve => require(['@/pages/provider/order/systemFreeze'], resolve)
 
-/********************  供应商管理 end  ******************/
-
-/********************  平台管理 start ******************/
 // 商品审核列表
 const WareVerifyList = resolve => require(['@/pages/admin/ware/verifyList'], resolve)
 // 商品审核详情
@@ -122,9 +121,6 @@ const retreatStrategyList = resolve => require(['@/pages/admin/system/retreatStr
 const retreatStrategyAdd = resolve => require(['@/pages/admin/system/retreatStrategyAdd'], resolve)
 const retreatStrategyEdit = resolve => require(['@/pages/admin/system/retreatStrategyEdit'], resolve)
 
-/********************  平台管理 end  ******************/
-
-/********************  分销商管理 start  ******************/
 //订单管理
 const DisPenddingCompletion = resolve => require(['@/pages/distributor/order/penddingCompletion'], resolve)
 const DisCustomInfoCompletion = resolve => require(['@/pages/distributor/order/customInfoCompletion'], resolve)
@@ -133,8 +129,6 @@ const DisInService = resolve => require(['@/pages/distributor/order/inService'],
 const DisHistory = resolve => require(['@/pages/distributor/order/history'], resolve)
 const DisOrderDetail = resolve => require(['@/pages/distributor/order/orderDetail'], resolve)
 const confirmSheet = resolve => require(['@/pages/distributor/order/confirmSheet'], resolve)
-
-/********************  分销商管理 end  ******************/
 
 const routes = [
   {
@@ -469,9 +463,9 @@ const routes = [
     name: 'notfound',
     component: NotFound
   },
-  // {
-  // 	path: '*',
-  // 	redirect: '/NotFound'
-  // }
+  {
+  	path: '*',
+  	redirect: '/NotFound'
+  }
 ]
 export default routes
