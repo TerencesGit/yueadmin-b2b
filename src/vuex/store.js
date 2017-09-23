@@ -8,7 +8,8 @@ const state = {
 	sidebarStatus: false,
 	userInfo: null,
 	userPermission: [],
-	stepActive: 0
+	stepActive: 0,
+	activeStep: 0,
 }
 
 const mutations = {
@@ -23,7 +24,10 @@ const mutations = {
 	},
 	SET_STEPACTIVE (state, active) {
 		state.stepActive = active
-	}
+	},
+	CHANGE_STEPACTIVE (state, active) {
+		state.activeStep = active
+	},
 }
 export default new Vuex.Store({
 	state,

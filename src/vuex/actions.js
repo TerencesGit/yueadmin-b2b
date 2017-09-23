@@ -10,3 +10,6 @@ export const saveUserPermission = ({ commit }, permission) => {
 export const setStepActive = ({ commit }, active) => {
 	commit('SET_STEPACTIVE', active)
 }
+export const changeStepActive = ({ commit }, active) => {
+	commit('CHANGE_STEPACTIVE', active)
+}

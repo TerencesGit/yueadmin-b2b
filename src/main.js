@@ -124,7 +124,7 @@ router.beforeEach((to, from, next) => {
                     to.path.indexOf('provider') !== -1 ||
                     to.path.indexOf('distributor') !== -1;
   if(logRequired && !userId) {
-    localStorage.getItem('user') && ElementUI.Message('会话已过期，请重新登录')
+    // localStorage.getItem('user') && ElementUI.Message('会话已过期，请重新登录')
     return router.push('/login')
   }
   NProgress.start()

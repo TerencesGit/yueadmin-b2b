@@ -6,6 +6,13 @@ import CasLogin from '@/pages/casLogin'
 import Login from '@/pages/login'
 // 注册
 import Register from '@/pages/register'
+// 找回密码
+import BaseFindPasswd from '@/pages/base/findpasswd'
+import BaseSendEmail from '@/pages/base/sendemail'
+import BaseVerifyEmail from '@/pages/base/verifyemail'
+import BaseResetPasswd from '@/pages/base/resetpasswd'
+import BaseResetSuccess from '@/pages/base/resetsuccess'
+
 // 首页
 import Home from '@/pages/home'
 // 品牌管理
@@ -153,6 +160,16 @@ const routes = [
     component: Layout,
     children: [
       { path: 'welcome', name: '首页', component: Home },
+    ]
+  },
+  {
+    path: '/findpasswd',
+    component: BaseFindPasswd,
+    children: [
+      { path: '/', name: '找回密码', component: BaseSendEmail },
+      { path: '/verifyemail', name: '发送邮件', component: BaseVerifyEmail },
+      { path: '/resetpasswd', name: '重置密码', component: BaseResetPasswd },
+      { path: '/resetsuccess', name: '重置密码成功', component: BaseResetSuccess },
     ]
   },
   {
