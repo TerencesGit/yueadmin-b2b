@@ -129,6 +129,8 @@ const DisInService = resolve => require(['@/pages/distributor/order/inService'],
 const DisHistory = resolve => require(['@/pages/distributor/order/history'], resolve)
 const DisOrderDetail = resolve => require(['@/pages/distributor/order/orderDetail'], resolve)
 const confirmSheet = resolve => require(['@/pages/distributor/order/confirmSheet'], resolve)
+// 财务报表
+const DisBillStatements = resolve => require(['@/pages/distributor/bill/statements'], resolve)
 
 const routes = [
   {
@@ -449,9 +451,26 @@ const routes = [
       },
       { 
         path: 'confirmSheet',
-        name: '分销商-确认单',
+        name: '分销商-确认订单',
         component: confirmSheet
       }]
+  },
+  {
+    path: '/distributor/bill',
+    name: '分销商-财务报表',
+    component: Layout,
+    children: [
+      { 
+        path: 'expenditure',
+        name: '支出账单',
+        component: DisBillStatements
+      },
+      { 
+        path: 'income',
+        name: '收入账单',
+        component: DisBillStatements
+      },
+    ]
   },
   {
     path: '/NoPermission',
