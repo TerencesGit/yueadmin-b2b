@@ -71,6 +71,43 @@ export default {
 				}, 500)
 			})
 		})
+		// 查询邮箱或手机号是否已被使用
+		mock.onGet('/baseInter/accountFind.do').reply(config => {
+			let { account } = config.params;
+			// console.log(account)
+			let _user = _UserList.filter(user => user.email === account);
+			let finded = _user.length > 0 ? true : false;
+			retObj.result = {
+				finded
+			}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				}, 500)
+			})
+		})
+		// 发送找回密码邮件
+		mock.onPost('/baseInter/sendForgotPwdEmail.do').reply(config => {
+			let { email } = JSON.parse(config.data)
+			console.log(email)
+			retObj.result = {}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				}, 500)
+			})
+		})
+		// 重置密码
+		mock.onPost('/baseInter/resetPasswd.do').reply(config => {
+			let { passwd, passwd2 } = JSON.parse(config.data)
+			console.log(passwd, passwd2)
+			retObj.result = {}
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					resolve([200, retObj])
+				}, 500)
+			})
+		})
 		// 获取当前用户信息
 		mock.onGet('/accountInter/getMyInfo.do').reply(config => {
 			let userId = Utils.getCookie('userId');
