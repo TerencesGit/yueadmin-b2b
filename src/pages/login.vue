@@ -169,12 +169,6 @@
 		border-radius: 5px;
 		background: #fff
 	}
-  .canvas-code {
-    float: right;
-    cursor: pointer;
-    border-radius: 4px;
-    background-image: linear-gradient(-45deg, #111, #666, #222, #777);
-  }
   .slide-fade-enter-active {
     transition: all .5s;
   }

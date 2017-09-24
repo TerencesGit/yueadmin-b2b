@@ -82,7 +82,7 @@
 		        baseOption: {
 		            title : {
 		                text: '南丁格尔玫瑰图',
-		                subtext: '纯属虚构',
+		                subtext: '',
 		                x:'center'
 		            },
 		            tooltip : {
