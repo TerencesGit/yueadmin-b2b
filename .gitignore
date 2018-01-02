@@ -1,8 +1,8 @@
 .DS_Store
 node_modules/
 dist/
+src/
 #static
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-src
