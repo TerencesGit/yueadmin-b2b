@@ -107,9 +107,9 @@ export default {
         wareCode: this.filter.code,
         verifyStatus: this.filter.status
       }
-      console.log(params)
+      // console.log(params)
       readWareList(params).then(res => {
-        console.log(res)
+        // console.log(res)
         if (res.data.code === '0001') {
           this.total = res.data.result.pageInfo.count;
           this.wareList = res.data.result.wareList

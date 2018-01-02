@@ -389,7 +389,7 @@ export default {
 		// 商品列表
 		mock.onGet('/ware/readWareList').reply(config => {
 			let { currPage, pageSize, verifyStatus } = config.params;
-			console.log(currPage, pageSize, verifyStatus)
+			// console.log(currPage, pageSize, verifyStatus)
 			let pageInfo = {
 				count: _Wares.length
 			}

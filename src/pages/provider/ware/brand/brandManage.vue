@@ -225,7 +225,7 @@ export default {
     },
     // 上传成功
     handleSuccess (res, file) {
-      console.log(res, file)
+      // console.log(res, file)
       this.uploading = false
       this.brandForm.logoUrl = file.url
       // if (res.code === '0001') {
@@ -239,7 +239,7 @@ export default {
     },
     // 上传失败
     handleError (err, file) {
-      console.log(err)
+      // console.log(err)
       this.uploading = false
       this.$message.error('上传失败')
       // this.brandForm.logoUrl = URL.createObjectURL(file.raw)
