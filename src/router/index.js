@@ -1,20 +1,19 @@
 import Layout from '@/components/Layout'
-import NotFound from '@/pages/NotFound'
-import NoPermission from '@/pages/NoPermission'
+import NotFound from '@/pages/base/NotFound'
 // 登录
-import CasLogin from '@/pages/casLogin'
-import Login from '@/pages/login'
+import CasLogin from '@/pages/base/casLogin'
+import Login from '@/pages/base/login'
 // 注册
-import Register from '@/pages/register'
+import Register from '@/pages/base/register'
 // 找回密码
 import BaseFindPasswd from '@/pages/base/findpasswd'
 import BaseSendEmail from '@/pages/base/sendemail'
 import BaseVerifyEmail from '@/pages/base/verifyemail'
 import BaseResetPasswd from '@/pages/base/resetpasswd'
 import BaseResetSuccess from '@/pages/base/resetsuccess'
+// 欢迎页
+import Home from '@/pages/base/home'
 
-// 首页
-import Home from '@/pages/home'
 // 品牌管理
 const BrandManage = resolve => require(['@/pages/provider/ware/brand/brandManage'], resolve)
 // 商品信息-添加
@@ -489,19 +488,15 @@ const routes = [
       },
     ]
   },
-  {
-    path: '/NoPermission',
-    name: 'nopermission',
-    component: NoPermission
-  },
-  {
-    path: '/NotFound',
-    name: 'notfound',
-    component: NotFound
-  },
+  // {
+  //   path: '/NoPermission',
+  //   name: 'nopermission',
+  //   component: NoPermission
+  // },
   {
   	path: '*',
-  	redirect: '/NotFound'
+  	// name: 'notfound',
+    component: NotFound
   }
 ]
 export default routes

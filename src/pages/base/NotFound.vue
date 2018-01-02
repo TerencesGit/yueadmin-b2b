@@ -33,10 +33,10 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
-      h1 {
-        font-size: 200px;
-        color: #fff;
-      }
+    }
+    .top h1 {
+      font-size: 200px;
+      color: #fff;
     }
     .bottom {
       padding-top: 30px;

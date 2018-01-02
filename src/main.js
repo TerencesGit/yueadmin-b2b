@@ -15,6 +15,7 @@ import 'nprogress/nprogress.css'
 import 'element-ui/lib/theme-default/index.css'
 import 'font-awesome/css/font-awesome.min.css'
 import '@/assets/css/base.scss'
+import Md5 from '@/assets/js/md5'
 import Mock from './mock'
 import Utils from '@/assets/js/utils'
 import VueHtml5Editor from 'vue-html5-editor'
@@ -25,6 +26,7 @@ import LinkSteps from '@/components/steps'
 import RegionPicker from '@/components/region-picker'
 NProgress.configure({ ease: 'ease', speed: 500, minimum: 0.5, showSpinner: false})
 Mock.bootstrap()
+Vue.prototype.$Md5 = Md5
 Vue.prototype.$moment = moment
 Vue.use(Router)
 Vue.use(Vuex)
